@@ -1,0 +1,26 @@
+name: 'OS2forms med Forløb Module'
+description: 'Adds a Maestro workflow engine and advanced workflow functionality to OS2forms.'
+package: OS2Forms
+type: module
+version: 1.0
+core: 8.x
+core_version_requirement: ^8 || ^9
+
+dependencies:
+  - antibot
+  - coc_forms_auto_export
+  - config_entity_revisions
+  - events_logging
+  - gin
+  - libraries
+  - logging_alerts
+  - maestro
+  - masquerade
+  - honeypot
+  - rules
+  - rules_token
+  - rules_webform
+  - ultimate_cron
+  - user_default_page
+  - webform_remote_handlers
+  - webform_rest
