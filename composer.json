@@ -4,7 +4,7 @@
   "description": "This module adds Maestro workflow engine and functionality to produce advanced workflows",
   "minimum-stability": "dev",
   "prefer-stable": true,
-  "license": "MPL 2.0",
+  "license": "EUPL-1.2",
   "repositories": {
     "drupal": {
       "type": "composer",
