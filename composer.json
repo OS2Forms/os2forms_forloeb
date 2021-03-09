@@ -55,7 +55,6 @@
     "drupal/user_default_page": "2.0.0-rc1",
     "drupal/webform_embed": "1.x-dev",
     "drupal/webform_composite": "1.0-rc2",
-    "drupal/webform_permissions_by_term": "1.2.0",
     "drupal/webform_remote_handlers": "1.6.0",
     "drupal/webform_rest": "4.0.0-beta2",
     "drupal/webform_scheduled_tasks": "2.0.0-alpha5",
