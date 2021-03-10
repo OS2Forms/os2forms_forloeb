@@ -3,3 +3,6 @@
 
 # Ignore vendor directory
 vendor/
+
+# Ignore sqlauth
+modules/slauth
