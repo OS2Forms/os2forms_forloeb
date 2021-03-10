@@ -7,8 +7,6 @@
 
 /**
  * Implements hook_install().
- *
- * @param $modules
  */
 function os2forms_forloeb_install() {
     $theme_list = [
@@ -27,4 +25,16 @@ function os2forms_forloeb_install() {
         ->set('default', 'gin')
         ->set('admin', 'gin')
         ->save();
+
+    // Create Forløb roles
+    $roles[0]['id'] = ['forloeb_designer','flow_designer','flow_designer','sagsbehandler','leder','medarbejder'];
+    $roles[0]['label'] = ['forloeb_designer','flow_designer','flow_designer','sagsbehandler','leder','medarbejder'];
+    for ($i = 0; $i < count($roles); $i++) {
+        //your data array
+        $data = array('id' => $roles[$i]['id'], 'label' => $roles[$i]['label']);
+        //creating your role
+        $role = \Drupal\user\Entity\Role::create($data);
+        //saving your role
+        $role->save();
+    }
 }

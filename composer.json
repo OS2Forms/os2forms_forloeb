@@ -17,7 +17,6 @@
   },
   "require": {
     "drupal/admin_toolbar": "2.4.0",
-    "drupal/antibot": "1.4.0",
     "drupal/chosen": "2.10.0",
     "drupal/ckeditor_a11ychecker": "1.0.0",
     "drupal/clientside_validation": "3.0.0-rc4",
@@ -52,7 +51,6 @@
     "drupal/webform_views": "5.0.0-alpha7",
     "vaimo/composer-patches": "^4.20",
     "vlucas/phpdotenv": "2.6.7",
-    "webflo/drupal-finder": "1.2.2",
     "webmozart/path-util": "2.3.0",
     "zaporylie/composer-drupal-optimizations": "1.2.0"
   },
