@@ -1,2 +1,5 @@
 # Ignore IntelliJ
 .idea/*
+
+# Ignore vendor directory
+vendor/
