@@ -17,7 +17,6 @@
   },
   "require": {
     "drupal/admin_toolbar": "^2.3",
-    "drupal/antibot": "1.4.0",
     "drupal/chosen": "2.10.0",
     "drupal/ckeditor_a11ychecker": "1.0.0",
     "drupal/clientside_validation": "3.0.0-rc4",
