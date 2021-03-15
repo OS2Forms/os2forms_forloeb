@@ -16,6 +16,7 @@
     }
   },
   "require": {
+    "cweagans/composer-patches": "^1.6.5",
     "drupal/admin_toolbar": "^2.3",
     "drupal/chosen": "2.10.0",
     "drupal/ckeditor_a11ychecker": "1.0.0",
@@ -49,7 +50,6 @@
     "drupal/webform_rest": "4.0.0-beta2",
     "drupal/webform_scheduled_tasks": "^2.0",
     "drupal/webform_views": "5.0.0-alpha7",
-    "vaimo/composer-patches": "^4.20",
     "vlucas/phpdotenv": "^2.4",
     "webmozart/path-util": "2.3.0",
     "zaporylie/composer-drupal-optimizations": "1.2.0"
@@ -59,7 +59,7 @@
     "patchLevel": {
       "test": "-p2"
     },
-    "enable-patching" : true,
+    "enable-patching": true,
     "patches": {
       "drupal/entity_print": {
         "2733781 - Add Export to Word Support": "https://www.drupal.org/files/issues/2019-11-22/2733781-47.patch"
