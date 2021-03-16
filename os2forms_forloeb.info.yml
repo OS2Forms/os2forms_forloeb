@@ -29,6 +29,7 @@ dependencies:
   - rules_webform
   - smtp
   - system
+  - switch_page_theme
   - token
   - ultimate_cron
   - user_default_page
