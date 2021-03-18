@@ -44,7 +44,6 @@
     "drupal/simplesamlphp_auth": "3.2.0",
     "drupal/telephone_validation": "^2.2",
     "drupal/ultimate_cron": "2.0.0-alpha5",
-    "drupal/user_default_page": "2.0.0-rc1",
     "drupal/webform_composite": "1.0-rc2",
     "drupal/webform_remote_handlers": "1.6.0",
     "drupal/webform_rest": "4.0.0-beta2",

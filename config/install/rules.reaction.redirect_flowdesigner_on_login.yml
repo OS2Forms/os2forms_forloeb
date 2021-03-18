@@ -1,0 +1,52 @@
+langcode: da
+status: true
+dependencies: {  }
+id: redirect_on_login
+label: 'Redirect flow-designer on login'
+events:
+  -
+    event_name: rules_user_login
+description: 'Redirects on login based on user role type.'
+tags:
+  - user
+  - redirect
+config_version: '3'
+expression:
+  id: rules_rule
+  weight: 0
+  conditions:
+    id: rules_and
+    weight: 0
+    conditions:
+      -
+        id: rules_condition
+        weight: 0
+        context_values:
+          roles:
+            - flow-designer
+          operation: AND
+        context_mapping:
+          user: account
+        context_processors:
+          roles:
+            rules_tokens: {  }
+          operation:
+            rules_tokens: {  }
+        provides_mapping: {  }
+        condition_id: rules_user_has_role
+        negate: false
+  actions:
+    id: rules_action_set
+    weight: 0
+    actions:
+      -
+        id: rules_action
+        weight: 0
+        context_values:
+          url: maestro/templates/list
+        context_mapping: {  }
+        context_processors:
+          url:
+            rules_tokens: {  }
+        provides_mapping: {  }
+        action_id: rules_page_redirect
