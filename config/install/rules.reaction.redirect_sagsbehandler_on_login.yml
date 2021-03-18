@@ -1,7 +1,7 @@
 langcode: da
 status: true
 dependencies: {  }
-id: redirect_on_login
+id: redirect_sagsbehandler_on_login
 label: 'Redirect sagsbehandler on login'
 events:
   -

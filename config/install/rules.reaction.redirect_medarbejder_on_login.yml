@@ -1,7 +1,7 @@
 langcode: da
 status: true
 dependencies: {  }
-id: redirect_on_login
+id: redirect_medarbejder_on_login
 label: 'Redirect medarbejder on login'
 events:
   -
