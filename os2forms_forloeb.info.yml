@@ -51,3 +51,4 @@ dependencies:
   - webform_submission_export_import
   - webform_submission_log
   - webform_templates
+  - workflow_participants
