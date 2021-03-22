@@ -68,7 +68,7 @@
         "Unlock possibility of using Entity print module export to Word": "https://www.drupal.org/files/issues/2020-02-29/3096552-6.patch"
       },
       "drupal/rules": {
-        "Support upcasting entity IDs to full entity contexts": "https://www.drupal.org/files/issues/2020-12-17/2800749-68.upcast.patch"
+        "Integrate Typed Data Widgets": "https://www.drupal.org/files/issues/2020-12-09/2471481-141.integrate-typed-data-widgets.patch"
       }
     }
   }
