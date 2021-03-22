@@ -24,7 +24,7 @@ function os2forms_forloeb_install() {
 
     // Set default and admin themes
     $system_theme
-        ->set('default', 'gin')
+        ->set('default', 'custom_theme')
         ->set('admin', 'gin')
         ->save();
 }
