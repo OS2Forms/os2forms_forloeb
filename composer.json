@@ -70,6 +70,9 @@
       },
       "drupal/webform": {
         "Unlock possibility of using Entity print module export to Word": "https://www.drupal.org/files/issues/2020-02-29/3096552-6.patch"
+      },
+      "drupal/config_entity_revisions": {
+        "Getting error: Call to a member function id() on null in Drupal webform_revisions": "https://www.drupal.org/files/issues/2019-04-15/config_entity_revisions-node_attach_error-3048218-2.patch"
       }
     }
   }
