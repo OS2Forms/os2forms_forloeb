@@ -55,7 +55,7 @@
     "webmozart/path-util": "2.3.0",
     "zaporylie/composer-drupal-optimizations": "1.2.0"
   },
-  "extra" : {
+  "extra": {
     "composer-exit-on-patch-failure": true,
     "patchLevel": {
       "test": "-p2"
