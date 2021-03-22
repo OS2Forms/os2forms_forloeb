@@ -14,5 +14,26 @@ spt_table:
     leder: leder
   language:
     da: da
+    en: en
   weight: '-10'
-  remove: Fjern
+  remove: Remove
+-
+  status: '1'
+  pages: "/user/*\r\n<front>"
+  theme: gin
+  roles:
+    authenticated: authenticated
+    administrator: administrator
+    flow_designer: flow_designer
+    forloeb_designer: forloeb_designer
+    sagsbehandler: sagsbehandler
+    medarbejder: medarbejder
+    leder: leder
+    anonymous: 0
+  language:
+    da: da
+    en: en
+  weight: '-10'
+  remove: Remove
+_core:
+  default_config_hash: HDThDs8fiCt0S9-x4lAAzjPhMj6gR1WL-76NKVqFZKw
