@@ -12,6 +12,7 @@ dependencies:
   - entity_print
   - eu_cookie_compliance
   - events_logging
+  - gin_toolbar
   - honeypot
   - libraries
   - maestro
