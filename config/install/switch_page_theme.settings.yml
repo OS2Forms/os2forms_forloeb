@@ -1,0 +1,18 @@
+spt_table:
+-
+  status: '1'
+  pages: '/node/*'
+  theme: custom_theme
+  roles:
+    anonymous: anonymous
+    authenticated: authenticated
+    administrator: administrator
+    flow_designer: flow_designer
+    forloeb_designer: forloeb_designer
+    sagsbehandler: sagsbehandler
+    medarbejder: medarbejder
+    leder: leder
+  language:
+    da: da
+  weight: '-10'
+  remove: Fjern
