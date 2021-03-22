@@ -46,6 +46,7 @@ dependencies:
   - webform_remote_handlers
   - webform_rest
   - webform_scheduled_email
+  - webform_share
   - webform_submission_export_import
   - webform_submission_log
   - webform_templates
