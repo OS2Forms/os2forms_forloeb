@@ -35,5 +35,3 @@ spt_table:
     en: en
   weight: '-10'
   remove: Remove
-_core:
-  default_config_hash: HDThDs8fiCt0S9-x4lAAzjPhMj6gR1WL-76NKVqFZKw
