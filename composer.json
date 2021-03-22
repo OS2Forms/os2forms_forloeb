@@ -45,6 +45,7 @@
     "drupal/switch_page_theme": "1.0",
     "drupal/telephone_validation": "^2.2",
     "drupal/ultimate_cron": "2.0.0-alpha5",
+    "drupal/user_default_page": "2.0.0-rc1",
     "drupal/webform_composite": "1.0-rc2",
     "drupal/webform_remote_handlers": "1.6.0",
     "drupal/webform_rest": "4.0.0-beta2",
@@ -60,15 +61,15 @@
       "test": "-p2"
     },
     "enable-patching": true,
+    "patcher": {
+      "force-reset": true
+    },
     "patches": {
       "drupal/entity_print": {
         "2733781 - Add Export to Word Support": "https://www.drupal.org/files/issues/2019-11-22/2733781-47.patch"
       },
       "drupal/webform": {
         "Unlock possibility of using Entity print module export to Word": "https://www.drupal.org/files/issues/2020-02-29/3096552-6.patch"
-      },
-      "drupal/rules": {
-        "Integrate Typed Data Widgets": "https://www.drupal.org/files/issues/2020-12-09/2471481-141.integrate-typed-data-widgets.patch"
       }
     }
   }
