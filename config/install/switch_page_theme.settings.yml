@@ -1,7 +1,9 @@
 dependencies:
+  module:
+  - switch_page_theme
   enforced:
     module:
-      - os2forms_forloeb
+    - os2forms_forloeb
 spt_table:
 -
   status: '1'
@@ -39,3 +41,4 @@ spt_table:
     en: en
   weight: '-10'
   remove: Remove
+
