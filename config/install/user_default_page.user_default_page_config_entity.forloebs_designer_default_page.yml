@@ -1,11 +1,9 @@
 langcode: da
 status: true
 dependencies:
-  module:
-  - os2forms_forloeb
-enforced:
-  module:
-  - os2forms_forloeb
+  enforced:
+    module:
+      - os2forms_forloeb
 id: forloebs_designer_default_page
 label: 'Forløbs designer default page'
 user_roles:

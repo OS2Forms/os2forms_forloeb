@@ -3,10 +3,9 @@ status: true
 dependencies:
   module:
   - menu_ui
-  - os2forms_forloeb
   enforced:
     module:
-    - os2forms_forloeb
+      - os2forms_forloeb
 third_party_settings:
   menu_ui:
     available_menus:

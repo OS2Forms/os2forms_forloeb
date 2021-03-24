@@ -8,8 +8,8 @@ dependencies:
     - content_moderation
     - workflow_participants
     - os2forms_forloeb
-    enforced:
-      module:
+  enforced:
+    module:
       - os2forms_forloeb
 third_party_settings:
   workflow_participants:

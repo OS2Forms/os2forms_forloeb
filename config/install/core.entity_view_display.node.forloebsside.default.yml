@@ -10,9 +10,8 @@ dependencies:
     - text
     - user
     - webform
-    - os2forms_forloeb
-    enforced:
-      module:
+  enforced:
+    module:
       - os2forms_forloeb
 id: node.forloebsside.default
 targetEntityType: node
