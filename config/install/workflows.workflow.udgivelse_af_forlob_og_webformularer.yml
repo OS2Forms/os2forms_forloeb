@@ -7,6 +7,10 @@ dependencies:
   module:
     - content_moderation
     - workflow_participants
+    - os2forms_forloeb
+    enforced:
+      module:
+      - os2forms_forloeb
 third_party_settings:
   workflow_participants:
     editor_transitions:

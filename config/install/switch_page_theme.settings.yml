@@ -1,3 +1,9 @@
+dependencies:
+  module:
+  - os2forms_forloeb
+enforced:
+  module:
+  - os2forms_forloeb
 spt_table:
 -
   status: '1'

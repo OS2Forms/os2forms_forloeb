@@ -1,6 +1,11 @@
 langcode: da
 status: true
-dependencies: {  }
+dependencies:
+  module:
+  - os2forms_forloeb
+enforced:
+  module:
+  - os2forms_forloeb
 id: flow_designer_default_page
 label: 'Flow designer default page'
 user_roles:

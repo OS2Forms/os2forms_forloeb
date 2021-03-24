@@ -9,6 +9,10 @@ dependencies:
   - path
   - text
   - webform
+  - os2forms_forloeb
+  enforced:
+    module:
+    - os2forms_forloeb
 id: node.forloebsside.default
 targetEntityType: node
 bundle: forloebsside
