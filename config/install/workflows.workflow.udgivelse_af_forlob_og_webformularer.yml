@@ -1,21 +1,22 @@
-langcode: en
+langcode: da
 status: true
 dependencies:
   config:
-    - node.type.forloebsside
-    - node.type.webform
-  module:
-    - content_moderation
-    - workflow_participants
-    - os2forms_forloeb
+  - node.type.forloebsside
+  - node.type.webform
   enforced:
     module:
-      - os2forms_forloeb
+    - os2forms_forloeb
+  module:
+  - content_moderation
+  - workflow_participants
 third_party_settings:
   workflow_participants:
     editor_transitions:
       unpublish: unpublish
-    reviewer_transitions: {  }
+      republish: republish
+    reviewer_transitions:
+      republish: republish
 id: udgivelse_af_forlob_og_webformularer
 label: 'Udgivelse af forløb og webformularer'
 type: content_moderation
@@ -33,7 +34,7 @@ type_settings:
       weight: 1
     unpublished:
       published: false
-      default_revision: false
+      default_revision: true
       label: Unpublished
       weight: 2
   transitions:
@@ -42,23 +43,29 @@ type_settings:
       to: draft
       weight: 0
       from:
-        - draft
-        - published
+      - draft
+      - published
     publish:
       label: Publish
       to: published
       weight: 1
       from:
-        - draft
-        - published
+      - draft
+      - published
+    republish:
+      label: Republish
+      from:
+      - unpublished
+      to: published
+      weight: 3
     unpublish:
       label: Unpublish
       from:
-        - published
+      - published
       to: unpublished
       weight: 2
   entity_types:
     node:
-      - forloebsside
-      - webform
+    - forloebsside
+    - webform
   default_moderation_state: draft
