@@ -1,6 +1,9 @@
 langcode: da
 status: true
-dependencies: {  }
+dependencies:
+  enforced:
+    module:
+      - os2forms_forloeb
 id: sagsbehandler_default_page
 label: 'Flow designer default page'
 user_roles:

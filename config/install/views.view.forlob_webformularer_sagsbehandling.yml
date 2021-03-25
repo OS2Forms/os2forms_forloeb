@@ -8,6 +8,9 @@ dependencies:
   module:
   - node
   - user
+  enforced:
+    module:
+      - os2forms_forloeb
 _core:
   default_config_hash: P7F4DFe8BL31DRVqsvS-ix9KZZqvvaPjZ7zEvGo9yNM
 id: forlob_webformularer_sagsbehandling

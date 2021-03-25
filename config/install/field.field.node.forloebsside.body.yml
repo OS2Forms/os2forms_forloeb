@@ -6,6 +6,9 @@ dependencies:
   - node.type.forloebsside
   module:
   - text
+  enforced:
+    module:
+      - os2forms_forloeb
 id: node.forloebsside.body
 field_name: body
 entity_type: node
