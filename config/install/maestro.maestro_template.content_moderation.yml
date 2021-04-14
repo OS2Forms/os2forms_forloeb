@@ -110,7 +110,7 @@ tasks:
     lines: {  }
     data:
       unique_id: submission
-      webform_machine_name: test_af_hk_grundskabelon
+      webform_machine_name: hk_grundskabelon
       modal: notmodal
       skip_webform_handlers: 0
       webform_nodes_attached_to: node/10
