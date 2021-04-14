@@ -28,3 +28,84 @@ function os2forms_forloeb_install() {
         ->set('admin', 'gin')
         ->save();
 }
+
+use Drupal\maestro\Engine\MaestroEngine;
+
+/**
+ * Implements hook_maestro_interactive_handlers() for the return of an Array
+ * of function names and help text that will be displayed in the edit task
+ * form under the handler field.
+ */
+function os2forms_forloeb_maestro_interactive_handlers() {
+    return [
+        'os2forms_forloeb_workflow_maestro_reassign_form' => t('Tilføj sagsbehandler'),
+    ];
+}
+
+/**
+ * The Reassign for Approval form used in maestro workflows.
+ *
+ * @param array $form
+ *   The array that contains the form.
+ * @param int $queueID
+ *   The queueID from Maestro.
+ * @param object $obj
+ *   References the calling object.
+ */
+function os2forms_forloeb_workflow_maestro_reassign_form(&$form, $queueID = 0, $obj) {
+
+//  $form['approve_content'] = array(
+//    '#id' => 'approve_content',
+//    '#type' => 'radios',
+//    '#options' => array(
+//      0 => t("Assign for Review"),
+//      1 => t("Approve")
+//    ),
+//    '#default_value' => 0,
+//    '#title' =>  t('Review or Approve Content '),
+//    '#required' => true,
+//  );
+
+    $form['reviewer'] = array(
+        '#id' => 'select_assigned_user',
+        '#type' => 'entity_autocomplete',
+        '#target_type' => 'user',
+        '#default_value' => '',
+        '#selection_settings' => ['include_anonymous' => FALSE],
+        '#title' =>  t('Assign for Review to'),
+    );
+
+    $form['queueID'] = array(
+        '#type' => 'hidden',
+        '#title' => 'the queue ID in the event we need it in later processing',
+        '#default_value' => $queueID,
+        '#description' => ('queueID'),
+    );
+
+    //overriding the default label "complete"
+    $form['actions']['submit']['#value'] = t('Assign');
+
+    return $form;
+}
+
+
+/**
+ * This is the submit handler for the Reassign for Approval form use in maestro workflows.
+ */
+function os2forms_forloeb_workflow_maestro_reassign_form_submit(&$form, &$form_state) {
+
+    $queueID = intval($form_state->getValue('queueID'));
+    $processID = MaestroEngine::getProcessIdFromQueueId($queueID);
+
+    //Who was selected? Load their username, which is the user attribute that Maestro assigns tasks by.
+    $reviewer_uid = $form_state->getValue('reviewer');
+    $reviewer = \Drupal\user\Entity\User::load($reviewer_uid); // pass your uid
+    $reviewer_username = $reviewer->getUsername();
+
+    //add that user to our maestro process variable.
+    MaestroEngine::setProcessVariable("assigned_to", $reviewer_username, $processID);
+
+    //Provide some feedback
+    drupal_set_message("Content Reassigned");
+
+}
