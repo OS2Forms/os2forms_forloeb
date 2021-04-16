@@ -54,18 +54,6 @@ function os2forms_forloeb_maestro_interactive_handlers() {
  */
 function os2forms_forloeb_workflow_maestro_reassign_form(&$form, $queueID = 0, $obj) {
 
-//  $form['approve_content'] = array(
-//    '#id' => 'approve_content',
-//    '#type' => 'radios',
-//    '#options' => array(
-//      0 => t("Assign for Review"),
-//      1 => t("Approve")
-//    ),
-//    '#default_value' => 0,
-//    '#title' =>  t('Review or Approve Content '),
-//    '#required' => true,
-//  );
-
     $form['reviewer'] = array(
         '#id' => 'select_assigned_user',
         '#type' => 'entity_autocomplete',

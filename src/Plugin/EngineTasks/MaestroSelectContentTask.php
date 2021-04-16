@@ -84,7 +84,9 @@ class MaestroSelectContentTask extends PluginBase implements MaestroEngineTaskIn
             '#markup' => t('Select a Content Item.'),
         );
 
-        $content_type_options = array(""=>"All Content Types");
+        $content_type_options = array(
+            'all' => t('All Content Types'),
+        );
         $content_types_objs = $types = \Drupal::entityTypeManager()
             ->getStorage('node_type')
             ->loadMultiple();
