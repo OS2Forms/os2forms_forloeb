@@ -10,6 +10,7 @@ spt_table:
     pages: "/user/*\r\n<front>\r\n/sagsbehandler-overblik/*\r\n/sagsbehandler-overblik\r\n/maestro-all-flows\r\n/outstanding-tasks\r\n/taskconsole\r\n/maestro/*\r\n/maestro-all-in-production-tasks"
     theme: gin
     roles:
+      anonymous: anonymous
       authenticated: authenticated
       administrator: administrator
       flow_designer: flow_designer
@@ -17,7 +18,6 @@ spt_table:
       sagsbehandler: sagsbehandler
       medarbejder: medarbejder
       leder: leder
-      anonymous: 0
     language:
       da: da
       en: en
