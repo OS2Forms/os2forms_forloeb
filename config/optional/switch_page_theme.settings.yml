@@ -25,7 +25,7 @@ spt_table:
     remove: Remove
   0:
     status: '1'
-    pages: '/node/*'
+    pages: "/node/*\r\n*/submission/*/edit"
     theme: custom_theme
     roles:
       anonymous: anonymous
