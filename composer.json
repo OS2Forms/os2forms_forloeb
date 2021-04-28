@@ -22,7 +22,7 @@
     "drupal/ckeditor_a11ychecker": "1.0.0",
     "drupal/clientside_validation": "3.0.0-rc4",
     "drupal/coc_forms_auto_export": "1.0.0-alpha1",
-    "drupal/config_entity_revisions": "1.6.0",
+    "drupal/config_entity_revisions": "1.7.0",
     "drupal/events_logging": "1.4.0",
     "drupal/embed": "1.4.0",
     "drupal/gin": "3.0.0-alpha33",
@@ -71,9 +71,6 @@
       },
       "drupal/webform": {
         "Unlock possibility of using Entity print module export to Word": "https://www.drupal.org/files/issues/2020-02-29/3096552-6.patch"
-      },
-      "drupal/config_entity_revisions": {
-        "Error: Call to a member function id": "https://www.drupal.org/files/issues/2019-04-15/config_entity_revisions-node_attach_error-3048218-2.patch"
       }
     }
   }
