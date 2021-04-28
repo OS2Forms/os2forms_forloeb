@@ -188,42 +188,42 @@ class MaestroSelectContentTask extends PluginBase implements MaestroEngineTaskIn
      * {@inheritDoc}
      */
     public function getExecutableForm($modal, MaestroExecuteInteractive $parent) {
-        $form['new_article'] = array(
-            '#id' => 'new_article',
+        $form['forloebsside'] = array(
+            '#id' => 'forloebsside',
             '#type' => 'radios',
             '#options' => array (
-                0 => t('Choose an Existing Article'),
-                1 => t('Create a New Article'),
+                0 => t('Choose an Existing Forløbsside'),
+                1 => t('Create a New Forløbsside'),
             ),
             '#default_value' => 0,
-            '#title' =>  t('Create or Select an Article'),
+            '#title' =>  t('Create or Select a Forløbsside'),
             '#required' => true,
         );
 
-        //query for all articles.
-        $articles = array();
+        //query for all Forløbssider.
+        $forloebssider = array();
         $nids = \Drupal::entityQuery('node')
-            ->condition('type','article')
+            ->condition('type','forloebsside')
             ->execute();
-        $article_nodes =  \Drupal\node\Entity\Node::loadMultiple($nids);
-        foreach($article_nodes as $nid => $article_node) {
-            $articles[$nid] = $article_node->getTitle();
+        $forloebsside_nodes =  \Drupal\node\Entity\Node::loadMultiple($nids);
+        foreach($forloebsside_nodes as $nid => $forloebsside_node) {
+            $forloebssider[$nid] = $forloebsside_node->getTitle();
         }
 
-        $form['existing_article'] = array(
-            '#id' => 'existing_article',
+        $form['existing_forloebsside'] = array(
+            '#id' => 'existing_forloebsside',
             '#type' => 'select',
-            '#options' => $articles,
-            '#title' =>  t('Choose an Existing Article'),
+            '#options' => $forloebssider,
+            '#title' =>  t('Choose an Existing Forløbsside'),
             '#validated' => TRUE,
-            '#prefix' => '<div id="existing-article-wrapper">',
+            '#prefix' => '<div id="existing-forloebsside-wrapper">',
             '#suffix' => '</div>',
             '#states' => array(
                 'invisible' => array(
-                    ':input[name="new_article"]' => array('value' => 1),
+                    ':input[name="new_forloebsside"]' => array('value' => 1),
                 ),
                 'required' => array(
-                    ':input[name="new_article"]' => array('value' => 0),
+                    ':input[name="new_forloebsside"]' => array('value' => 0),
                 ),
             ),
         );
@@ -243,13 +243,13 @@ class MaestroSelectContentTask extends PluginBase implements MaestroEngineTaskIn
         # and the entity_form is hidden.
         $form['entity_form'] = array(
             '#type'=>'fieldset',
-            '#title'=>'Create a Article',
+            '#title'=>'Create a Forløbsside',
             '#states' => array(
                 'invisible' => array(
-                    ':input[name="new_article"]' => array('value' => 0),
+                    ':input[name="new_forloebsside"]' => array('value' => 0),
                 ),
                 'required' => array(
-                    ':input[name="new_article"]' => array('value' => 1),
+                    ':input[name="new_forloebsside"]' => array('value' => 1),
                 ),
             ),
         );
@@ -261,19 +261,19 @@ class MaestroSelectContentTask extends PluginBase implements MaestroEngineTaskIn
         $form['#parents'] = [];
 
         //load an entity and store on the form state.
-        $new_article = \Drupal::entityTypeManager()->getStorage('node')->create([
-            'type' => 'article'
+        $new_forloebsside = \Drupal::entityTypeManager()->getStorage('node')->create([
+            'type' => 'forloebsside'
         ]);
-        $form_state->set('entity', $new_article);
+        $form_state->set('entity', $new_forloebsside);
 
         //Load the form display
-        $article_form_display = \Drupal::entityTypeManager()->getStorage('entity_form_display')->load('node.article.default');
-        $form_state->set('form_display', $article_form_display);
+        $forloebsside_form_display = \Drupal::entityTypeManager()->getStorage('entity_form_display')->load('node.forloebsside.default');
+        $form_state->set('form_display', $forloebsside_form_display);
         //Loop over the form display and add fields to the maestro form
-        foreach ($article_form_display->getComponents() as $name => $component) {
+        foreach ($forloebsside_form_display->getComponents() as $name => $component) {
             //Load the component's configured widget
-            $widget = $article_form_display->getRenderer($name);
-            $items = $new_article->get($name);
+            $widget = $forloebsside_form_display->getRenderer($name);
+            $items = $new_forloebsside->get($name);
             $form['entity_form'][$name] = $widget->form($items, $form, $form_state);
             $form['entity_form'][$name]['#weight'] = $component['weight'];
             //make the title field required.
@@ -318,35 +318,35 @@ class MaestroSelectContentTask extends PluginBase implements MaestroEngineTaskIn
 
         if(strstr($triggeringElement['#id'], 'edit-submit') !== FALSE && $queueID > 0) {
             /**
-             * If existing article is chosen simply assign it to this process
+             * If existing forløbsside is chosen simply assign it to this process
              *
-             * If a new artivle is chosen create that article and assign it to this process.
+             * If a new artivle is chosen create that forløbsside and assign it to this process.
              */
-            if($form_state->getValue('new_article')) {
-                //Create the new article entity.
-                $new_article = \Drupal::entityTypeManager()->getStorage('node')->create([
-                    'type' => 'article'
+            if($form_state->getValue('new_forloebsside')) {
+                //Create the new forloebsside entity.
+                $new_forloebsside = \Drupal::entityTypeManager()->getStorage('node')->create([
+                    'type' => 'forloebsside'
                 ]);
                 //Load te form display
-                $article_form_display = \Drupal::entityTypeManager()->getStorage('entity_form_display')->load('node.article.default');
-                //extract all of the form display's fields that are in the form_state values and assign to the new article.
-                $article_form_display->extractFormValues($new_article, $form, $form_state);
-                //Save the article
-                $new_article->save();
-                //Assign this article to the maestro variable.
-                MaestroEngine::setProcessVariable("new_article", $new_article->id(), $processID);
+                $forloebsside_form_display = \Drupal::entityTypeManager()->getStorage('entity_form_display')->load('node.forloebsside.default');
+                //extract all of the form display's fields that are in the form_state values and assign to the new forloebsside.
+                $forloebsside_form_display->extractFormValues($new_forloebsside, $form, $form_state);
+                //Save the forloebsside
+                $new_forloebsside->save();
+                //Assign this forloebsside to the maestro variable.
+                MaestroEngine::setProcessVariable("new_forloebsside", $new_forloebsside->id(), $processID);
                 //Bound this entity to this maestro process
                 $templateTask = MaestroEngine::getTemplateTaskByQueueID($queueID);
-                MaestroEngine::createEntityIdentifier($processID, 'node', 'article', $templateTask['data']['unique_id'], $new_article->id());
+                MaestroEngine::createEntityIdentifier($processID, 'node', 'forloebsside', $templateTask['data']['unique_id'], $new_forloebsside->id());
                 //Complete this task.
                 MaestroEngine::completeTask($queueID, \Drupal::currentUser()->id());
             }
             else {
-                $article_nid = $form_state->getValue('existing_article');
-                MaestroEngine::setProcessVariable("new_article", $article_nid, $processID);
+                $forloebsside_nid = $form_state->getValue('existing_forloebsside');
+                MaestroEngine::setProcessVariable("new_forloebsside", $forloebsside_nid, $processID);
                 //Bound this entity to this maestro process
                 $templateTask = MaestroEngine::getTemplateTaskByQueueID($queueID);
-                MaestroEngine::createEntityIdentifier($processID, 'node', 'article', $templateTask['data']['unique_id'], $article_nid);
+                MaestroEngine::createEntityIdentifier($processID, 'node', 'forloebsside', $templateTask['data']['unique_id'], $forloebsside_nid);
 
                 //Complete this task.
                 MaestroEngine::completeTask($queueID, \Drupal::currentUser()->id());
