@@ -131,9 +131,20 @@ function end_notification_batch_function($processID, $queueID) {
     */
     $sid = MaestroEngine::getEntityIdentiferByUniqueID($processID, 'submission');
 
+    \Drupal::logger('os2forms_forloeb')->notice("Hello!");
+    \Drupal::logger('os2forms_forloeb')->notice($sid);
     if ($sid) {
         $webform_submission = \Drupal\webform\Entity\WebformSubmission::load($sid);
-        $webform = 
+        $webform =  $webform_submission->getWebform();
+        $handlers = $webform->getHandlers();
+
+        foreach ($handler as $handler) {
+            $is_email_handler = ($handler instanceof EmailWebformHandler);
+            if ($is_email_handler) {
+                $message = $handler->getMessage($webform_submission);
+                $handler->sendMessage($webform_submission, $message);
+            }
+        }
     }
 
     return TRUE;
