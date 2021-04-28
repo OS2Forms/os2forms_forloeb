@@ -3,14 +3,14 @@ status: true
 dependencies:
   enforced:
     module:
-      - os2forms_forloeb
+    - os2forms_forloeb
 id: forloebs_designer_default_page
 label: 'Forløbs designer default page'
 user_roles:
   forloeb_designer: forloeb_designer
 users: null
-weight: -1
+weight: -2
 login_redirect: /admin/structure/webform
-login_redirect_message: ''
+login_redirect_message: 'Velkommen tilbage, her kan du arbejde med webformularer.'
 logout_redirect: ''
 logout_redirect_message: ''
