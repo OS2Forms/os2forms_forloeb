@@ -1,0 +1,57 @@
+name: 'OS2forms med Forløb Module'
+description: 'Adds a Maestro workflow engine and advanced workflow functionality to OS2forms.'
+package: OS2Forms
+type: module
+core: 8.x
+core_version_requirement: ^8 || ^9
+
+dependencies:
+  - admin_toolbar_tools
+  - coc_forms_auto_export
+  - config_entity_revisions
+  - entity_print
+  - eu_cookie_compliance
+  - events_logging
+  - gin_toolbar
+  - honeypot
+  - libraries
+  - maestro
+  - mailsystem
+  - masquerade
+  - os2forms
+  - os2forms_nemid
+  - os2forms_dawa
+  - os2forms_sbsys
+  - os2web_simplesaml
+  - pathauto
+  - redirect
+  - rules
+  - rules_token
+  - rules_webform
+  - smtp
+  - system
+  - switch_page_theme
+  - token
+  - ultimate_cron
+  - user_default_page
+  - webform
+  - webform_ui
+  - webform_access
+  - webform_attachment
+  - webform_composite
+  - webform_embed
+  - webform_entity_print
+  - webform_entity_print_attachment
+  - webform_migrate
+  - webform_permissions_by_term
+  - webform_remote_handlers
+  - webform_rest
+  - webform_revisions
+  - webform_share
+  - webform_scheduled_email
+  - webform_submission_export_import
+  - webform_submission_log
+  - webform_templates
+  - workflow_participants
+'interface translation project': os2forms_forloeb
+'interface translation server pattern': modules/contrib/os2forms_forloeb/translations/os2forms_forloeb.da.po

@@ -1,0 +1,77 @@
+{
+  "name": "os2forms/os2forms_forloeb",
+  "type": "drupal-module",
+  "description": "This module adds Maestro workflow engine and functionality to produce advanced workflows",
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "license": "EUPL-1.2",
+  "repositories": {
+    "drupal": {
+      "type": "composer",
+      "url": "https://packages.drupal.org/8"
+    },
+    "assets": {
+      "type": "composer",
+      "url": "https://asset-packagist.org"
+    }
+  },
+  "require": {
+    "cweagans/composer-patches": "^1.6.5",
+    "drupal/admin_toolbar": "^2.3",
+    "drupal/chosen": "2.10.0",
+    "drupal/ckeditor_a11ychecker": "1.0.0",
+    "drupal/clientside_validation": "3.0.0-rc4",
+    "drupal/coc_forms_auto_export": "1.0.0-alpha1",
+    "drupal/config_entity_revisions": "1.7.0",
+    "drupal/events_logging": "1.4.0",
+    "drupal/embed": "1.4.0",
+    "drupal/gin": "3.0.0-alpha33",
+    "drupal/header_and_footer_scripts": "2.2.0",
+    "drupal/image_widget_crop": "2.3.0",
+    "drupal/ldap": "^3.0@beta",
+    "drupal/ldap_auth": "^1.17",
+    "drupal/libraries": "3.0.0-beta1",
+    "drupal/linkit": "^5.0",
+    "drupal/logging_alerts": "1.0.0",
+    "drupal/maestro": "3.0.1-rc2",
+    "drupal/masquerade": "2.0.0-beta4",
+    "drupal/queue_mail": "1.3.0",
+    "drupal/queue_ui": "^2.1",
+    "drupal/rules": "3.0.0-alpha6",
+    "drupal/rules_token": "1.2.0",
+    "drupal/rules_webform": "1.5.0",
+    "drupal/simple_ldap": "1.0.0-alpha3",
+    "drupal/simplesamlphp_auth": "3.2.0",
+    "drupal/switch_page_theme": "1.0",
+    "drupal/telephone_validation": "^2.2",
+    "drupal/ultimate_cron": "2.0.0-alpha5",
+    "drupal/user_default_page": "2.0.0-rc1",
+    "drupal/webform_composite": "1.0-rc2",
+    "drupal/webform_remote_handlers": "1.6.0",
+    "drupal/webform_rest": "4.0.0-beta2",
+    "drupal/webform_scheduled_tasks": "^2.0",
+    "drupal/webform_views": "5.0.0-alpha7",
+    "drupal/workflow_participants": "^2.4",
+    "vlucas/phpdotenv": "^2.4",
+    "webmozart/path-util": "2.3.0",
+    "zaporylie/composer-drupal-optimizations": "1.2.0"
+  },
+  "extra": {
+    "composer-exit-on-patch-failure": true,
+    "patchLevel": {
+      "test": "-p2"
+    },
+    "enable-patching": true,
+    "patcher": {
+      "force-reset": true
+    },
+    "patches": {
+      "drupal/entity_print": {
+        "2733781 - Add Export to Word Support": "https://www.drupal.org/files/issues/2019-11-22/2733781-47.patch"
+      },
+      "drupal/webform": {
+        "Unlock possibility of using Entity print module export to Word": "https://www.drupal.org/files/issues/2020-02-29/3096552-6.patch"
+      }
+    }
+  }
+}

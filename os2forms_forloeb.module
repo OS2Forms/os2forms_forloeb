@@ -1,0 +1,148 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the os2forms_forloeb_profile installation profile.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function os2forms_forloeb_install() {
+    $theme_list = [
+        'claro',
+        'gin',
+        'bootstrap',
+        'custom_theme'
+    ];
+
+    // Install themes
+    \Drupal::service('theme_installer')->install($theme_list);
+
+    // Get theme manager
+    $system_theme = \Drupal::configFactory()->getEditable('system.theme');
+
+    // Set default and admin themes
+    $system_theme
+        ->set('default', 'custom_theme')
+        ->set('admin', 'gin')
+        ->save();
+}
+
+use Drupal\maestro\Engine\MaestroEngine;
+
+/**
+ * Implements hook_maestro_interactive_handlers() for the return of an Array
+ * of function names and help text that will be displayed in the edit task
+ * form under the handler field.
+ */
+function os2forms_forloeb_maestro_interactive_handlers() {
+    return [
+        'os2forms_forloeb_workflow_maestro_reassign_form' => t('Tilføj sagsbehandler'),
+    ];
+}
+
+/**
+ * The Reassign for Approval form used in maestro workflows.
+ *
+ * @param array $form
+ *   The array that contains the form.
+ * @param int $queueID
+ *   The queueID from Maestro.
+ * @param object $obj
+ *   References the calling object.
+ */
+function os2forms_forloeb_workflow_maestro_reassign_form(&$form, $queueID = 0, $obj) {
+
+    $form['reviewer'] = array(
+        '#id' => 'select_assigned_user',
+        '#type' => 'entity_autocomplete',
+        '#target_type' => 'user',
+        '#default_value' => '',
+        '#selection_settings' => ['include_anonymous' => FALSE],
+        '#title' =>  t('Assign for Review to'),
+    );
+
+    $form['queueID'] = array(
+        '#type' => 'hidden',
+        '#title' => 'the queue ID in the event we need it in later processing',
+        '#default_value' => $queueID,
+        '#description' => ('queueID'),
+    );
+
+    //overriding the default label "complete"
+    $form['actions']['submit']['#value'] = t('Assign');
+
+    return $form;
+}
+
+
+/**
+ * This is the submit handler for the Reassign for Approval form use in maestro workflows.
+ */
+function os2forms_forloeb_workflow_maestro_reassign_form_submit(&$form, &$form_state) {
+
+    $queueID = intval($form_state->getValue('queueID'));
+    $processID = MaestroEngine::getProcessIdFromQueueId($queueID);
+
+    //Who was selected? Load their username, which is the user attribute that Maestro assigns tasks by.
+    $reviewer_uid = $form_state->getValue('reviewer');
+    $reviewer = \Drupal\user\Entity\User::load($reviewer_uid); // pass your uid
+    $reviewer_username = $reviewer->getUsername();
+
+    //add that user to our maestro process variable.
+    MaestroEngine::setProcessVariable("assigned_to", $reviewer_username, $processID);
+
+    //Provide some feedback
+    drupal_set_message("Content Reassigned");
+
+}
+
+/**
+ *  * Implements hook_maestro_batch_handlers().
+ *   *
+ *    * Array of function names and help text that will be displayed
+ *     * in the edit task form under the handler field.
+ *      */
+function os2forms_forloeb_maestro_batch_handlers() {
+      return [
+              'end_notification_batch_function' => t('Batch function to send out flow completion notification to initiator.'),
+      ];
+}
+
+/**
+    *  * @param int $processID
+    *   *   The Maestro process ID.
+    *    * @param int $queueID
+    *     *   The Maestro queue ID.
+    *      */
+function end_notification_batch_function($processID, $queueID) {
+
+   /*
+    * Pseudocode for handling this:
+    *
+    *     * Get entity item for webform which spawned this process
+    *      (ID "submission").
+    *       foreach handler in webform: {
+    *           if (email_handler) {
+    *               email_handler.submit();
+    *           }
+    *       }
+    */
+    $sid = MaestroEngine::getEntityIdentiferByUniqueID($processID, 'submission');
+
+    if ($sid) {
+        $webform_submission = \Drupal\webform\Entity\WebformSubmission::load($sid);
+        $webform =  $webform_submission->getWebform();
+        $handlers = $webform->getHandlers();
+
+        foreach ($handlers as $handler) {
+            if (method_exists($handler, 'getMessage')) {
+                $message = $handler->getMessage($webform_submission);
+                $handler->sendMessage($webform_submission, $message);
+            }
+        }
+    }
+
+    return TRUE;
+}
