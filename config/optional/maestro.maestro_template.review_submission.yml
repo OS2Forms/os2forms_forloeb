@@ -1,5 +1,10 @@
 status: true
-dependencies: {  }
+dependencies:
+  config:
+  - maestro
+  enforced:
+    module:
+    - os2forms_forloeb
 id: review_submission
 label: 'Review submission'
 app_group: 0
