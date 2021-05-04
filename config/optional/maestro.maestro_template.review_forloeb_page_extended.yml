@@ -1,7 +1,6 @@
 langcode: da
 status: true
 dependencies:
-
   enforced:
     module:
     - os2forms_forloeb
