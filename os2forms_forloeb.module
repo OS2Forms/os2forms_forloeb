@@ -151,9 +151,19 @@ function end_notification_batch_function($processID, $queueID) {
 function fetch_from_http_endpoint_batch_function($processID, $queueID) {
 
     // TODO: get URL from process variable.
-    $url =  'https://jsonplaceholder.typicode.com/posts/1/';
+    $url = MaestroEngine::getProcessVariable('url', $processID);
 
     $response = \Drupal::httpClient()->get($uri);
+    $status_code = $response->getStatusCode();
+    if ($status_code == 200) {
+        $body = $response->getBody()
+    }
+    else {
+        $body = '';
+    }
+
+    MaestroEngine::setProcessVariable('url_status', $status_code);
+    MaestroEngine::setProcessVariable('url_body', $body);
 
     return TRUE;
 
