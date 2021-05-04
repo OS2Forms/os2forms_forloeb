@@ -1,5 +1,10 @@
 status: true
-dependencies: {  }
+dependencies:
+  config:
+  - maestro
+  enforced:
+    module:
+    - os2forms_forloeb
 id: content_moderation
 label: 'Review webformular indsendelse'
 app_group: 0
