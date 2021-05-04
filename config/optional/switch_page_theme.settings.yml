@@ -1,9 +1,3 @@
-dependencies:
-  module:
-  - switch_page_theme
-  enforced:
-    module:
-    - os2forms_forloeb
 spt_table:
   1:
     status: '1'
