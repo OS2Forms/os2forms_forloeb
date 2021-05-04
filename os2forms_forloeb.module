@@ -107,6 +107,7 @@ function os2forms_forloeb_workflow_maestro_reassign_form_submit(&$form, &$form_s
 function os2forms_forloeb_maestro_batch_handlers() {
       return [
               'end_notification_batch_function' => t('Batch function to send out flow completion notification to initiator.'),
+              'fetch_from_http_endpoint_batch_function' => t('Batch function to fetch data from an external HTTP endpoint.'),
       ];
 }
 
@@ -145,4 +146,15 @@ function end_notification_batch_function($processID, $queueID) {
     }
 
     return TRUE;
+}
+
+function fetch_from_http_endpoint_batch_function($processID, $queueID) {
+
+    // TODO: get URL from process variable.
+    $url =  'https://jsonplaceholder.typicode.com/posts/1/';
+
+    $response = \Drupal::httpClient()->get($uri);
+
+    return TRUE;
+
 }
