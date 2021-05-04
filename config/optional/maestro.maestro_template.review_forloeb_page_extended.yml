@@ -1,8 +1,7 @@
 langcode: da
 status: true
 dependencies:
-  config:
-  - maestro
+
   enforced:
     module:
     - os2forms_forloeb
