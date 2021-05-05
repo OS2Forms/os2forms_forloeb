@@ -94,7 +94,7 @@ function os2forms_forloeb_workflow_maestro_reassign_form_submit(&$form, &$form_s
     MaestroEngine::setProcessVariable("assigned_to", $reviewer_username, $processID);
 
     //Provide some feedback
-    drupal_set_message("Content Reassigned");
+    \Drupal::messenger()->addStatus("Content Reassigned");
 
 }
 
