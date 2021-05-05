@@ -1,5 +1,9 @@
+langcode: da
 status: true
-dependencies: {  }
+dependencies:
+  enforced:
+    module:
+    - os2forms_forloeb
 id: content_moderation
 label: 'Review webformular indsendelse'
 app_group: 0
