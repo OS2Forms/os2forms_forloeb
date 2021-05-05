@@ -22,7 +22,7 @@ install:
 - export REPOSITORIES='"repositories":\ \['
 - export REPOSITORIES_REPLACE='"repositories":\[\{"type":"path","url":"..\/os2forms_forloeb","options":\{"symlink":false\}\},'
 - export REQUIRE='"require":\ {'
-- export REQUIRE_REPLACE='"require":{"os2forms_forloeb\/os2forms_forloeb":"\*",'
+- export REQUIRE_REPLACE='"require":{"os2forms\/os2forms_forloeb":"\*",'
 - sed -i "s/$REPOSITORIES/$REPOSITORIES_REPLACE/g" composer.json
 - sed -i "s/$REQUIRE/$REQUIRE_REPLACE/g" composer.json
 - composer update os2forms/os2forms_forloeb
