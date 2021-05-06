@@ -39,6 +39,7 @@ use Drupal\maestro\Engine\MaestroEngine;
 function os2forms_forloeb_maestro_interactive_handlers() {
     return [
         'os2forms_forloeb_workflow_maestro_reassign_form' => t('Tilføj sagsbehandler'),
+        'os2forms_forloeb_show_url_results' => t('Test URL fetch - requires process variables from that handler'),
     ];
 }
 
@@ -76,6 +77,46 @@ function os2forms_forloeb_workflow_maestro_reassign_form(&$form, $queueID = 0, $
     return $form;
 }
 
+/**
+ * This is a simple handler to display the result
+ * of calling the fetch_from_http_endpoint_batch_function handler
+ * below.
+ *
+ * Requires two process variables, 'url_status' and 'url_body'.
+ *
+ * @param array $form
+ *   The form you will create with this function.
+ * @param int $queueID
+ *   The ID of the queue task ID you are executing.
+ */
+function os2forms_forloeb_show_url_results(array &$form, $queueID = 0, $obj = NULL) {
+  $form['queueID'] = [
+    '#type' => 'hidden',
+    '#title' => 'Hidden Queue ID',
+    '#default_value' => $queueID,
+    '#description' => ('queueID'),
+  ];
+
+  $processID = MaestroEngine::getProcessIdFromQueueId($queueID);
+  $url_status = MaestroEngine::getProcessVariable('url_status', $processID);
+  $url_body = MaestroEngine::getProcessVariable('url_body', $processID);
+  if ($url_status === FALSE) {
+    $message = 'No process variable called message defined for this workflow template';
+  }
+
+  $form['url_status'] = [
+    '#plain_text' => $url_status,
+    '#suffix' => '<br>',
+  ];
+
+  $form['url_body'] = [
+    '#plain_text' => $url_body,
+    '#suffix' => '<br>',
+  ];
+
+  return $form;
+}
+
 
 /**
  * This is the submit handler for the Reassign for Approval form use in maestro workflows.
@@ -106,7 +147,8 @@ function os2forms_forloeb_workflow_maestro_reassign_form_submit(&$form, &$form_s
  *      */
 function os2forms_forloeb_maestro_batch_handlers() {
       return [
-              'end_notification_batch_function' => t('Batch function to send out flow completion notification to initiator.'),
+              'os2forms_forloeb_end_notification_batch_function' => t('Batch function to send out flow completion notification to initiator.'),
+              'os2forms_forloeb_fetch_from_http_endpoint_batch_function' => t('Batch function to fetch data from an external HTTP endpoint. Returns data in two process variables, url_status and url_body.'),
       ];
 }
 
@@ -116,7 +158,7 @@ function os2forms_forloeb_maestro_batch_handlers() {
     *    * @param int $queueID
     *     *   The Maestro queue ID.
     *      */
-function end_notification_batch_function($processID, $queueID) {
+function os2forms_forloeb_end_notification_batch_function($processID, $queueID) {
 
    /*
     * Pseudocode for handling this:
@@ -145,4 +187,25 @@ function end_notification_batch_function($processID, $queueID) {
     }
 
     return TRUE;
+}
+
+function os2forms_forloeb_fetch_from_http_endpoint_batch_function($processID, $queueID) {
+
+    // TODO: get URL from process variable.
+    $url = MaestroEngine::getProcessVariable('url', $processID);
+
+    $response = \Drupal::httpClient()->get($url);
+    $status_code = $response->getStatusCode();
+    if ($status_code == 200) {
+        $body = $response->getBody();
+    }
+    else {
+        $body = '';
+    }
+
+    MaestroEngine::setProcessVariable('url_status', $status_code, $processID);
+    MaestroEngine::setProcessVariable('url_body', $body, $processID);
+
+    return TRUE;
+
 }
