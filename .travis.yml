@@ -19,13 +19,8 @@ install:
 - cd ../ && composer create-project drupal-composer/drupal-project:8.x-dev drupal --no-interaction
 - cd drupal
 - DRUPAL_ROOT=$(pwd)/web
-- export REPOSITORIES='"repositories":\ \['
-- export REPOSITORIES_REPLACE='"repositories":\[\{"type":"path","url":"..\/os2forms_forloeb","options":\{"symlink":false\}\},'
-- export REQUIRE='"require":\ {'
-- export REQUIRE_REPLACE='"require":{"os2forms\/os2forms_forloeb":"\*",'
-- sed -i "s/$REPOSITORIES/$REPOSITORIES_REPLACE/g" composer.json
-- sed -i "s/$REQUIRE/$REQUIRE_REPLACE/g" composer.json
-- composer update os2forms/os2forms_forloeb
+- composer config repositories.os2forms_forloeb '{"type":"path","url":"../os2forms_forloeb","symlink":"false"}'
+- composer require os2forms/os2forms_forloeb
 - PROJECT_PATH=$DRUPAL_ROOT/modules/contrib/os2forms_forloeb
 - cd $DRUPAL_ROOT/core
 - yarn install
