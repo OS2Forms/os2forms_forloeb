@@ -1,0 +1,138 @@
+langcode: en
+status: true
+dependencies: {  }
+id: test_of_fetch_from_http_endpoint_task_type
+label: 'Test of fetch from http endpoint task type'
+app_group: 0
+canvas_height: 900
+canvas_width: 800
+default_workflow_timeline_stage_count: 0
+show_details: false
+validated: true
+views_attached:
+  maestro_entity_identifiers:
+    view_machine_name: maestro_entity_identifiers
+    view_weight: -10
+    view_display: 'taskconsole_display;Task Console Display'
+  maestro_completed_tasks:
+    view_machine_name: maestro_completed_tasks
+    view_weight: -9
+    view_display: default;Master
+variables:
+  url:
+    variable_id: url
+    variable_value: 'http://ip.jsontest.com/'
+  initiator:
+    variable_id: initiator
+    variable_value: '0'
+  workflow_timeline_stage_count:
+    variable_id: workflow_timeline_stage_count
+    variable_value: ''
+  workflow_current_stage:
+    variable_id: workflow_current_stage
+    variable_value: ''
+  workflow_current_stage_message:
+    variable_id: workflow_current_stage_message
+    variable_value: ''
+  url_status:
+    variable_id: url_status
+    variable_value: ''
+  url_body:
+    variable_id: url_body
+    variable_value: ''
+initiator: null
+workflow_timeline_stage_count: null
+workflow_current_stage: null
+workflow_current_stage_message: null
+tasks:
+  start:
+    id: start
+    tasktype: MaestroStart
+    label: Start
+    nextstep: fetch_url
+    nextfalsestep: ''
+    top: '50'
+    left: '40'
+    assignby: fixed
+    assignto: engine
+  fetch_url:
+    id: fetch_url
+    label: 'Fetch url'
+    tasktype: MaestroBatchFunction
+    nextstep: show_result
+    nextfalsestep: ''
+    top: '50'
+    left: '200'
+    assignby: fixed
+    assignto: ''
+    raphael: ''
+    to: ''
+    pointedfrom: ''
+    falsebranch: ''
+    lines: {  }
+    handler: os2forms_forloeb_fetch_from_http_endpoint_batch_function
+    assigned: ''
+    runonce: false
+    showindetail: true
+    participate_in_workflow_status_stage: false
+    workflow_status_stage_number: 0
+    workflow_status_stage_message: ''
+    notifications:
+      notification_assignment_subject: null
+      notification_assignment: null
+      notification_reminder_subject: null
+      notification_reminder: null
+      notification_escalation_subject: null
+      notification_escalation: null
+      reminder_after: null
+      escalation_after: null
+  show_result:
+    id: show_result
+    label: 'Show result'
+    tasktype: MaestroInteractive
+    nextstep: end
+    nextfalsestep: ''
+    top: '50'
+    left: '360'
+    assignby: fixed
+    assignto: ''
+    raphael: ''
+    to: ''
+    pointedfrom: ''
+    falsebranch: ''
+    lines: {  }
+    handler: os2forms_forloeb_show_url_results
+    data:
+      modal: modal
+      redirect_to: taskconsole
+    assigned: 'user:fixed:admin'
+    runonce: false
+    showindetail: true
+    participate_in_workflow_status_stage: false
+    workflow_status_stage_number: 0
+    workflow_status_stage_message: ''
+    notifications:
+      notification_assignments: 'user:fixed:admin:assignment'
+      notification_assignment_subject: ''
+      notification_assignment: ''
+      notification_reminder_subject: ''
+      notification_reminder: ''
+      notification_escalation_subject: ''
+      notification_escalation: ''
+      reminder_after: 0
+      escalation_after: 0
+  end:
+    id: end
+    label: End
+    tasktype: MaestroEnd
+    nextstep: ''
+    nextfalsestep: ''
+    top: '50'
+    left: '530'
+    assignby: fixed
+    assignto: ''
+    raphael: ''
+    to: ''
+    pointedfrom: ''
+    falsebranch: ''
+    lines: {  }
