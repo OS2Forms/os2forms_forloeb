@@ -1,0 +1,7 @@
+langcode: en
+status: true
+dependencies: {  }
+name: Enhedstype
+vid: enhedstype
+description: 'Enhedstyper fra MO'
+weight: 0

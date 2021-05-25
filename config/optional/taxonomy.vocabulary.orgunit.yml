@@ -1,0 +1,7 @@
+langcode: da
+status: true
+dependencies: {  }
+name: OrgUnit
+vid: orgunit
+description: 'Org Units from MO'
+weight: 0
