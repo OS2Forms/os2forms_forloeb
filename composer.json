@@ -52,6 +52,7 @@
     "drupal/webform_scheduled_tasks": "^2.0",
     "drupal/webform_views": "5.0.0-alpha7",
     "drupal/workflow_participants": "^2.4",
+    "drupal/feeds_ex": "^1.0@alpha",
     "vlucas/phpdotenv": "^4.0",
     "webmozart/path-util": "2.3.0",
     "zaporylie/composer-drupal-optimizations": "1.2.0"
