@@ -1,0 +1,8 @@
+uuid: eb69a70c-104a-4585-88af-317e2b726c26
+langcode: en
+status: true
+dependencies: {  }
+name: 'Consultant Types'
+vid: consultant_types
+description: ''
+weight: 0
