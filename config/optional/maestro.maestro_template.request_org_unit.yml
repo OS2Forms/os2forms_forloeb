@@ -2,8 +2,8 @@ uuid: 00c6ff41-7aef-4276-bfda-cf55285ad170
 langcode: en
 status: true
 dependencies: {  }
-id: create_external
-label: 'GIR Create External'
+id: request_org_unit
+label: 'GIR Request New Org Unit'
 app_group: 0
 canvas_height: 900
 canvas_width: 800
