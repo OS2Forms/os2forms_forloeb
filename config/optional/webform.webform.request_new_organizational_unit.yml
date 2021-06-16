@@ -5,7 +5,7 @@ dependencies:
     - webform_revisions
 third_party_settings:
   webform_revisions:
-    contentEntity_id: '3'
+    contentEntity_id: '9'
 open: null
 close: null
 weight: 0
@@ -16,7 +16,7 @@ id: request_new_organizational_unit
 title: 'Request New Organizational Unit'
 description: 'Send a request for creating a new organizational unit and submit it for approval.'
 category: GIR
-elements: "organizational_data:\n  '#type': label\n  '#title': 'Organizational data'\nname:\n  '#type': textfield\n  '#title': Name\n  '#required': true\ndisplay_in_gui:\n  '#type': checkbox\n  '#title': 'Display in GUI'\nparent_unit:\n  '#type': webform_term_select\n  '#title': 'Parent Unit'\n  '#vocabulary': consultancies\n  '#breadcrumb_delimiter': ''\nlocation:\n  '#type': webform_term_select\n  '#title': Location\n  '#vocabulary': consultancies\n  '#breadcrumb_delimiter': ''\nstart_date:\n  '#type': date\n  '#title': 'Start date'\n  '#date_date_format': ''\nend_date:\n  '#type': date\n  '#title': 'End date'\n  '#date_date_format': ''\napproval_information:\n  '#type': label\n  '#title': 'Approval information'\ntime_limit:\n  '#type': date\n  '#title': 'Time Limit'\n  '#date_date_format': ''\njustification:\n  '#type': textfield\n  '#title': Justification\napprover:\n  '#type': webform_entity_select\n  '#title': Approver\n  '#target_type': user\n  '#selection_handler': 'default:user'\n  '#selection_settings':\n    include_anonymous: false\n    filter:\n      type: _none\nowner:\n  '#type': webform_entity_select\n  '#title': Owner\n  '#target_type': user\n  '#selection_handler': 'default:user'\n  '#selection_settings':\n    include_anonymous: true\n    filter:\n      type: _none"
+elements: "organizational_data:\n  '#type': fieldset\n  '#title': 'Organizational Data'\n  name:\n    '#type': textfield\n    '#title': Name\n    '#required': true\n  display_in_gui:\n    '#type': checkbox\n    '#title': 'Display in GUI'\n  parent_unit:\n    '#type': webform_term_select\n    '#title': 'Parent Unit'\n    '#vocabulary': consultancies\n    '#breadcrumb_delimiter': ''\n  location:\n    '#type': webform_term_select\n    '#title': Location\n    '#vocabulary': consultancies\n    '#breadcrumb_delimiter': ''\n  start_date:\n    '#type': date\n    '#title': 'Start date'\n    '#date_date_format': ''\n  end_date:\n    '#type': date\n    '#title': 'End date'\n    '#date_date_format': ''\napproval_information:\n  '#type': fieldset\n  '#title': 'Approval Information'\ntime_limit:\n  '#type': date\n  '#title': 'Time Limit'\n  '#date_date_format': ''\njustification:\n  '#type': textfield\n  '#title': Justification\napprover:\n  '#type': webform_entity_select\n  '#title': Approver\n  '#target_type': user\n  '#selection_handler': 'default:user'\n  '#selection_settings':\n    include_anonymous: false\n    filter:\n      type: _none\nowner:\n  '#type': webform_entity_select\n  '#title': Owner\n  '#target_type': user\n  '#selection_handler': 'default:user'\n  '#selection_settings':\n    include_anonymous: true\n    filter:\n      type: _none"
 css: ''
 javascript: ''
 settings:

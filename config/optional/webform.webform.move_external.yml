@@ -2,21 +2,42 @@ langcode: en
 status: open
 dependencies:
   module:
+    - maestro_webform
+    - os2forms
+    - webform_entity_print
     - webform_revisions
 third_party_settings:
   webform_revisions:
-    contentEntity_id: '7'
+    contentEntity_id: '3'
+  os2forms:
+    os2forms_nemid:
+      webform_type: ''
+      nemlogin_auto_redirect: 0
+  webform_entity_print:
+    template:
+      header: ''
+      footer: ''
+      css: ''
+    export_types:
+      pdf:
+        enabled: true
+        link_text: ''
+        link_attributes: {  }
+      word_docx:
+        enabled: false
+        link_text: ''
+        link_attributes: {  }
 open: null
 close: null
 weight: 0
 uid: 1
 template: false
 archive: false
-id: disable_organizational_unit
-title: 'Disable Organizational Unit'
-description: 'Send a request for disabling an organizational unit and submit it for approval.'
+id: move_external
+title: 'Move External'
+description: 'Move an external consultant to another organizational unit.'
 category: GIR
-elements: "search:\n  '#type': fieldset\n  '#title': Search\n  search_for_organizational_unit:\n    '#type': search\n    '#title': 'Search for Organizational Unit'\norganizational_data:\n  '#type': fieldset\n  '#title': 'Organizational Data'\n  name:\n    '#type': textfield\n    '#title': Name\n    '#disabled': true\n    '#readonly': true\n    '#required': true\n  parent_unit:\n    '#type': webform_term_select\n    '#title': 'Parent Unit'\n    '#disabled': true\n    '#prepopulate': true\n    '#vocabulary': consultancies\n    '#breadcrumb_delimiter': ''\n  location:\n    '#type': webform_term_select\n    '#title': Location\n    '#disabled': true\n    '#prepopulate': true\n    '#vocabulary': consultancies\n    '#breadcrumb_delimiter': ''\nend_date:\n  '#type': date\n  '#title': 'End date'\n  '#date_date_format': ''\napproval_information:\n  '#type': fieldset\n  '#title': 'Approval Information'\n  time_limit:\n    '#type': date\n    '#title': 'Time Limit'\n    '#date_date_format': ''\n  justification:\n    '#type': textfield\n    '#title': Justification\n  approver:\n    '#type': webform_entity_select\n    '#title': Approver\n    '#target_type': user\n    '#selection_handler': 'default:user'\n    '#selection_settings':\n      include_anonymous: false\n      filter:\n        type: _none"
+elements: "search:\n  '#type': fieldset\n  '#title': Search\n  search_for_external:\n    '#type': search\n    '#title': 'Search for External'\npersonal_data:\n  '#type': fieldset\n  '#title': 'Personal Data'\n  name:\n    '#type': webform_name\n    '#title': Name\n    '#disabled': true\n    '#prepopulate': true\n    '#title__access': false\n    '#first__required': true\n    '#middle__access': false\n    '#last__required': true\n    '#suffix__access': false\n    '#degree__access': false\n    '#flexbox': '1'\n  consultancy:\n    '#type': webform_term_select\n    '#title': Consultancy\n    '#disabled': true\n    '#prepopulate': true\n    '#vocabulary': consultancies\n    '#breadcrumb_delimiter': ''\n  telephone_number:\n    '#type': tel\n    '#title': 'Telephone Number'\n    '#disabled': true\n    '#prepopulate': true\norg_unit:\n  '#type': webform_term_select\n  '#title': 'Org Unit'\n  '#required': true\n  '#vocabulary': orgunit\n  '#breadcrumb_delimiter': ''\napproval_information:\n  '#type': fieldset\n  '#title': 'Approval Information'\n  time_limit:\n    '#type': date\n    '#title': 'Time Limit'\n    '#date_date_format': ''\n  justification:\n    '#type': textfield\n    '#title': Justification\n  approver:\n    '#type': webform_entity_select\n    '#title': Approver\n    '#target_type': user\n    '#selection_handler': 'default:user'\n    '#selection_settings':\n      include_anonymous: true\n      filter:\n        type: _none"
 css: ''
 javascript: ''
 settings:
@@ -195,5 +216,17 @@ access:
     roles: {  }
     users: {  }
     permissions: {  }
-handlers: {  }
+handlers:
+  spawn_maestro_workflow:
+    id: maestro
+    label: 'Spawn Maestro Workflow'
+    notes: ''
+    handler_id: spawn_maestro_workflow
+    status: true
+    conditions: {  }
+    weight: 0
+    settings:
+      maestro_template: create_external
+      maestro_message_success: ''
+      maestro_message_failure: ''
 variants: {  }
