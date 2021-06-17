@@ -149,6 +149,7 @@ function os2forms_forloeb_maestro_batch_handlers() {
       return [
               'os2forms_forloeb_end_notification_batch_function' => t('Batch function to send out flow completion notification to initiator.'),
               'os2forms_forloeb_fetch_from_http_endpoint_batch_function' => t('Batch function to fetch data from an external HTTP endpoint. Returns data in two process variables, url_status and url_body.'),
+              'os2forms_forloeb_create_org_unit' => t('Batch function to create a new org unit in GIR.'),
       ];
 }
 
@@ -190,6 +191,28 @@ function os2forms_forloeb_end_notification_batch_function($processID, $queueID) 
 }
 
 function os2forms_forloeb_fetch_from_http_endpoint_batch_function($processID, $queueID) {
+
+    // TODO: get URL from process variable.
+    $url = MaestroEngine::getProcessVariable('url', $processID);
+
+    $response = \Drupal::httpClient()->get($url);
+    $status_code = $response->getStatusCode();
+    if ($status_code == 200) {
+        $body = $response->getBody();
+    }
+    else {
+        $body = '';
+    }
+
+    MaestroEngine::setProcessVariable('url_status', $status_code, $processID);
+    MaestroEngine::setProcessVariable('url_body', $body, $processID);
+
+    return TRUE;
+
+}
+
+
+function os2forms_forloeb_create_org_unit($processID, $queueID) {
 
     // TODO: get URL from process variable.
     $url = MaestroEngine::getProcessVariable('url', $processID);
