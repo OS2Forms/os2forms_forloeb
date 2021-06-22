@@ -215,9 +215,48 @@ function os2forms_forloeb_fetch_from_http_endpoint_batch_function($processID, $q
 function os2forms_forloeb_create_org_unit($processID, $queueID) {
 
     // TODO: get URL from process variable.
-    $url = MaestroEngine::getProcessVariable('url', $processID);
+    $url = MaestroEngine::getProcessVariable('gir_url', $processID);
 
-    $response = \Drupal::httpClient()->get($url);
+    $create_url = $url + '/service/ou/create';
+
+    // Get ID for webform which spawned this process.
+    $sid = MaestroEngine::getEntityIdentiferByUniqueID($processID, 'submission');
+    if ($sid) {
+
+        $webform_submission = \Drupal\webform\Entity\WebformSubmission::load($sid);
+        // cf.
+        // https://www.drupal.org/project/webform/issues/2911356#comment-12271553
+        $values = $webform_submission->getData();
+
+        // Org data
+        $name = $values['name'];
+        $display_in_gui = $values['display_in_gui'];
+        // TODO: Extract MO UUID for parent unit.
+        $parent_unit = $values['parent_unit'];
+        // TODO: Extract MO UUID for location.
+        $location = $values['location'];
+        $start_date = $values['start_date'];
+        $end_date = $values['end_date'];
+
+        // Approval information
+        $time_limit = $values['time_limit'];
+        $justification = $values['justification'];
+        // Extract MO UUIDs for these entities.
+        $approver = $values['approver'];
+        $owner = $values['owner'];
+
+    }
+    else {
+        return FALSE;
+    }
+    $gir_json = new \stdClass();
+    $gir_json->name = $name;
+    $gir_json->validity = new \stdClass();
+    $gir_json->validity->from = $start_date;
+    $gir_json->validity->to = $end_date;
+
+    $post_data = json_encode($gir_json);
+    $response = \Drupal::httpClient()->post($create_url, $post_data);
     $status_code = $response->getStatusCode();
     if ($status_code == 200) {
         $body = $response->getBody();
