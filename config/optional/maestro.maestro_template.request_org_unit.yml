@@ -33,18 +33,12 @@ variables:
   workflow_current_stage_message:
     variable_id: workflow_current_stage_message
     variable_value: ''
-  is_ready_for_review:
-    variable_id: is_ready_for_review
-    variable_value: '0'
   approver:
     variable_id: approver
     variable_value: ''
-  is_approved:
-    variable_id: is_approved
-    variable_value: '0'
-  url:
-    variable_id: url
-    variable_value: 'http://192.168.122.138:5000/service/o/'
+  gir_url:
+    variable_id: gir_url
+    variable_value: 'http://localhost:5001/service/o/'
   url_status:
     variable_id: url_status
     variable_value: ''
@@ -249,7 +243,7 @@ tasks:
     pointedfrom: ''
     falsebranch: ''
     lines: {  }
-    handler: os2forms_forloeb_fetch_from_http_endpoint_batch_function
+    handler: os2forms_forloeb_gir_create_org_unit
     assigned: ''
     runonce: false
     showindetail: true
