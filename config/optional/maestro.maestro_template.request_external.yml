@@ -41,8 +41,8 @@ variables:
     variable_id: is_approved
     variable_value: '0'
   url:
-    variable_id: url
-    variable_value: 'http://192.168.122.138:5000/service/o/'
+    variable_id: gir_url
+    variable_value: 'http://172.16.110.132:5001'
   url_status:
     variable_id: url_status
     variable_value: ''
@@ -121,8 +121,8 @@ tasks:
     tasktype: MaestroWebform
     nextstep: if_approved
     nextfalsestep: ''
-    top: '470'
-    left: '510'
+    top: '465'
+    left: '505'
     assignby: fixed
     assignto: ''
     raphael: ''
@@ -238,8 +238,8 @@ tasks:
     tasktype: MaestroBatchFunction
     nextstep: gir_creation_result
     nextfalsestep: ''
-    top: '625'
-    left: '275'
+    top: '612'
+    left: '262'
     assignby: fixed
     assignto: ''
     raphael: ''
@@ -247,7 +247,7 @@ tasks:
     pointedfrom: ''
     falsebranch: ''
     lines: {  }
-    handler: os2forms_forloeb_fetch_from_http_endpoint_batch_function
+    handler: os2forms_forloeb_gir_create_external
     assigned: ''
     runonce: false
     showindetail: true
@@ -269,8 +269,8 @@ tasks:
     tasktype: MaestroSetProcessVariable
     nextstep: request_approval
     nextfalsestep: ''
-    top: '335'
-    left: '515'
+    top: '330'
+    left: '510'
     assignby: fixed
     assignto: ''
     raphael: ''

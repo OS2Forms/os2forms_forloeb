@@ -150,6 +150,7 @@ function os2forms_forloeb_maestro_batch_handlers() {
               'os2forms_forloeb_end_notification_batch_function' => t('Batch function to send out flow completion notification to initiator.'),
               'os2forms_forloeb_fetch_from_http_endpoint_batch_function' => t('Batch function to fetch data from an external HTTP endpoint. Returns data in two process variables, url_status and url_body.'),
               'os2forms_forloeb_gir_create_org_unit' => t('Batch function to create a new org unit in GIR.'),
+              'os2forms_forloeb_gir_create_external' => t('Batch function to create a new external employee in GIR.'),
       ];
 }
 
@@ -214,10 +215,10 @@ function os2forms_forloeb_fetch_from_http_endpoint_batch_function($processID, $q
 
 function os2forms_forloeb_gir_create_org_unit($processID, $queueID) {
 
-    // TODO: get URL from process variable.
+    // Get GIR URL from process variable.
     $url = MaestroEngine::getProcessVariable('gir_url', $processID);
 
-    $create_url = $url + '/service/ou/create';
+    $create_url = $url . '/service/ou/create';
 
     // Get ID for webform which spawned this process.
     $sid = MaestroEngine::getEntityIdentiferByUniqueID($processID, 'submission');
@@ -229,7 +230,7 @@ function os2forms_forloeb_gir_create_org_unit($processID, $queueID) {
         $values = $webform_submission->getData();
 
         // Org data
-        $name = $values['name'];
+	$name = $values['name'];
         $display_in_gui = $values['display_in_gui'];
         // TODO: Extract MO UUID for parent unit.
         $parent_unit = $values['parent_unit'];
@@ -251,16 +252,88 @@ function os2forms_forloeb_gir_create_org_unit($processID, $queueID) {
     }
     $gir_json = new \stdClass();
     $gir_json->name = $name;
+
     $gir_json->validity = new \stdClass();
     $gir_json->validity->from = $start_date;
     $gir_json->validity->to = $end_date;
 
+    // TODO: Get Parent Unit UUID from imported data.
+    #$gir_json->parent = new \stdClass();
+    #$gir_json->parent->uuid = '7a8e45f7-4de0-44c8-990f-43c0565ee505';
+
+    // TODO: Get Org Unit Type from imported data.
+    $gir_json->org_unit_type = new \stdClass();
+    $gir_json->org_unit_type->uuid = "b244f1f1-8cb5-4f90-ba7c-d451c7244e0b";
+
     $post_data = json_encode($gir_json);
-    $response = \Drupal::httpClient()->post(
-        $create_url, array( 'content-type' => 'application/json'), array($post_data)
+    // \Drupal::logger('os2forms_forloeb')->notice('Org Unit JSON sent: ' . '<' . $post_data . '>'); 
+    $response = \Drupal::httpClient()->request(
+	'POST', $create_url, [ 'body' => $post_data ]
     );
     $status_code = $response->getStatusCode();
-    if ($status_code == 200) {
+    if ($status_code == 200 or $status_code == 201) {
+        $body = $response->getBody();
+    }
+    else {
+        $body = '';
+    }
+
+    MaestroEngine::setProcessVariable('url_status', $status_code, $processID);
+    MaestroEngine::setProcessVariable('url_body', $body, $processID);
+
+    return TRUE;
+
+}
+
+
+function os2forms_forloeb_gir_create_external($processID, $queueID) {
+
+    // Get GIR URL from process variable.
+    $url = MaestroEngine::getProcessVariable('gir_url', $processID);
+
+    $create_url = $url . '/service/e/create';
+
+    // Get ID for webform which spawned this process.
+    $sid = MaestroEngine::getEntityIdentiferByUniqueID($processID, 'submission');
+    if ($sid) {
+
+        $webform_submission = \Drupal\webform\Entity\WebformSubmission::load($sid);
+        // cf.
+        // https://www.drupal.org/project/webform/issues/2911356#comment-12271553
+        $values = $webform_submission->getData();
+
+        // Employee Data
+	$name = $values['name']['first'] . ' ' . $values['name']['last'];
+        // TODO: Extract MO UUID for parent unit.
+        $start_date = $values['start_date'];
+        $end_date = $values['end_date'];
+
+        // Approval information
+        $time_limit = $values['time_limit'];
+        $justification = $values['justification'];
+        // Extract MO UUIDs for these entities.
+        $approver = $values['approver'];
+        // $owner = $values['owner'];
+
+    }
+    else {
+        return FALSE;
+    }
+    $gir_json = new \stdClass();
+    $gir_json->name = $name;
+
+    $gir_json->validity = new \stdClass();
+    $gir_json->validity->from = $start_date;
+    if ($end_date)
+        $gir_json->validity->to = $end_date;
+
+    $post_data = json_encode($gir_json);
+    \Drupal::logger('os2forms_forloeb')->notice('Employee JSON sent: ' . '<' . $post_data . '>'); 
+    $response = \Drupal::httpClient()->request(
+	'POST', $create_url, [ 'body' => $post_data ]
+    );
+    $status_code = $response->getStatusCode();
+    if ($status_code == 200 or $status_code == 201) {
         $body = $response->getBody();
     }
     else {

@@ -6,7 +6,7 @@ dependencies:
     - webform_revisions
 third_party_settings:
   webform_revisions:
-    contentEntity_id: '1'
+    contentEntity_id: null
 open: null
 close: null
 weight: 0
@@ -197,16 +197,16 @@ access:
     users: {  }
     permissions: {  }
 handlers:
-  spawn_maestro_workflow:
+  spawn_maestro_workflow_1:
     id: maestro
     label: 'Spawn Maestro Workflow'
     notes: ''
-    handler_id: spawn_maestro_workflow
+    handler_id: spawn_maestro_workflow_1
     status: true
     conditions: {  }
     weight: 0
     settings:
-      maestro_template: create_external
+      maestro_template: request_external
       maestro_message_success: ''
       maestro_message_failure: ''
 variants: {  }
