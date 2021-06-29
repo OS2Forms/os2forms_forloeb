@@ -258,15 +258,20 @@ function os2forms_forloeb_gir_create_org_unit($processID, $queueID) {
     $gir_json->validity->to = $end_date;
 
     // TODO: Get Parent Unit UUID from imported data.
-    #$gir_json->parent = new \stdClass();
-    #$gir_json->parent->uuid = '7a8e45f7-4de0-44c8-990f-43c0565ee505';
+    if ($parent_unit) {
+        $gir_json->parent = new \stdClass();
+        # Get term UUID
+        $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($parent_unit);
+        $parent_uuid = $term->field_uuid->value;
+        $gir_json->parent->uuid = $parent_uuid;
+    }
 
     // TODO: Get Org Unit Type from imported data.
     $gir_json->org_unit_type = new \stdClass();
     $gir_json->org_unit_type->uuid = "b244f1f1-8cb5-4f90-ba7c-d451c7244e0b";
 
     $post_data = json_encode($gir_json);
-    // \Drupal::logger('os2forms_forloeb')->notice('Org Unit JSON sent: ' . '<' . $post_data . '>'); 
+    \Drupal::logger('os2forms_forloeb')->notice('Org Unit JSON sent: ' . '<' . $post_data . '>');
     $response = \Drupal::httpClient()->request(
 	'POST', $create_url, [ 'body' => $post_data ]
     );
