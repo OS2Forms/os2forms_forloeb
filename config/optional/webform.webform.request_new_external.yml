@@ -6,7 +6,7 @@ dependencies:
     - webform_revisions
 third_party_settings:
   webform_revisions:
-    contentEntity_id: null
+    contentEntity_id: '1'
 open: null
 close: null
 weight: 0
@@ -17,7 +17,7 @@ id: request_new_external
 title: 'Request New External'
 description: 'Create an entity for a person joining GIR, along with the corresponding organizational&nbsp; identities.'
 category: GIR
-elements: "person_data_entity_:\n  '#type': label\n  '#title': 'Person Data (Entity)'\nname:\n  '#type': webform_name\n  '#title': Name\n  '#title__access': false\n  '#first__required': true\n  '#middle__access': false\n  '#last__required': true\n  '#suffix__access': false\n  '#degree__access': false\n  '#flexbox': '1'\nconsultancy:\n  '#type': webform_term_select\n  '#title': Consultancy\n  '#vocabulary': consultancies\n  '#breadcrumb_delimiter': ''\ntelephone_number:\n  '#type': tel\n  '#title': 'Telephone Number'\nemail_address:\n  '#type': email\n  '#title': 'Email Address'\nemployment_data_identity_:\n  '#type': label\n  '#title': 'Employment Data (Identity)'\ncost_center:\n  '#type': webform_term_select\n  '#title': 'Cost Center'\n  '#vocabulary': cost_centers\n  '#breadcrumb_delimiter': ''\norg_unit:\n  '#type': webform_term_select\n  '#title': 'Org Unit'\n  '#vocabulary': orgunit\n  '#breadcrumb_delimiter': ''\nlocation:\n  '#type': webform_term_select\n  '#title': Location\n  '#vocabulary': locations\n  '#breadcrumb_delimiter': ''\nconsultant_type:\n  '#type': webform_term_select\n  '#title': 'Consultant Type'\n  '#vocabulary': consultant_types\n  '#breadcrumb_delimiter': ''\nstart_date:\n  '#type': date\n  '#title': 'Start date'\n  '#date_date_format': ''\nend_date:\n  '#type': date\n  '#title': 'End date'\n  '#date_date_format': ''\napproval_information:\n  '#type': label\n  '#title': 'Approval information'\ntime_limit:\n  '#type': date\n  '#title': 'Time Limit'\n  '#date_date_format': ''\njustification:\n  '#type': textfield\n  '#title': Justification\napprover:\n  '#type': webform_entity_select\n  '#title': Approver\n  '#target_type': user\n  '#selection_handler': 'default:user'\n  '#selection_settings':\n    include_anonymous: true\n    filter:\n      type: _none"
+elements: "personal_data:\n  '#type': fieldset\n  '#title': 'Personal Data'\n  name:\n    '#type': webform_name\n    '#title': Name\n    '#title__access': false\n    '#first__required': true\n    '#middle__access': false\n    '#last__required': true\n    '#suffix__access': false\n    '#degree__access': false\n    '#flexbox': '1'\n  consultancy:\n    '#type': webform_term_select\n    '#title': Consultancy\n    '#vocabulary': consultancies\n    '#breadcrumb_delimiter': ''\n  telephone_number:\n    '#type': tel\n    '#title': 'Telephone Number'\n  email_address:\n    '#type': email\n    '#title': 'Email Address'\nemployment_data:\n  '#type': fieldset\n  '#title': 'Employment Data'\n  cost_center:\n    '#type': webform_term_select\n    '#title': 'Cost Center'\n    '#vocabulary': cost_centers\n    '#breadcrumb_delimiter': ''\n  org_unit:\n    '#type': webform_term_select\n    '#title': 'Org Unit'\n    '#vocabulary': orgunit\n    '#breadcrumb_delimiter': ''\n  location:\n    '#type': webform_term_select\n    '#title': Location\n    '#vocabulary': locations\n    '#breadcrumb_delimiter': ''\n  consultant_type:\n    '#type': webform_term_select\n    '#title': 'Consultant Type'\n    '#vocabulary': consultant_types\n    '#breadcrumb_delimiter': ''\n  start_date:\n    '#type': date\n    '#title': 'Start date'\n    '#date_date_format': ''\n  end_date:\n    '#type': date\n    '#title': 'End date'\n    '#date_date_format': ''\napproval_information:\n  '#type': fieldset\n  '#title': 'Approval Information'\n  time_limit:\n    '#type': date\n    '#title': 'Time Limit'\n    '#date_date_format': ''\n  justification:\n    '#type': textfield\n    '#title': Justification\n  approver:\n    '#type': webform_entity_select\n    '#title': Approver\n    '#target_type': user\n    '#selection_handler': 'default:user'\n    '#selection_settings':\n      include_anonymous: true\n      filter:\n        type: _none"
 css: ''
 javascript: ''
 settings:
@@ -210,3 +210,4 @@ handlers:
       maestro_message_success: ''
       maestro_message_failure: ''
 variants: {  }
+
