@@ -8,7 +8,7 @@ dependencies:
   module:
     - feeds_ex
     - taxonomy
-id: mo_
+id: mo_unit_types
 label: 'MO Enhedstyper'
 description: 'Enhedstyper fra MO'
 help: ''

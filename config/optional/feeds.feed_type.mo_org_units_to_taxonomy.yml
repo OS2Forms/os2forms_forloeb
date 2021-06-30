@@ -8,7 +8,7 @@ dependencies:
   module:
     - feeds_ex
     - taxonomy
-id: _org_units_to_taxonomy
+id: mo_org_units_to_taxonomy
 label: ' Org Units to Taxonomy'
 description: 'Import Org Units from MO'
 help: ''
@@ -83,6 +83,7 @@ mappings:
     target: field_uuid
     map:
       value: uuid
-    unique: {  }
+    unique:
+      value: '1'
     settings:
       language: null
