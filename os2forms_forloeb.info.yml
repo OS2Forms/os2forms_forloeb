@@ -13,6 +13,7 @@ dependencies:
   - eu_cookie_compliance
   - events_logging
   - gin_toolbar
+  - feeds_ex
   - honeypot
   - libraries
   - maestro
