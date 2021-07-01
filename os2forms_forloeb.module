@@ -232,8 +232,7 @@ function os2forms_forloeb_gir_create_org_unit($processID, $queueID) {
         // Org data
 	$name = $values['name'];
         $display_in_gui = $values['display_in_gui'];
-        // TODO: Extract MO UUID for parent unit.
-        $parent_unit = $values['parent_unit'];
+        $parent_unit_id = $values['parent_unit'];
         // TODO: Extract MO UUID for location.
         $location = $values['location'];
         $start_date = $values['start_date'];
@@ -257,11 +256,11 @@ function os2forms_forloeb_gir_create_org_unit($processID, $queueID) {
     $gir_json->validity->from = $start_date;
     $gir_json->validity->to = $end_date;
 
-    // TODO: Get Parent Unit UUID from imported data.
-    if ($parent_unit) {
+    // Get Parent Unit UUID from imported data.
+    if ($parent_unit_id) {
         $gir_json->parent = new \stdClass();
         # Get term UUID
-        $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($parent_unit);
+        $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($parent_unit_id);
         $parent_uuid = $term->field_uuid->value;
         $gir_json->parent->uuid = $parent_uuid;
     }
