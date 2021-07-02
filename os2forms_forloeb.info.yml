@@ -25,6 +25,7 @@ dependencies:
   - os2forms_sbsys
   - os2web_simplesaml
   - pathauto
+  - keycloak
   - redirect
   - rules
   - rules_token
