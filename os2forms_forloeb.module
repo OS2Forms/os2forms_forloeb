@@ -212,6 +212,40 @@ function os2forms_forloeb_fetch_from_http_endpoint_batch_function($processID, $q
 
 }
 
+function get_openid_auth_token() {
+    // TODO: This is a utility token to get an OpenID Connect bearer token from Keycloak.
+    // At some point, this should be moved to a "utilities" file.
+
+    $keycloak_configuration = \Drupal::config('openid_connect.settings.keycloak');
+
+    $keycloak_settings = $keycloak_configuration->get('settings');
+    $keycloak_base = $keycloak_settings['keycloak_base'];
+    $keycloak_realm = $keycloak_settings['keycloak_realm'];
+    $client_id = $keycloak_settings['client_id'];
+    $client_secret = $keycloak_settings['client_secret'];
+  
+
+    $token_url = $keycloak_base . '/realms/' . $keycloak_realm . '/protocol/openid-connect/token';
+
+    $payload['grant_type'] = 'client_credentials';
+    $payload['client_id'] = $client_id;
+    $payload['client_secret'] = $client_secret;
+    
+    $json = json_encode($payload);
+    $response = \Drupal::httpClient()->request(
+	'POST', $token_url, [ 'form_params' => $payload ]
+    );
+    $status_code = $response->getStatusCode();
+
+    if ($status_code == 200) {
+	$body = json_decode($response->getBody(), true); 
+	$access_token = $body['access_token'];
+
+        return $access_token;
+    } else {
+        return '';	    
+    }
+}
 
 function os2forms_forloeb_gir_create_org_unit($processID, $queueID) {
 
@@ -270,9 +304,17 @@ function os2forms_forloeb_gir_create_org_unit($processID, $queueID) {
     $gir_json->org_unit_type->uuid = "b244f1f1-8cb5-4f90-ba7c-d451c7244e0b";
 
     $post_data = json_encode($gir_json);
+
+    // Get access token for authentication.
+    $access_token = get_openid_auth_token();
+
     \Drupal::logger('os2forms_forloeb')->notice('Org Unit JSON sent: ' . '<' . $post_data . '>');
+    $headers = [ 'Authorization' => 'Bearer ' . $access_token, 'Accept' => 'application/json', ];
     $response = \Drupal::httpClient()->request(
-	'POST', $create_url, [ 'body' => $post_data ]
+	    'POST', $create_url, [
+		    'body' => $post_data,
+		    'headers' => $headers
+	    ]
     );
     $status_code = $response->getStatusCode();
     if ($status_code == 200 or $status_code == 201) {
