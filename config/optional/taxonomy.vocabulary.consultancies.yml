@@ -1,0 +1,7 @@
+langcode: en
+status: true
+dependencies: {  }
+name: Consultancies
+vid: consultancies
+description: 'Suppliers of external personnel'
+weight: 0

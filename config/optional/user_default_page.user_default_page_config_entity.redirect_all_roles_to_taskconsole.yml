@@ -4,9 +4,7 @@ dependencies: {  }
 id: redirect_all_roles_to_taskconsole
 label: 'Redirect all roles to Taskconsole'
 user_roles:
-  sagsbehandler: sagsbehandler
   medarbejder: medarbejder
-  leder: leder
 users: null
 weight: 3
 login_redirect: /taskconsole

@@ -1,0 +1,7 @@
+langcode: en
+status: true
+dependencies: {  }
+name: 'Consultant Types'
+vid: consultant_types
+description: ''
+weight: 0

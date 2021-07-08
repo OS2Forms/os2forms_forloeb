@@ -1,0 +1,7 @@
+langcode: en
+status: true
+dependencies: {  }
+name: 'Cost Centers'
+vid: cost_centers
+description: 'Cost Centers for employees in GIR'
+weight: 0

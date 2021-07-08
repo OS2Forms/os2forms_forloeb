@@ -1,0 +1,121 @@
+{
+   "validity":{
+      "from":"2021-06-22",
+      "to":"2021-06-26"
+   },
+   "user_key":"1234",
+   "name":"Min nye EEEnHED!",
+   "parent":{
+      "name":"Kolding Kommune",
+      "user_key":"Kolding Kommune",
+      "uuid":"f06ee470-9f17-566f-acbe-e938112d46d9",
+      "location":"",
+      "user_settings":{
+         "orgunit":{
+            "show_roles":true,
+            "show_kle":false,
+            "show_user_key":true,
+            "show_location":true,
+            "show_time_planning":false,
+            "show_level":true,
+            "show_primary_engagement":false,
+            "show_primary_association":false,
+            "show_org_unit_button":false,
+            "inherit_manager":true,
+            "association_dynamic_facets":"",
+            "substitute_roles":"",
+            "show_cpr_no":true,
+            "show_user_key_in_search":false,
+            "extension_field_ui_labels":"",
+            "show_engagement_hyperlink":false,
+            "show_seniority":false
+         }
+      },
+      "parent":null,
+      "org":{
+         "name":"Kolding Kommune",
+         "user_key":"Kolding Kommune",
+         "uuid":"3b866d97-0b1f-48e0-8078-686d96f430b3"
+      },
+      "org_unit_type":{
+         "uuid":"9d2ac723-d5e5-4e7f-9c7f-b207bd223bc2",
+         "name":"Afdeling",
+         "user_key":"Afdeling",
+         "example":null,
+         "scope":"TEXT",
+         "owner":null,
+         "full_name":"Afdeling",
+         "top_level_facet":{
+            "uuid":"598b261e-8bd4-4fa2-964a-7d9fa2f2713d",
+            "user_key":"org_unit_type",
+            "description":""
+         },
+         "facet":{
+            "uuid":"598b261e-8bd4-4fa2-964a-7d9fa2f2713d",
+            "user_key":"org_unit_type",
+            "description":""
+         }
+      },
+      "time_planning":{
+         "uuid":"25b83672-e7aa-4206-9ede-36ef0df4857a",
+         "name":"Dannes ikke",
+         "user_key":"Dannes ikke",
+         "example":null,
+         "scope":"TEXT",
+         "owner":null,
+         "full_name":"Dannes ikke",
+         "top_level_facet":{
+            "uuid":"671291ba-98f4-4486-99ae-377619d36dc3",
+            "user_key":"time_planning",
+            "description":""
+         },
+         "facet":{
+            "uuid":"671291ba-98f4-4486-99ae-377619d36dc3",
+            "user_key":"time_planning",
+            "description":""
+         }
+      },
+      "org_unit_level":{
+         "uuid":"84f95e29-48a0-4175-85fd-84a1f596e1a4",
+         "name":"N1",
+         "user_key":"N1",
+         "example":null,
+         "scope":"TEXT",
+         "owner":null,
+         "full_name":"N1",
+         "top_level_facet":{
+            "uuid":"4e353b5a-003e-46eb-9c83-996afd7c4d57",
+            "user_key":"org_unit_level",
+            "description":""
+         },
+         "facet":{
+            "uuid":"4e353b5a-003e-46eb-9c83-996afd7c4d57",
+            "user_key":"org_unit_level",
+            "description":""
+         }
+      },
+      "validity":{
+         "from":"1960-01-01",
+         "to":null
+      }
+   },
+   "org_unit_level":{
+      "uuid":"53350314-820e-4bcc-a286-b0c1bb7738e9",
+      "name":"N7",
+      "user_key":"N7",
+      "example":null,
+      "scope":"TEXT",
+      "owner":null
+   },
+   "org_unit_type":{
+      "uuid":"51203743-f2db-4f17-a7e1-fee48c178799",
+      "name":"Direktørområde",
+      "user_key":"Direktørområde",
+      "example":null,
+      "scope":"TEXT",
+      "owner":null
+   },
+   "details":[
+      
+   ]
+}
