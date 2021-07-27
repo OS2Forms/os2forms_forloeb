@@ -58,7 +58,7 @@ function get_openid_auth_token() {
  *   description = @Translation("Downloads data from a URL using Drupal's HTTP request handler with OpenID Authorization header."),
  *   form = {
  *     "configuration" = "Drupal\feeds\Feeds\Fetcher\Form\HttpFetcherForm",
- *     "feed" = "Drupal\os2forms_forloeb\Feeds\Fetcher\Form\KeycloakAuthFetcherFeedForm",
+ *     "feed" = "Drupal\feeds\Feeds\Fetcher\Form\HttpFetcherFeedForm",
  *   }
  * )
  */
