@@ -1,5 +1,11 @@
 <?php
 
+// This class was heavily inspired by the corresponding class from the
+// feeds_http_auth_fetcher Drupal module by Michael Favia and is used
+// under the provisions of the GNU General Public License version 2.0.
+// See https://www.drupal.org/project/feeds_http_auth_fetcher for more
+// details.
+
 namespace Drupal\os2forms_forloeb\Feeds\Fetcher;
 
 

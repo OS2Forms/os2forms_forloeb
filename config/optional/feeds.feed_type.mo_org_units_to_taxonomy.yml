@@ -7,13 +7,14 @@ dependencies:
     - taxonomy.vocabulary.orgunit
   module:
     - feeds_ex
+    - os2forms_forloeb
     - taxonomy
 id: mo_org_units_to_taxonomy
 label: ' Org Units to Taxonomy'
 description: 'Import Org Units from MO'
 help: ''
 import_period: 3600
-fetcher: http
+fetcher: keycloakauth
 fetcher_configuration:
   auto_detect_feeds: false
   use_pubsubhubbub: false
