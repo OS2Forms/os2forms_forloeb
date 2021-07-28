@@ -2,17 +2,17 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.taxonomy_term.orgunit.field_user_key
-    - field.field.taxonomy_term.orgunit.field_uuid
-    - taxonomy.vocabulary.orgunit
+    - field.field.taxonomy_term.cost_center.field_user_key
+    - field.field.taxonomy_term.cost_center.field_uuid
+    - taxonomy.vocabulary.cost_center
   module:
     - feeds_ex
     - os2forms_forloeb
     - taxonomy
-id: mo_org_units_to_taxonomy
-label: ' Org Units to Taxonomy'
-description: 'Import Org Units from GIR'
-help: "In order to import organizational units from GIR, you must create a feed with this Feed Type and as the feed URL specify \r\n\r\n<gir-toplevel-url>/service/o/<org-uuid>/ou/\r\n\r\nThis will import all organizational units and make them available when creating new units or externals."
+id: cost_centers
+label: 'Cost Centers'
+description: 'Import cost centers from GIR'
+help: "In order to import cost centers for GIR, you must create a feed of this Feed Type and enter a feed URL like this:\r\n\r\n<gir-toplevel-URL>/http://service/ou/<costcenters-uuid>/children\r\n\r\nwhere <costcenters-uuid> is the \"top level\" UUID for the list of cost centers."
 import_period: 3600
 fetcher: keycloakauth
 fetcher_configuration:
@@ -24,7 +24,7 @@ fetcher_configuration:
 parser: jsonpath
 parser_configuration:
   context:
-    value: '$.items.*'
+    value: '$.*'
   sources:
     name:
       label: name
@@ -43,12 +43,12 @@ parser_configuration:
 processor: 'entity:taxonomy_term'
 processor_configuration:
   langcode: en
-  update_existing: 0
+  update_existing: 2
   update_non_existent: _keep
   expire: -1
   skip_hash_check: false
   values:
-    vid: orgunit
+    vid: cost_center
   owner_id: 0
   authorize: false
   owner_feed_author: false
@@ -84,7 +84,6 @@ mappings:
     target: field_uuid
     map:
       value: uuid
-    unique:
-      value: '1'
+    unique: {  }
     settings:
       language: null
