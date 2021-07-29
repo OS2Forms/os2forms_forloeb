@@ -5,10 +5,7 @@ dependencies:
     - maestro_webform
     - os2forms
     - webform_entity_print
-    - webform_revisions
 third_party_settings:
-  webform_revisions:
-    contentEntity_id: '6'
   os2forms:
     os2forms_nemid:
       webform_type: ''

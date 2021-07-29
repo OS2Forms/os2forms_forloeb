@@ -23,8 +23,6 @@ third_party_settings:
         enabled: false
         link_text: ''
         link_attributes: {  }
-  webform_revisions:
-    contentEntity_id: null
 open: null
 close: null
 weight: 0

@@ -3,10 +3,6 @@ status: open
 dependencies:
   module:
     - maestro_webform
-    - webform_revisions
-third_party_settings:
-  webform_revisions:
-    contentEntity_id: null
 open: null
 close: null
 weight: 0

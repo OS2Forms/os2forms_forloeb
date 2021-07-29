@@ -1,11 +1,4 @@
 langcode: en
-status: open
-dependencies:
-  module:
-    - webform_revisions
-third_party_settings:
-  webform_revisions:
-    contentEntity_id: '7'
 open: null
 close: null
 weight: 0
