@@ -3,13 +3,13 @@ status: true
 dependencies:
   config:
     - field.storage.taxonomy_term.feeds_item
-    - taxonomy.vocabulary.enhedsniveau
+    - taxonomy.vocabulary.cost_center
   module:
     - feeds
-id: taxonomy_term.enhedsniveau.feeds_item
+id: taxonomy_term.cost_center.feeds_item
 field_name: feeds_item
 entity_type: taxonomy_term
-bundle: enhedsniveau
+bundle: cost_center
 label: 'Feeds item'
 description: ''
 required: false

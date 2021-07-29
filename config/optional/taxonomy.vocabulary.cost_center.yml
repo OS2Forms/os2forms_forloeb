@@ -1,7 +1,7 @@
 langcode: en
 status: true
 dependencies: {  }
-name: 'Cost Centers'
-vid: cost_centers
+name: 'Cost Center'
+vid: cost_center
 description: 'Cost Centers for employees in GIR'
 weight: 0

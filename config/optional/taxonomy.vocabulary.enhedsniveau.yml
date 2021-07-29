@@ -1,7 +1,0 @@
-langcode: en
-status: true
-dependencies: {  }
-name: Enhedsniveau
-vid: enhedsniveau
-description: 'Enhedsniveauer fra MO.'
-weight: 0

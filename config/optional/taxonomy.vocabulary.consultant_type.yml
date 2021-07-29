@@ -1,7 +1,7 @@
 langcode: en
 status: true
 dependencies: {  }
-name: 'Consultant Types'
-vid: consultant_types
+name: 'Consultant Type'
+vid: consultant_type
 description: ''
 weight: 0

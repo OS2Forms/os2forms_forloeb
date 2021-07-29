@@ -3,15 +3,15 @@ status: true
 dependencies:
   config:
     - field.storage.taxonomy_term.field_user_key
-    - taxonomy.vocabulary.enhedsniveau
-id: taxonomy_term.enhedsniveau.field_user_key
+    - taxonomy.vocabulary.cost_center
+id: taxonomy_term.cost_center.field_user_key
 field_name: field_user_key
 entity_type: taxonomy_term
-bundle: enhedsniveau
+bundle: cost_center
 label: user_key
 description: ''
 required: false
-translatable: false
+translatable: true
 default_value: {  }
 default_value_callback: ''
 settings: {  }

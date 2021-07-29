@@ -2,13 +2,13 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.storage.taxonomy_term.field_user_key
-    - taxonomy.vocabulary.enhedstype
-id: taxonomy_term.enhedstype.field_user_key
-field_name: field_user_key
+    - field.storage.taxonomy_term.field_uuid
+    - taxonomy.vocabulary.cost_center
+id: taxonomy_term.cost_center.field_uuid
+field_name: field_uuid
 entity_type: taxonomy_term
-bundle: enhedstype
-label: user_key
+bundle: cost_center
+label: uuid
 description: ''
 required: false
 translatable: true

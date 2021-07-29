@@ -1,7 +1,7 @@
 langcode: en
 status: true
 dependencies: {  }
-name: Locations
-vid: locations
+name: Location
+vid: location
 description: ''
 weight: 0
