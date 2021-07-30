@@ -276,7 +276,7 @@ tasks:
       spv:
         variable: approver
         method: bycontentfunction
-        variable_value: 'maestro_webform_spv_fetch_submission_value:submission,approver'
+        variable_value: 'os2forms_forloeb_spv_fetch_entity_username:submission,approver'
     assigned: ''
     runonce: false
     handler: ''
