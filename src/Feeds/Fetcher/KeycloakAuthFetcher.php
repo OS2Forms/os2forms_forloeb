@@ -18,41 +18,7 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\RequestOptions;
 use Symfony\Component\HttpFoundation\Response;
 use Drupal\feeds\FeedInterface;
-
-function get_openid_auth_token() {
-    // TODO: This is a utility token to get an OpenID Connect bearer token from Keycloak.
-    // At some point, this should be moved to a "utilities" file.
-
-    $keycloak_configuration = \Drupal::config('openid_connect.settings.keycloak');
-
-    $keycloak_settings = $keycloak_configuration->get('settings');
-    $keycloak_base = $keycloak_settings['keycloak_base'];
-    $keycloak_realm = $keycloak_settings['keycloak_realm'];
-    $client_id = $keycloak_settings['client_id'];
-    $client_secret = $keycloak_settings['client_secret'];
-
-
-    $token_url = $keycloak_base . '/realms/' . $keycloak_realm . '/protocol/openid-connect/token';
-
-    $payload['grant_type'] = 'client_credentials';
-    $payload['client_id'] = $client_id;
-    $payload['client_secret'] = $client_secret;
-
-    $json = json_encode($payload);
-    $response = \Drupal::httpClient()->request(
-        'POST', $token_url, [ 'form_params' => $payload ]
-    );
-    $status_code = $response->getStatusCode();
-
-    if ($status_code == 200) {
-        $body = json_decode($response->getBody(), true);
-        $access_token = $body['access_token'];
-
-        return $access_token;
-    } else {
-        return '';
-    }
-}
+use Drupal\os2forms_forloeb\get_openid_auth_token;
 
 
 /**
