@@ -153,6 +153,7 @@ function os2forms_forloeb_maestro_batch_handlers() {
               'os2forms_forloeb_fetch_from_http_endpoint_batch_function' => t('Batch function to fetch data from an external HTTP endpoint. Returns data in two process variables, url_status and url_body.'),
               'os2forms_forloeb_gir_create_org_unit' => t('Batch function to create a new org unit in GIR.'),
               'os2forms_forloeb_gir_create_external' => t('Batch function to create a new external employee in GIR.'),
+              'os2forms_forloeb_gir_approver_is_initiator' => t('Batch function to compare approver and initiator of a submission'),
       ];
 }
 
@@ -248,6 +249,28 @@ function get_openid_auth_token() {
         return '';	    
     }
 }
+
+
+function os2forms_forloeb_gir_approver_is_initiator($processID, $queueID) {
+    // Function to determine whether the initiator of this process is set as approver.
+    // It would be nice to be able to handle this in an IF task, but currently Maestro's
+    //  IF tasks only allows you to compare a process variable to a constant value.
+    // This function will succeed if the approver is initiator and fail otherwise - this
+    //  means that it can be combined with an IF task set up to branch according to the
+    //  result of the preceding task.
+    $initiator = MaestroEngine::getProcessVariable('initiator', $processID);
+    $approver = MaestroEngine::getProcessVariable('approver', $processID);
+
+    \Drupal::logger('os2forms_forloeb')->notice('initiator: ' . $initiator . ', approver: ' . $approver);
+    if ($initiator === $approver) {
+	// S'all good, man!
+        return TRUE;
+    } else {
+        \Drupal::logger('os2forms_forloeb')->notice('Cancelling task!');
+        return [ 'execution_status' => TASK_STATUS_CANCEL, 'completion_status' => MAESTRO_TASK_COMPLETION_NORMAL, 'status' => TRUE ];
+    }
+}
+
 
 function os2forms_forloeb_gir_create_org_unit($processID, $queueID) {
 

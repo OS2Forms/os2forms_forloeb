@@ -74,8 +74,8 @@ tasks:
     tasktype: MaestroWebform
     nextstep: check_before_submitting
     nextfalsestep: ''
-    top: '197'
-    left: '267'
+    top: '189'
+    left: '259'
     assignby: fixed
     assignto: ''
     raphael: ''
@@ -115,8 +115,8 @@ tasks:
     tasktype: MaestroWebform
     nextstep: if_approved
     nextfalsestep: ''
-    top: '460'
-    left: '500'
+    top: '422'
+    left: '432'
     assignby: fixed
     assignto: ''
     raphael: ''
@@ -134,7 +134,7 @@ tasks:
       webform_nodes_attached_variable: none
       redirect_to: taskconsole
       show_edit_form: 0
-    assigned: 'user:fixed:leder'
+    assigned: 'user:variable:approver'
     runonce: false
     handler: ''
     showindetail: true
@@ -156,8 +156,8 @@ tasks:
     tasktype: MaestroIf
     nextstep: set_approver
     nextfalsestep: fill_in_information
-    top: '200'
-    left: '510'
+    top: '169'
+    left: '479'
     assignby: fixed
     assignto: ''
     raphael: ''
@@ -194,8 +194,8 @@ tasks:
     tasktype: MaestroIf
     nextstep: entity_and_identity_creation
     nextfalsestep: fill_in_information
-    top: '480'
-    left: '280'
+    top: '440'
+    left: '240'
     assignby: fixed
     assignto: ''
     raphael: ''
@@ -261,10 +261,10 @@ tasks:
     id: set_approver
     label: 'Set Approver'
     tasktype: MaestroSetProcessVariable
-    nextstep: request_approval
+    nextstep: is_initiator_approver
     nextfalsestep: ''
-    top: '330'
-    left: '510'
+    top: '315'
+    left: '495'
     assignby: fixed
     assignto: ''
     raphael: ''
@@ -299,8 +299,8 @@ tasks:
     tasktype: MaestroInteractive
     nextstep: end
     nextfalsestep: ''
-    top: '755'
-    left: '275'
+    top: '750'
+    left: '270'
     assignby: fixed
     assignto: ''
     raphael: ''
@@ -333,8 +333,8 @@ tasks:
     tasktype: MaestroWebform
     nextstep: if_ready_for_review
     nextfalsestep: ''
-    top: '25'
-    left: '505'
+    top: '17'
+    left: '497'
     assignby: fixed
     assignto: ''
     raphael: ''
@@ -368,3 +368,73 @@ tasks:
       notification_escalation: ''
       reminder_after: 0
       escalation_after: 0
+  approver_is_initiator:
+    id: approver_is_initiator
+    label: 'Skip approval?'
+    tasktype: MaestroIf
+    nextstep: entity_and_identity_creation
+    nextfalsestep: request_approval
+    top: '402'
+    left: '662'
+    assignby: fixed
+    assignto: ''
+    raphael: ''
+    to: ''
+    pointedfrom: ''
+    falsebranch: ''
+    lines: {  }
+    data:
+      if:
+        method: bylasttaskstatus
+        variable: initiator
+        operator: '='
+        variable_value: 'os2forms_forloeb_spv_fetch_entity_username:submission,approver'
+        status: '1'
+    assigned: ''
+    runonce: false
+    handler: ''
+    showindetail: true
+    participate_in_workflow_status_stage: false
+    workflow_status_stage_number: 0
+    workflow_status_stage_message: ''
+    notifications:
+      notification_assignment_subject: null
+      notification_assignment: null
+      notification_reminder_subject: null
+      notification_reminder: null
+      notification_escalation_subject: null
+      notification_escalation: null
+      reminder_after: null
+      escalation_after: null
+  is_initiator_approver:
+    id: is_initiator_approver
+    label: 'Initiator = Approver'
+    tasktype: MaestroBatchFunction
+    nextstep: approver_is_initiator
+    nextfalsestep: ''
+    top: '295'
+    left: '665'
+    assignby: fixed
+    assignto: ''
+    raphael: ''
+    to: ''
+    pointedfrom: ''
+    falsebranch: ''
+    lines: {  }
+    handler: os2forms_forloeb_gir_approver_is_initiator
+    assigned: ''
+    runonce: false
+    showindetail: true
+    participate_in_workflow_status_stage: false
+    workflow_status_stage_number: 0
+    workflow_status_stage_message: ''
+    notifications:
+      notification_assignment_subject: null
+      notification_assignment: null
+      notification_reminder_subject: null
+      notification_reminder: null
+      notification_escalation_subject: null
+      notification_escalation: null
+      reminder_after: null
+      escalation_after: null
+
