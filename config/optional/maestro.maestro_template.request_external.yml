@@ -42,7 +42,7 @@ variables:
     variable_value: '0'
   url:
     variable_id: gir_url
-    variable_value: 'http://172.16.110.132:5001'
+    variable_value: 'http://192.168.64.1:5001'
   url_status:
     variable_id: url_status
     variable_value: ''
@@ -80,8 +80,8 @@ tasks:
     tasktype: MaestroWebform
     nextstep: check_before_submitting
     nextfalsestep: ''
-    top: '205'
-    left: '275'
+    top: '200'
+    left: '280'
     assignby: fixed
     assignto: ''
     raphael: ''
@@ -121,8 +121,8 @@ tasks:
     tasktype: MaestroWebform
     nextstep: if_approved
     nextfalsestep: ''
-    top: '465'
-    left: '505'
+    top: '457'
+    left: '487'
     assignby: fixed
     assignto: ''
     raphael: ''
@@ -132,7 +132,7 @@ tasks:
     lines: {  }
     data:
       unique_id: submission
-      webform_machine_name: gir_entity_identity_creation
+      webform_machine_name: request_new_external
       modal: notmodal
       skip_webform_handlers: 0
       webform_nodes_attached_to: none
@@ -140,7 +140,7 @@ tasks:
       webform_nodes_attached_variable: none
       redirect_to: taskconsole
       show_edit_form: 0
-    assigned: 'user:fixed:leder'
+    assigned: 'user:variable:initiator'
     runonce: false
     handler: ''
     showindetail: true
@@ -163,7 +163,7 @@ tasks:
     nextstep: set_approver
     nextfalsestep: fill_in_information
     top: '200'
-    left: '510'
+    left: '500'
     assignby: fixed
     assignto: ''
     raphael: ''
@@ -200,7 +200,7 @@ tasks:
     tasktype: MaestroIf
     nextstep: entity_and_identity_creation
     nextfalsestep: fill_in_information
-    top: '480'
+    top: '470'
     left: '280'
     assignby: fixed
     assignto: ''
@@ -238,8 +238,8 @@ tasks:
     tasktype: MaestroBatchFunction
     nextstep: gir_creation_result
     nextfalsestep: ''
-    top: '612'
-    left: '262'
+    top: '595'
+    left: '275'
     assignby: fixed
     assignto: ''
     raphael: ''
@@ -267,10 +267,10 @@ tasks:
     id: set_approver
     label: 'Set Approver'
     tasktype: MaestroSetProcessVariable
-    nextstep: request_approval
+    nextstep: is_initiator_approver
     nextfalsestep: ''
-    top: '330'
-    left: '510'
+    top: '325'
+    left: '495'
     assignby: fixed
     assignto: ''
     raphael: ''
@@ -282,7 +282,7 @@ tasks:
       spv:
         variable: approver
         method: bycontentfunction
-        variable_value: 'maestro_webform_spv_fetch_submission_value:submission,approver'
+        variable_value: 'os2forms_forloeb_spv_fetch_entity_username:submission,approver'
     assigned: ''
     runonce: false
     handler: ''
@@ -339,8 +339,8 @@ tasks:
     tasktype: MaestroWebform
     nextstep: if_ready_for_review
     nextfalsestep: ''
-    top: '30'
-    left: '510'
+    top: '40'
+    left: '500'
     assignby: fixed
     assignto: ''
     raphael: ''
@@ -374,3 +374,73 @@ tasks:
       notification_escalation: ''
       reminder_after: 0
       escalation_after: 0
+  is_initiator_approver:
+    id: is_initiator_approver
+    label: 'Initiator = Approver'
+    tasktype: MaestroBatchFunction
+    nextstep: skip_approval
+    nextfalsestep: ''
+    top: '325'
+    left: '655'
+    assignby: fixed
+    assignto: ''
+    raphael: ''
+    to: ''
+    pointedfrom: ''
+    falsebranch: ''
+    lines: {  }
+    handler: os2forms_forloeb_gir_approver_is_initiator
+    assigned: ''
+    runonce: false
+    showindetail: true
+    participate_in_workflow_status_stage: false
+    workflow_status_stage_number: 0
+    workflow_status_stage_message: ''
+    notifications:
+      notification_assignment_subject: null
+      notification_assignment: null
+      notification_reminder_subject: null
+      notification_reminder: null
+      notification_escalation_subject: null
+      notification_escalation: null
+      reminder_after: null
+      escalation_after: null
+  skip_approval:
+    id: skip_approval
+    label: 'Skip approval?'
+    tasktype: MaestroIf
+    nextstep: entity_and_identity_creation
+    nextfalsestep: request_approval
+    top: '525'
+    left: '655'
+    assignby: fixed
+    assignto: ''
+    raphael: ''
+    to: ''
+    pointedfrom: ''
+    falsebranch: ''
+    lines: {  }
+    data:
+      if:
+        method: bylasttaskstatus
+        variable: initiator
+        operator: '='
+        variable_value: ''
+        status: '1'
+    assigned: ''
+    runonce: false
+    handler: ''
+    showindetail: true
+    participate_in_workflow_status_stage: false
+    workflow_status_stage_number: 0
+    workflow_status_stage_message: ''
+    notifications:
+      notification_assignment_subject: null
+      notification_assignment: null
+      notification_reminder_subject: null
+      notification_reminder: null
+      notification_escalation_subject: null
+      notification_escalation: null
+      reminder_after: null
+      escalation_after: null
+

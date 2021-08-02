@@ -36,7 +36,7 @@ variables:
     variable_value: ''
   gir_url:
     variable_id: gir_url
-    variable_value: 'http://172.16.110.132:5001'
+    variable_value: 'http://192.168.64.1:5001'
   url_status:
     variable_id: url_status
     variable_value: ''
@@ -64,7 +64,7 @@ tasks:
     label: End
     nextstep: ''
     nextfalsestep: ''
-    top: '760'
+    top: '750'
     left: '50'
     assignby: fixed
     assignto: engine
@@ -115,8 +115,8 @@ tasks:
     tasktype: MaestroWebform
     nextstep: if_approved
     nextfalsestep: ''
-    top: '422'
-    left: '432'
+    top: '440'
+    left: '470'
     assignby: fixed
     assignto: ''
     raphael: ''
@@ -156,8 +156,8 @@ tasks:
     tasktype: MaestroIf
     nextstep: set_approver
     nextfalsestep: fill_in_information
-    top: '169'
-    left: '479'
+    top: '190'
+    left: '470'
     assignby: fixed
     assignto: ''
     raphael: ''
@@ -194,8 +194,8 @@ tasks:
     tasktype: MaestroIf
     nextstep: entity_and_identity_creation
     nextfalsestep: fill_in_information
-    top: '440'
-    left: '240'
+    top: '450'
+    left: '260'
     assignby: fixed
     assignto: ''
     raphael: ''
@@ -232,8 +232,8 @@ tasks:
     tasktype: MaestroBatchFunction
     nextstep: gir_creation_result
     nextfalsestep: ''
-    top: '615'
-    left: '265'
+    top: '620'
+    left: '260'
     assignby: fixed
     assignto: ''
     raphael: ''
@@ -264,7 +264,7 @@ tasks:
     nextstep: is_initiator_approver
     nextfalsestep: ''
     top: '315'
-    left: '495'
+    left: '465'
     assignby: fixed
     assignto: ''
     raphael: ''
@@ -300,7 +300,7 @@ tasks:
     nextstep: end
     nextfalsestep: ''
     top: '750'
-    left: '270'
+    left: '260'
     assignby: fixed
     assignto: ''
     raphael: ''
@@ -333,8 +333,8 @@ tasks:
     tasktype: MaestroWebform
     nextstep: if_ready_for_review
     nextfalsestep: ''
-    top: '17'
-    left: '497'
+    top: '30'
+    left: '470'
     assignby: fixed
     assignto: ''
     raphael: ''
@@ -374,8 +374,8 @@ tasks:
     tasktype: MaestroIf
     nextstep: entity_and_identity_creation
     nextfalsestep: request_approval
-    top: '402'
-    left: '662'
+    top: '500'
+    left: '660'
     assignby: fixed
     assignto: ''
     raphael: ''
@@ -412,8 +412,8 @@ tasks:
     tasktype: MaestroBatchFunction
     nextstep: approver_is_initiator
     nextfalsestep: ''
-    top: '295'
-    left: '665'
+    top: '320'
+    left: '660'
     assignby: fixed
     assignto: ''
     raphael: ''

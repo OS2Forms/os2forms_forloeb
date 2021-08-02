@@ -400,8 +400,13 @@ function os2forms_forloeb_gir_create_external($processID, $queueID) {
 
     $post_data = json_encode($gir_json);
     \Drupal::logger('os2forms_forloeb')->notice('Employee JSON sent: ' . '<' . $post_data . '>'); 
+    
+    // Get access token for authentication.
+    $access_token = get_openid_auth_token();
+    $headers = [ 'Authorization' => 'Bearer ' . $access_token, 'Accept' => 'application/json', ];
+
     $response = \Drupal::httpClient()->request(
-	'POST', $create_url, [ 'body' => $post_data ]
+	'POST', $create_url, [ 'body' => $post_data, 'headers' => $headers ]
     );
     $status_code = $response->getStatusCode();
     if ($status_code == 200 or $status_code == 201) {
