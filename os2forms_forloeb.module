@@ -335,22 +335,29 @@ function os2forms_forloeb_gir_create_org_unit($processID, $queueID) {
 
     \Drupal::logger('os2forms_forloeb')->notice('Org Unit JSON sent: ' . '<' . $post_data . '>');
     $headers = [ 'Authorization' => 'Bearer ' . $access_token, 'Accept' => 'application/json', ];
-    $response = \Drupal::httpClient()->request(
-	    'POST', $create_url, [
-		    'body' => $post_data,
-		    'headers' => $headers
-	    ]
-    );
-    $status_code = $response->getStatusCode();
-    if ($status_code == 200 or $status_code == 201) {
-        $body = $response->getBody();
+
+    try {
+        $response = \Drupal::httpClient()->request(
+	        'POST', $create_url, [
+                    'body' => $post_data,
+                    'headers' => $headers
+                 ]
+        );
+    } catch (GuzzleHttp\Exception\BadResponseException $e) {
+        $response = $e->getResponse();
     }
-    else {
-        $body = '';
+    $body = $response->getBody();
+    $status_code = $response->getStatusCode();
+    if ($status_code == 201) {
+        $url_status = "Success";
+        $url_body = "Org unit " . $name . "was created.";
+    } else {
+        $url_status = "Failed";
+        $url_body = "Unable to create org unit " . $name . ": " . $body;
     }
 
-    MaestroEngine::setProcessVariable('url_status', $status_code, $processID);
-    MaestroEngine::setProcessVariable('url_body', $body, $processID);
+    MaestroEngine::setProcessVariable('url_status', $url_status, $processID);
+    MaestroEngine::setProcessVariable('url_body', $url_body, $processID);
 
     return TRUE;
 

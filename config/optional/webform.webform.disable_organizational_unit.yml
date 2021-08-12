@@ -1,6 +1,11 @@
+uuid: b0170df8-7ca2-4f78-b4d5-8eb1ef5d8110
 langcode: en
 status: open
-dependencies: {  }
+dependencies:
+  module:
+    - os2forms_forloeb
+_core:
+  default_config_hash: g0LxL-Rc_3Tv_8URoiJ3z4BJq16Fjr6iJwiVA7HSk7g
 open: null
 close: null
 weight: 0
@@ -11,69 +16,7 @@ id: disable_organizational_unit
 title: 'Disable Organizational Unit'
 description: 'Send a request for disabling an organizational unit and submit it for approval.'
 category: GIR
-elements: |
-  search:
-    '#type': fieldset
-    '#title': Search
-    organizational_unit:
-      '#type': entity_autocomplete
-      '#title': 'Organizational Unit'
-      '#target_type': taxonomy_term
-      '#selection_handler': 'default:taxonomy_term'
-      '#selection_settings':
-        target_bundles:
-          orgunit: orgunit
-        sort:
-          field: name
-          direction: ASC
-        auto_create: false
-        auto_create_bundle: orgunit
-  organizational_data:
-    '#type': fieldset
-    '#title': 'Organizational Data'
-    name:
-      '#type': textfield
-      '#title': Name
-      '#disabled': true
-      '#readonly': true
-      '#required': true
-    parent_unit:
-      '#type': webform_term_select
-      '#title': 'Parent Unit'
-      '#disabled': true
-      '#prepopulate': true
-      '#vocabulary': consultancies
-      '#breadcrumb_delimiter': ''
-    location:
-      '#type': webform_term_select
-      '#title': Location
-      '#disabled': true
-      '#prepopulate': true
-      '#vocabulary': consultancies
-      '#breadcrumb_delimiter': ''
-  end_date:
-    '#type': date
-    '#title': 'End date'
-    '#date_date_format': ''
-  approval_information:
-    '#type': fieldset
-    '#title': 'Approval Information'
-    time_limit:
-      '#type': date
-      '#title': 'Time Limit'
-      '#date_date_format': ''
-    justification:
-      '#type': textfield
-      '#title': Justification
-    approver:
-      '#type': webform_entity_select
-      '#title': Approver
-      '#target_type': user
-      '#selection_handler': 'default:user'
-      '#selection_settings':
-        include_anonymous: false
-        filter:
-          type: _none
+elements: "enter_organizational_unit:\n  '#type': webform_wizard_page\n  '#title': 'Enter organizational unit'\n  search:\n    '#type': fieldset\n    '#title': Search\n    organizational_unit:\n      '#type': entity_autocomplete\n      '#title': 'Organizational Unit'\n      '#target_type': taxonomy_term\n      '#selection_handler': 'default:taxonomy_term'\n      '#selection_settings':\n        target_bundles:\n          orgunit: orgunit\n        sort:\n          field: name\n          direction: ASC\n        auto_create: false\n        auto_create_bundle: orgunit\nedit_organizational_unit:\n  '#type': webform_wizard_page\n  '#title': 'Edit Organizational Unit'\n  organizational_data:\n    '#type': fieldset\n    '#title': 'Organizational Data'\n    name:\n      '#type': textfield\n      '#title': Name\n      '#disabled': true\n      '#readonly': true\n      '#required': true\n    parent_unit:\n      '#type': webform_term_select\n      '#title': 'Parent Unit'\n      '#disabled': true\n      '#prepopulate': true\n      '#vocabulary': consultancies\n      '#breadcrumb_delimiter': ''\n    location:\n      '#type': webform_term_select\n      '#title': Location\n      '#disabled': true\n      '#prepopulate': true\n      '#vocabulary': consultancies\n      '#breadcrumb_delimiter': ''\n  end_date:\n    '#type': date\n    '#title': 'End date'\n    '#date_date_format': ''\n  approval_information:\n    '#type': fieldset\n    '#title': 'Approval Information'\n    time_limit:\n      '#type': date\n      '#title': 'Time Limit'\n      '#date_date_format': ''\n    justification:\n      '#type': textfield\n      '#title': Justification\n    approver:\n      '#type': webform_entity_select\n      '#title': Approver\n      '#target_type': user\n      '#selection_handler': 'default:user'\n      '#selection_settings':\n        include_anonymous: false\n        filter:\n          type: _none"
 css: ''
 javascript: ''
 settings:
@@ -252,5 +195,26 @@ access:
     roles: {  }
     users: {  }
     permissions: {  }
-handlers: {  }
+handlers:
+  load_organization_unit:
+    id: org_unit
+    label: 'Load Organization Unit'
+    notes: ''
+    handler_id: load_organization_unit
+    status: true
+    conditions: {  }
+    weight: 0
+    settings: {  }
+  debug:
+    id: debug
+    label: Debug
+    notes: ''
+    handler_id: debug
+    status: true
+    conditions: {  }
+    weight: 0
+    settings:
+      format: yaml
+      submission: false
 variants: {  }
+
