@@ -24,7 +24,7 @@ fetcher_configuration:
 parser: jsonpath
 parser_configuration:
   context:
-    value: '$.items.*'
+    value: '$.*'
   sources:
     name:
       label: name

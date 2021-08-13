@@ -2,17 +2,17 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.taxonomy_term.cost_center.field_user_key
-    - field.field.taxonomy_term.cost_center.field_uuid
-    - taxonomy.vocabulary.cost_center
+    - field.field.taxonomy_term.consultancy.field_user_key
+    - field.field.taxonomy_term.consultancy.field_uuid
+    - taxonomy.vocabulary.consultancy
   module:
     - feeds_ex
     - os2forms_forloeb
     - taxonomy
-id: cost_centers
-label: 'Cost Centers'
-description: 'Import cost centers from GIR'
-help: "In order to import cost centers for GIR, you must create a feed of this Feed Type and enter a feed URL like this:\r\n\r\n<gir-toplevel-URL>/service/ou/<costcenters-uuid>/children\r\n\r\nwhere <costcenters-uuid> is the \"top level\" UUID for the list of cost centers."
+id: consultancies
+label: 'Consultancies'
+description: 'Import consultancies from GIR'
+help: "In order to import consultancies fro GIR, you must create a feed of this Feed Type and enter a feed URL like this:\r\n\r\n<gir-toplevel-URL>/service/ou/<external-uuid>/children\r\n\r\nwhere <external-uuid> is the \"top level\" UUID for the list of external companies."
 import_period: 3600
 fetcher: keycloakauth
 fetcher_configuration:
@@ -48,7 +48,7 @@ processor_configuration:
   expire: -1
   skip_hash_check: false
   values:
-    vid: cost_center
+    vid: consultancy
   owner_id: 0
   authorize: false
   owner_feed_author: false
