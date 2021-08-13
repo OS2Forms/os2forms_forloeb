@@ -218,12 +218,12 @@ function os2forms_forloeb_fetch_from_http_endpoint_batch_function($processID, $q
 function get_gir_url() {
 
     $forloeb_configuration = \Drupal::config('os2forms_forloeb.settings');
-    $forloeb_settings = $forloeb_configuration->get('settings');
-    $gir_url = $forloeb_settings['gir_url'];
+    $gir_url = $forloeb_configuration->get('gir_url');
 
     return $gir_url;
-
 }
+
+
 function get_openid_auth_token() {
     // TODO: This is a utility token to get an OpenID Connect bearer token from Keycloak.
     // At some point, this should be moved to a "utilities" file.

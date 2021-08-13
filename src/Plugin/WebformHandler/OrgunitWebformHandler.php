@@ -6,8 +6,8 @@ use Drupal\webform\Plugin\WebformHandlerBase;
 use Drupal\webform\WebformSubmissionInterface;
 use Drupal\Core\Form\FormStateInterface;
 
+use Drupal\os2forms_forloeb\get_gir_url;
 use Drupal\os2forms_forloeb\get_openid_auth_token;
-use Drupal\os2forms_forloeb\get_mo_url;
 
 /**
  * Webform submission handler for loading org units.
@@ -41,28 +41,36 @@ class OrgunitWebformHandler extends WebformHandlerBase {
 
         $uuid = $org_unit_term->get('field_uuid')->value;
 
-        // TODO: Get this from configuration instead.
-        $mo_url = 'http://magenta-girdevelopment.os2mo.magentahosted.dk';
+        $mo_url = get_gir_url();
 
-        // TODO: Now get all the right data from MO.
-        // $auth_token = get_openid_auth_token();
+        // Now get all the right data from MO.
+        $auth_token = get_openid_auth_token();
         $org_unit_path = '/service/ou/' . $uuid . '/';
         $ou_url = $mo_url . $org_unit_path;
+        // Authenticate
+        $headers = [ 'Authorization' => 'Bearer ' . $auth_token, 'Accept' => 'application/json', ];
 
-        $response = \Drupal::httpClient()->get($ou_url);
+	try {
+            $response = \Drupal::httpClient()->request(
+                'GET', $ou_url, [
+                'headers' => $headers
+                ]
+            );
+        } catch (GuzzleHttp\Exception\BadResponseException $e) {
+            $response = $e->getResponse();
+        }
 
         $status_code = $response->getStatusCode();
 
         if ($status_code == 200) {
             $ou_json = json_decode($response->getBody(), true);
-            \Drupal::logger('os2forms_forloeb')->notice('OU Body: ' . '<' . json_encode($ou_json) . '>');
+            // \Drupal::logger('os2forms_forloeb')->notice('OU Body: ' . '<' . json_encode($ou_json) . '>');
 
-            // TODO: And fill out the form with it.
+            // Fill out the form.
 	    $webform_submission->setElementData('name', $ou_json['name']);
 	    $webform_submission->setElementData('parent_unit', $ou_json['parent']['name']);
 	    $webform_submission->setElementData('location', $ou_json['location']);
 	    $webform_submission->setElementData('end_date', $ou_json['validity']['to']);
-
         }
     }
 }
