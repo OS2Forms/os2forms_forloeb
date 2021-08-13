@@ -34,9 +34,6 @@ variables:
   approver:
     variable_id: approver
     variable_value: ''
-  gir_url:
-    variable_id: gir_url
-    variable_value: 'http://192.168.64.1:5001'
   url_status:
     variable_id: url_status
     variable_value: ''

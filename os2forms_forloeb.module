@@ -215,6 +215,15 @@ function os2forms_forloeb_fetch_from_http_endpoint_batch_function($processID, $q
 
 }
 
+function get_gir_url() {
+
+    $forloeb_configuration = \Drupal::config('os2forms_forloeb.settings');
+    $forloeb_settings = $forloeb_configuration->get('settings');
+    $gir_url = $forloeb_settings['gir_url'];
+
+    return $gir_url;
+
+}
 function get_openid_auth_token() {
     // TODO: This is a utility token to get an OpenID Connect bearer token from Keycloak.
     // At some point, this should be moved to a "utilities" file.
@@ -274,8 +283,8 @@ function os2forms_forloeb_gir_approver_is_initiator($processID, $queueID) {
 
 function os2forms_forloeb_gir_create_org_unit($processID, $queueID) {
 
-    // Get GIR URL from process variable.
-    $url = MaestroEngine::getProcessVariable('gir_url', $processID);
+    // Get GIR URL from configuration.
+    $url = get_gir_url();
 
     $create_url = $url . '/service/ou/create';
 
@@ -367,7 +376,7 @@ function os2forms_forloeb_gir_create_org_unit($processID, $queueID) {
 function os2forms_forloeb_gir_create_external($processID, $queueID) {
 
     // Get GIR URL from process variable.
-    $url = MaestroEngine::getProcessVariable('gir_url', $processID);
+    $url = get_gir_url();
 
     $create_url = $url . '/service/e/create';
 
