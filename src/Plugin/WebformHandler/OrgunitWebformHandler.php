@@ -39,8 +39,6 @@ class OrgunitWebformHandler extends WebformHandlerBase {
 
         $uuid = $org_unit_term->get('field_uuid')->value;
 
-        \Drupal::logger('os2forms_forloeb')->notice('Org Unit UUID: ' . '<' . $uuid . '>');
-
         // TODO: Get this from configuration instead.
         $mo_url = 'http://magenta-girdevelopment.os2mo.magentahosted.dk';
 
@@ -49,17 +47,20 @@ class OrgunitWebformHandler extends WebformHandlerBase {
         $org_unit_path = '/service/ou/' . $uuid . '/';
         $ou_url = $mo_url . $org_unit_path;
 
-        \Drupal::logger('os2forms_forloeb')->notice('URL: ' . '<' . json_encode($ou_url) . '>');
         $response = \Drupal::httpClient()->get($ou_url);
 
         $status_code = $response->getStatusCode();
 
-        \Drupal::logger('os2forms_forloeb')->notice('HTTP Status: ' . '<' . $status_code . '>');
-        $body = $response->getBody();
-        \Drupal::logger('os2forms_forloeb')->notice('OU Body: ' . '<' . json_encode($body) . '>');
+        if ($status_code == 200) {
+            $ou_json = json_decode($response->getBody(), true);
+            \Drupal::logger('os2forms_forloeb')->notice('OU Body: ' . '<' . json_encode($ou_json) . '>');
 
-        // TODO: And fill out the form with it.
-        $webform_submission->setElementData('name', "BATMAN'S ROBIN!");
+            // TODO: And fill out the form with it.
+	    $webform_submission->setElementData('name', $ou_json['name']);
+	    $webform_submission->setElementData('parent_unit', $ou_json['parent']['name']);
+	    $webform_submission->setElementData('location', $ou_json['location']);
+	    $webform_submission->setElementData('end_date', $ou_json['validity']['to']);
+
+        }
     }
-
 }
