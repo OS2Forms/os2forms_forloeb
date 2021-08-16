@@ -9,24 +9,45 @@
  * Implements hook_install().
  */
 function os2forms_forloeb_install() {
-    $theme_list = [
-        'claro',
-        'gin',
-        'bootstrap',
-        'custom_theme'
-    ];
 
-    // Install themes
-    \Drupal::service('theme_installer')->install($theme_list);
+  // List of themes to uninstall
+  $theme_list = [
+    'claro',
+    'gin',
+    'bootstrap',
+    'custom_theme'
+  ];
 
-    // Get theme manager
-    $system_theme = \Drupal::configFactory()->getEditable('system.theme');
+  // Install themes
+  \Drupal::service('theme_installer')->install($theme_list);
 
-    // Set default and admin themes
-    $system_theme
-        ->set('default', 'custom_theme')
-        ->set('admin', 'gin')
-        ->save();
+  // Get theme manager
+  $system_theme = \Drupal::configFactory()->getEditable('system.theme');
+
+  // Set default and admin themes
+  $system_theme
+    ->set('default', 'custom_theme')
+    ->set('admin', 'gin')
+    ->save();
+
+  // List of core modules to uninstall
+  $module_list = [
+    'update'
+  ];
+
+  // Uninstall listed core modules.
+  \Drupal::service('module_installer')->uninstall($module_list);
+}
+
+/**
+ * Implements update_cron() unset to disable update manager checking for updates on each cron run.
+ * It is still possible to check for updates manually from admin/reports/updates,
+ * but Drupal would not check for updates during cron tasks.
+ */
+function os2forms_forloeb_implements_alter(&$implementations, $hook) {
+  if ($hook == 'cron') {
+    unset($implementations['update']);
+  }
 }
 
 use Drupal\maestro\Engine\MaestroEngine;
