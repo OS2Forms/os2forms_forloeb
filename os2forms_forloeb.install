@@ -1,0 +1,41 @@
+<?php
+
+/**
+ * @file
+ * Install file for OS2forms Forløb module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function os2forms_forloeb_install_8001() {
+
+  // List of themes to uninstall
+  $theme_list = [
+    'claro',
+    'gin',
+    'bootstrap',
+    'custom_theme'
+  ];
+
+  // Install themes
+  \Drupal::service('theme_installer')->install($theme_list);
+
+  // Get theme manager
+  $system_theme = \Drupal::configFactory()->getEditable('system.theme');
+
+  // Set default and admin themes
+  $system_theme
+    ->set('default', 'custom_theme')
+    ->set('admin', 'gin')
+    ->save();
+
+}
+
+/**
+ * Implements hook_update_N().
+ * Uninstall Update Manager core module
+ */
+function os2forms_forloeb_update_8001() {
+  \Drupal::service('module_installer')->uninstall(['update']);
+}
