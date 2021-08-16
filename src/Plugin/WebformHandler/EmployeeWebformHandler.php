@@ -10,11 +10,11 @@ use Drupal\os2forms_forloeb\get_gir_url;
 use Drupal\os2forms_forloeb\get_openid_auth_token;
 
 /**
- * Webform submission handler for loading org units.
+ * Webform submission handler for loading employees.
  *
  * @WebformHandler(
- *   id = "org_unit",
- *   label = @Translation("Load Organization Unit"),
+ *   id = "employee",
+ *   label = @Translation("Load Employee"),
  *   category = @Translation("Load GIR entity"),
  *   description = @Translation("Load GIR data into form fields."),
  *   cardinality = \Drupal\webform\Plugin\WebformHandlerInterface::CARDINALITY_SINGLE,
@@ -25,7 +25,7 @@ use Drupal\os2forms_forloeb\get_openid_auth_token;
  */
 
 
-class OrgunitWebformHandler extends WebformHandlerBase {
+class EmployeeWebformHandler extends WebformHandlerBase {
 
     /**
      * {@inheritdoc}
@@ -36,23 +36,23 @@ class OrgunitWebformHandler extends WebformHandlerBase {
 
         $values = $webform_submission->getData();
 
-        $org_unit_id = $values['organizational_unit'];
-        $org_unit_term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($org_unit_id);
+        $employee_id = $values['employee'];
+        $employee_term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($employee_id);
 
-        $uuid = $org_unit_term->get('field_uuid')->value;
+        $uuid = $employee_term->get('field_uuid')->value;
 
         $mo_url = get_gir_url();
 
         // Now get all the right data from MO.
         $auth_token = get_openid_auth_token();
-        $org_unit_path = '/service/ou/' . $uuid . '/';
-        $ou_url = $mo_url . $org_unit_path;
+        $employee_path = '/service/e/' . $uuid . '/';
+        $employee_url = $mo_url . $employee_path;
         // Authenticate
         $headers = [ 'Authorization' => 'Bearer ' . $auth_token, 'Accept' => 'application/json', ];
 
 	try {
             $response = \Drupal::httpClient()->request(
-                'GET', $ou_url, [
+                'GET', $employee_url, [
                 'headers' => $headers
                 ]
             );
@@ -63,15 +63,13 @@ class OrgunitWebformHandler extends WebformHandlerBase {
         $status_code = $response->getStatusCode();
 
         if ($status_code == 200) {
-            $ou_json = json_decode($response->getBody(), true);
-            // \Drupal::logger('os2forms_forloeb')->notice('OU Body: ' . '<' . json_encode($ou_json) . '>');
+            $employee_json = json_decode($response->getBody(), true);
+            \Drupal::logger('os2forms_forloeb')->notice('Employee Body: ' . '<' . json_encode($employee_json) . '>');
 
             // Fill out the form.
-	    $webform_submission->setElementData('name', $ou_json['name']);
-	    $webform_submission->setElementData('parent_unit', $ou_json['parent']['name']);
-	    $webform_submission->setElementData('location', $ou_json['location']);
-	    $webform_submission->setElementData('start_date', $ou_json['validity']['from']);
-	    $webform_submission->setElementData('end_date', $ou_json['validity']['to']);
+	    $webform_submission->setElementData('name', $employee_json['name']);
+	    $webform_submission->setElementData('start_date', $employee_json['validity']['from']);
+	    $webform_submission->setElementData('end_date', $employee_json['validity']['to']);
         }
     }
 }

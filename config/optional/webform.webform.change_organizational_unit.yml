@@ -3,94 +3,72 @@ status: open
 dependencies:
   module:
     - maestro_webform
-    - os2forms
-    - webform_entity_print
-third_party_settings:
-  os2forms:
-    os2forms_nemid:
-      webform_type: ''
-      nemlogin_auto_redirect: 0
-  webform_entity_print:
-    template:
-      header: ''
-      footer: ''
-      css: ''
-    export_types:
-      pdf:
-        enabled: true
-        link_text: ''
-        link_attributes: {  }
-      word_docx:
-        enabled: false
-        link_text: ''
-        link_attributes: {  }
 open: null
 close: null
 weight: 0
 uid: 1
 template: false
 archive: false
-id: change_external
-title: 'Change External'
-description: 'Create an entity for a person joining GIR, along with the corresponding organizational&nbsp; identities.'
+id: change_organizational_unit
+title: 'Change Organizational Unit'
+description: 'Send a request for creating a new organizational unit and submit it for approval.'
 category: GIR
 elements: |
-  search_external:
+  search_for_unit:
     '#type': webform_wizard_page
-    '#title': 'Search for External'
-    external_employee:
+    '#title': 'Search for Unit'
+    organizational_unit:
       '#type': entity_autocomplete
-      '#title': 'External Employee'
-      '#target_type': user
-      '#selection_handler': 'default:user'
+      '#title': 'Organizational Unit'
+      '#target_type': taxonomy_term
+      '#selection_handler': 'default:taxonomy_term'
       '#selection_settings':
-        include_anonymous: true
-        filter:
-          type: _none
-  edit_external:
+        target_bundles:
+          orgunit: orgunit
+        sort:
+          field: name
+          direction: ASC
+        auto_create: false
+        auto_create_bundle: orgunit
+  edit_unit:
     '#type': webform_wizard_page
-    '#title': 'Edit External'
-    personal_data:
+    '#title': 'Edit Unit'
+    organizational_data:
       '#type': fieldset
-      '#title': 'Personal Data'
+      '#title': 'Organizational Data'
       name:
-        '#type': webform_name
+        '#type': textfield
         '#title': Name
-        '#title__access': false
-        '#first__required': true
-        '#middle__access': false
-        '#last__required': true
-        '#suffix__access': false
-        '#degree__access': false
-        '#flexbox': '1'
-      consultancy:
-        '#type': webform_term_select
-        '#title': Consultancy
-        '#vocabulary': consultancies
-        '#breadcrumb_delimiter': ''
-      telephone_number:
-        '#type': tel
-        '#title': 'Telephone Number'
-      email_address:
-        '#type': email
-        '#title': 'Email Address'
-    employment_data:
-      '#type': fieldset
-      '#title': 'Employment Data'
-      cost_center:
-        '#type': webform_term_select
-        '#title': 'Cost Center'
-        '#vocabulary': cost_centers
-        '#breadcrumb_delimiter': ''
+        '#required': true
+      display_in_gui:
+        '#type': checkbox
+        '#title': 'Display in GUI'
+      parent_unit:
+        '#type': entity_autocomplete
+        '#title': 'Parent Unit'
+        '#target_type': taxonomy_term
+        '#selection_handler': 'default:taxonomy_term'
+        '#selection_settings':
+          target_bundles:
+            orgunit: orgunit
+          sort:
+            field: name
+            direction: ASC
+          auto_create: false
+          auto_create_bundle: orgunit
+      owner:
+        '#type': webform_entity_select
+        '#title': Owner
+        '#target_type': user
+        '#selection_handler': 'default:user'
+        '#selection_settings':
+          include_anonymous: true
+          filter:
+            type: _none
       location:
         '#type': webform_term_select
         '#title': Location
-        '#vocabulary': locations
-        '#breadcrumb_delimiter': ''
-      consultant_type:
-        '#type': webform_term_select
-        '#title': 'Consultant Type'
-        '#vocabulary': consultant_types
+        '#vocabulary': location
         '#breadcrumb_delimiter': ''
       start_date:
         '#type': date
@@ -100,25 +78,25 @@ elements: |
         '#type': date
         '#title': 'End date'
         '#date_date_format': ''
-    approval_information:
-      '#type': fieldset
-      '#title': 'Approval Information'
-      time_limit:
-        '#type': date
-        '#title': 'Time Limit'
-        '#date_date_format': ''
-      justification:
-        '#type': textfield
-        '#title': Justification
-      approver:
-        '#type': webform_entity_select
-        '#title': Approver
-        '#target_type': user
-        '#selection_handler': 'default:user'
-        '#selection_settings':
-          include_anonymous: true
-          filter:
-            type: _none
+      approval_information:
+        '#type': fieldset
+        '#title': 'Approval Information'
+        time_limit:
+          '#type': date
+          '#title': 'Time Limit'
+          '#date_date_format': ''
+        justification:
+          '#type': textfield
+          '#title': Justification
+        approver:
+          '#type': webform_entity_select
+          '#title': Approver
+          '#target_type': user
+          '#selection_handler': 'default:user'
+          '#selection_settings':
+            include_anonymous: false
+            filter:
+              type: _none
 css: ''
 javascript: ''
 settings:
@@ -307,7 +285,7 @@ handlers:
     conditions: {  }
     weight: 0
     settings:
-      maestro_template: create_external
+      maestro_template: request_org_unit
       maestro_message_success: ''
       maestro_message_failure: ''
 variants: {  }
