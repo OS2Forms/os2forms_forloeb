@@ -6,11 +6,11 @@
  */
 
 /**
- * Implements hook_install().
+ * Implements hook_install_N().
  */
-function os2forms_forloeb_install_8001() {
+function os2forms_forloeb_install_8901() {
 
-  // List of themes to uninstall
+  // List of themes to install
   $theme_list = [
     'claro',
     'gin',
@@ -34,8 +34,36 @@ function os2forms_forloeb_install_8001() {
 
 /**
  * Implements hook_update_N().
- * Uninstall Update Manager core module
+ * Uninstall Update Manager core module on install
  */
-function os2forms_forloeb_update_8001() {
+function os2forms_forloeb_update_8901() {
   \Drupal::service('module_installer')->uninstall(['update']);
+}
+
+/**
+ * Implements hook_update_N().
+ * Install Update Manager core module on uninstall
+ */
+function os2forms_forloeb_uninstall_8901() {
+  // List of core modules to uninstall
+  $module_list = [
+    'update'
+  ];
+
+  // Install listed core modules.
+  \Drupal::service('module_installer')->install($module_list);
+}
+
+/**
+ * Implements hook_update_N().
+ * Uninstall Switch Page Theme module on uninstall
+ */
+function os2forms_forloeb_uninstall_8902() {
+  // List of modules to uninstall
+  $module_list = [
+    'switch_page_theme'
+  ];
+
+  // Uninstall listed modules.
+  \Drupal::service('module_installer')->uninstall($module_list);
 }
