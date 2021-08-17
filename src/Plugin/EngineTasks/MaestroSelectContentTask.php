@@ -192,42 +192,42 @@ class MaestroSelectContentTask extends PluginBase implements MaestroEngineTaskIn
    * {@inheritDoc}
    */
   public function getExecutableForm($modal, MaestroExecuteInteractive $parent) {
-    $form['forloebsside'] = [
-      '#id' => 'forloebsside',
+    $form['webform'] = [
+      '#id' => 'webform',
       '#type' => 'radios',
       '#options' => [
-        0 => t('Choose an Existing Forløbsside'),
-        1 => t('Create a New Forløbsside'),
+        0 => t('Choose an Existing self-service page'),
+        1 => t('Create a New self-service page'),
       ],
       '#default_value' => 0,
-      '#title' => t('Create or Select a Forløbsside'),
+      '#title' => t('Create or Select a self-service page'),
       '#required' => TRUE,
     ];
 
-    // Query for all Forløbssider.
-    $forloebssider = [];
+    // Query for all webforms.
+    $webforms = [];
     $nids = \Drupal::entityQuery('node')
-      ->condition('type', 'forloebsside')
+      ->condition('type', 'webform')
       ->execute();
-    $forloebsside_nodes = Node::loadMultiple($nids);
-    foreach ($forloebsside_nodes as $nid => $forloebsside_node) {
-      $forloebssider[$nid] = $forloebsside_node->getTitle();
+    $webform_nodes = Node::loadMultiple($nids);
+    foreach ($webform_nodes as $nid => $webform_node) {
+      $webforms[$nid] = $webform_node->getTitle();
     }
 
-    $form['existing_forloebsside'] = [
-      '#id' => 'existing_forloebsside',
+    $form['existing_webform'] = [
+      '#id' => 'existing_webform',
       '#type' => 'select',
-      '#options' => $forloebssider,
-      '#title' => t('Choose an Existing Forløbsside'),
+      '#options' => $webforms,
+      '#title' => t('Choose an Existing self-service page'),
       '#validated' => TRUE,
-      '#prefix' => '<div id="existing-forloebsside-wrapper">',
+      '#prefix' => '<div id="existing-webform-wrapper">',
       '#suffix' => '</div>',
       '#states' => [
         'invisible' => [
-          ':input[name="new_forloebsside"]' => ['value' => 1],
+          ':input[name="new_webform"]' => ['value' => 1],
         ],
         'required' => [
-          ':input[name="new_forloebsside"]' => ['value' => 0],
+          ':input[name="new_webform"]' => ['value' => 0],
         ],
       ],
     ];
@@ -247,13 +247,13 @@ class MaestroSelectContentTask extends PluginBase implements MaestroEngineTaskIn
     // selected and the entity_form is hidden.
     $form['entity_form'] = [
       '#type' => 'fieldset',
-      '#title' => 'Create a Forløbsside',
+      '#title' => 'Opret Selvbetjeningsside',
       '#states' => [
         'invisible' => [
-          ':input[name="new_forloebsside"]' => ['value' => 0],
+          ':input[name="new_webform"]' => ['value' => 0],
         ],
         'required' => [
-          ':input[name="new_forloebsside"]' => ['value' => 1],
+          ':input[name="new_webform"]' => ['value' => 1],
         ],
       ],
     ];
@@ -266,19 +266,19 @@ class MaestroSelectContentTask extends PluginBase implements MaestroEngineTaskIn
     $form['#parents'] = [];
 
     // Load an entity and store on the form state.
-    $new_forloebsside = \Drupal::entityTypeManager()->getStorage('node')->create([
-      'type' => 'forloebsside',
+    $new_webform = \Drupal::entityTypeManager()->getStorage('node')->create([
+      'type' => 'webform',
     ]);
-    $form_state->set('entity', $new_forloebsside);
+    $form_state->set('entity', $new_webform);
 
     // Load the form display.
-    $forloebsside_form_display = \Drupal::entityTypeManager()->getStorage('entity_form_display')->load('node.forloebsside.default');
-    $form_state->set('form_display', $forloebsside_form_display);
+    $webform_form_display = \Drupal::entityTypeManager()->getStorage('entity_form_display')->load('node.webform.default');
+    $form_state->set('form_display', $webform_form_display);
     // Loop over the form display and add fields to the maestro form.
-    foreach ($forloebsside_form_display->getComponents() as $name => $component) {
+    foreach ($webform_form_display->getComponents() as $name => $component) {
       // Load the component's configured widget.
-      $widget = $forloebsside_form_display->getRenderer($name);
-      $items = $new_forloebsside->get($name);
+      $widget = $webform_form_display->getRenderer($name);
+      $items = $new_webform->get($name);
       $form['entity_form'][$name] = $widget->form($items, $form, $form_state);
       $form['entity_form'][$name]['#weight'] = $component['weight'];
       // Make the title field required.
@@ -323,35 +323,35 @@ class MaestroSelectContentTask extends PluginBase implements MaestroEngineTaskIn
     $processID = MaestroEngine::getProcessIdFromQueueId($queueID);
 
     if (strstr($triggeringElement['#id'], 'edit-submit') !== FALSE && $queueID > 0) {
-      // If existing forløbsside is chosen simply assign it to this process
-      // If a new artivle is chosen create that forløbsside
+      // If existing self-service page is chosen simply assign it to this process
+      // If a new artivle is chosen create that self-service page
       // and assign it to this process.
-      if ($form_state->getValue('new_forloebsside')) {
-        // Create the new forloebsside entity.
-        $new_forloebsside = \Drupal::entityTypeManager()->getStorage('node')->create([
-          'type' => 'forloebsside',
+      if ($form_state->getValue('new_webform')) {
+        // Create the new self-service page entity.
+        $new_webform = \Drupal::entityTypeManager()->getStorage('node')->create([
+          'type' => 'webform',
         ]);
         // Load te form display.
-        $forloebsside_form_display = \Drupal::entityTypeManager()->getStorage('entity_form_display')->load('node.forloebsside.default');
+        $webform_form_display = \Drupal::entityTypeManager()->getStorage('entity_form_display')->load('node.webform.default');
         // Extract all of the form display's fields that are in the form_state
-        // value and assign to the new forloebsside.
-        $forloebsside_form_display->extractFormValues($new_forloebsside, $form, $form_state);
-        // Save the forloebsside.
-        $new_forloebsside->save();
-        // Assign this forloebsside to the maestro variable.
-        MaestroEngine::setProcessVariable("new_forloebsside", $new_forloebsside->id(), $processID);
+        // value and assign to the new self-service page.
+        $webform_form_display->extractFormValues($new_webform, $form, $form_state);
+        // Save the self-service page.
+        $new_webform->save();
+        // Assign this self-service page to the maestro variable.
+        MaestroEngine::setProcessVariable("new_webform", $new_webform->id(), $processID);
         // Bound this entity to this maestro process.
         $templateTask = MaestroEngine::getTemplateTaskByQueueID($queueID);
-        MaestroEngine::createEntityIdentifier($processID, 'node', 'forloebsside', $templateTask['data']['unique_id'], $new_forloebsside->id());
+        MaestroEngine::createEntityIdentifier($processID, 'node', 'webform', $templateTask['data']['unique_id'], $new_webform->id());
         // Complete this task.
         MaestroEngine::completeTask($queueID, \Drupal::currentUser()->id());
       }
       else {
-        $forloebsside_nid = $form_state->getValue('existing_forloebsside');
-        MaestroEngine::setProcessVariable("new_forloebsside", $forloebsside_nid, $processID);
+        $webform_nid = $form_state->getValue('existing_webform');
+        MaestroEngine::setProcessVariable("new_webform", $webform_nid, $processID);
         // Bound this entity to this maestro process.
         $templateTask = MaestroEngine::getTemplateTaskByQueueID($queueID);
-        MaestroEngine::createEntityIdentifier($processID, 'node', 'forloebsside', $templateTask['data']['unique_id'], $forloebsside_nid);
+        MaestroEngine::createEntityIdentifier($processID, 'node', 'webform', $templateTask['data']['unique_id'], $webform_nid);
 
         // Complete this task.
         MaestroEngine::completeTask($queueID, \Drupal::currentUser()->id());

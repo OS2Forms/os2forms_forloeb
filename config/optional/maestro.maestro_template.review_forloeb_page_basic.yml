@@ -4,8 +4,8 @@ dependencies:
   enforced:
     module:
     - os2forms_forloeb
-id: review_forloeb_page_basic
-label: 'Review af Forløbsside simpel'
+id: review_webform_page_basic
+label: 'Review af Selvbetjeningsside simpel'
 app_group: 0
 canvas_height: 900
 canvas_width: 800
@@ -78,8 +78,8 @@ tasks:
     falsebranch: ''
     lines: {  }
     data:
-      unique_id: forloebsside
-      content_type: forloebsside
+      unique_id: webform
+      content_type: webform
       save_edit_later: 1
       link_to_edit: 1
       show_maestro_buttons_on_view: 0
@@ -89,7 +89,7 @@ tasks:
       reject_redirect_to: ''
       supply_maestro_ids_in_url: 0
       redirect_to: taskconsole
-    handler: '/node/add/forloebsside?maestro=1'
+    handler: '/node/add/webform?maestro=1'
     assigned: 'user:variable:initiator'
     runonce: false
     showindetail: true
@@ -121,8 +121,8 @@ tasks:
     falsebranch: ''
     lines: {  }
     data:
-      unique_id: forloebsside
-      content_type: forloebsside
+      unique_id: webform
+      content_type: webform
       save_edit_later: 0
       link_to_edit: 0
       show_maestro_buttons_on_view: 1
@@ -132,7 +132,7 @@ tasks:
       reject_redirect_to: /taskconsole
       supply_maestro_ids_in_url: 0
       redirect_to: taskconsole
-    handler: '/node/add/forloebsside?maestro=1'
+    handler: '/node/add/webform?maestro=1'
     assigned: 'user:variable:assigned_to'
     runonce: false
     showindetail: true

@@ -2,7 +2,6 @@ langcode: da
 status: true
 dependencies:
   config:
-  - node.type.forloebsside
   - node.type.webform
   enforced:
     module:
@@ -66,6 +65,5 @@ type_settings:
       weight: 2
   entity_types:
     node:
-    - forloebsside
     - webform
   default_moderation_state: draft
