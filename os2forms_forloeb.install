@@ -6,6 +6,14 @@
  */
 
 /**
+ * Implements hook_update_N().
+ * Uninstall Update Manager core module on install
+ */
+function os2forms_forloeb_update_8901() {
+  \Drupal::service('module_installer')->uninstall(['update']);
+}
+
+/**
  * Implements hook_install_N().
  */
 function os2forms_forloeb_install_8901() {
@@ -33,19 +41,11 @@ function os2forms_forloeb_install_8901() {
 }
 
 /**
- * Implements hook_update_N().
- * Uninstall Update Manager core module on install
- */
-function os2forms_forloeb_update_8901() {
-  \Drupal::service('module_installer')->uninstall(['update']);
-}
-
-/**
- * Implements hook_update_N().
+ * Implements hook_uninstall_N().
  * Install Update Manager core module on uninstall
  */
 function os2forms_forloeb_uninstall_8901() {
-  // List of core modules to uninstall
+  // List of core modules to install
   $module_list = [
     'update'
   ];
@@ -55,7 +55,7 @@ function os2forms_forloeb_uninstall_8901() {
 }
 
 /**
- * Implements hook_update_N().
+ * Implements hook_uninstall_N().
  * Uninstall Switch Page Theme module on uninstall
  */
 function os2forms_forloeb_uninstall_8902() {
