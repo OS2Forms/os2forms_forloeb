@@ -4,8 +4,8 @@ dependencies:
   enforced:
     module:
     - os2forms_forloeb
-id: review_forloeb_page_extended
-label: 'Review af Forløbsside udbygget'
+id: review_webform_page_extended
+label: 'Review af Selvbetjeningsside udbygget'
 app_group: 0
 canvas_height: 900
 canvas_width: 800
@@ -64,7 +64,7 @@ tasks:
     assignto: engine
   content_review:
     id: content_review
-    label: 'Review af Forløbsside'
+    label: 'Review af Selvbetjeningsside'
     tasktype: MaestroContentType
     nextstep: assign_sagsbehandler
     nextfalsestep: ''
