@@ -26,6 +26,7 @@
     "drupal/events_logging": "1.4.0",
     "drupal/embed": "1.4.0",
     "drupal/gin": "^3.0",
+    "drupal/gin_toolbar": "^1.0",
     "drupal/header_and_footer_scripts": "2.2.0",
     "drupal/image_widget_crop": "2.3.0",
     "drupal/ldap": "^3.0@beta",
