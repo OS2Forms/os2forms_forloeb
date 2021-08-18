@@ -9,8 +9,6 @@
  * Implements hook_install().
  */
 function os2forms_forloeb_install() {
-
-  // List of themes to uninstall
   $theme_list = [
     'claro',
     'gin',
@@ -29,25 +27,6 @@ function os2forms_forloeb_install() {
     ->set('default', 'custom_theme')
     ->set('admin', 'gin')
     ->save();
-
-  // List of core modules to uninstall
-  $module_list = [
-    'update'
-  ];
-
-  // Uninstall listed core modules.
-  \Drupal::service('module_installer')->uninstall($module_list);
-}
-
-/**
- * Implements update_cron() unset to disable update manager checking for updates on each cron run.
- * It is still possible to check for updates manually from admin/reports/updates,
- * but Drupal would not check for updates during cron tasks.
- */
-function os2forms_forloeb_implements_alter(&$implementations, $hook) {
-  if ($hook == 'cron') {
-    unset($implementations['update']);
-  }
 }
 
 use Drupal\maestro\Engine\MaestroEngine;
@@ -58,9 +37,9 @@ use Drupal\maestro\Engine\MaestroEngine;
  * form under the handler field.
  */
 function os2forms_forloeb_maestro_interactive_handlers() {
-    return [
-        'os2forms_forloeb_workflow_maestro_reassign_form' => t('Tilføj sagsbehandler'),
-    ];
+  return [
+    'os2forms_forloeb_workflow_maestro_reassign_form' => t('Tilføj sagsbehandler'),
+  ];
 }
 
 /**
@@ -75,26 +54,26 @@ function os2forms_forloeb_maestro_interactive_handlers() {
  */
 function os2forms_forloeb_workflow_maestro_reassign_form(&$form, $queueID = 0, $obj) {
 
-    $form['reviewer'] = array(
-        '#id' => 'select_assigned_user',
-        '#type' => 'entity_autocomplete',
-        '#target_type' => 'user',
-        '#default_value' => '',
-        '#selection_settings' => ['include_anonymous' => FALSE],
-        '#title' =>  t('Assign for Review to'),
-    );
+  $form['reviewer'] = array(
+    '#id' => 'select_assigned_user',
+    '#type' => 'entity_autocomplete',
+    '#target_type' => 'user',
+    '#default_value' => '',
+    '#selection_settings' => ['include_anonymous' => FALSE],
+    '#title' =>  t('Assign for Review to'),
+  );
 
-    $form['queueID'] = array(
-        '#type' => 'hidden',
-        '#title' => 'the queue ID in the event we need it in later processing',
-        '#default_value' => $queueID,
-        '#description' => ('queueID'),
-    );
+  $form['queueID'] = array(
+    '#type' => 'hidden',
+    '#title' => 'the queue ID in the event we need it in later processing',
+    '#default_value' => $queueID,
+    '#description' => ('queueID'),
+  );
 
-    //overriding the default label "complete"
-    $form['actions']['submit']['#value'] = t('Assign');
+  //overriding the default label "complete"
+  $form['actions']['submit']['#value'] = t('Assign');
 
-    return $form;
+  return $form;
 }
 
 
@@ -103,19 +82,19 @@ function os2forms_forloeb_workflow_maestro_reassign_form(&$form, $queueID = 0, $
  */
 function os2forms_forloeb_workflow_maestro_reassign_form_submit(&$form, &$form_state) {
 
-    $queueID = intval($form_state->getValue('queueID'));
-    $processID = MaestroEngine::getProcessIdFromQueueId($queueID);
+  $queueID = intval($form_state->getValue('queueID'));
+  $processID = MaestroEngine::getProcessIdFromQueueId($queueID);
 
-    //Who was selected? Load their username, which is the user attribute that Maestro assigns tasks by.
-    $reviewer_uid = $form_state->getValue('reviewer');
-    $reviewer = \Drupal\user\Entity\User::load($reviewer_uid); // pass your uid
-    $reviewer_username = $reviewer->getUsername();
+  //Who was selected? Load their username, which is the user attribute that Maestro assigns tasks by.
+  $reviewer_uid = $form_state->getValue('reviewer');
+  $reviewer = \Drupal\user\Entity\User::load($reviewer_uid); // pass your uid
+  $reviewer_username = $reviewer->getUsername();
 
-    //add that user to our maestro process variable.
-    MaestroEngine::setProcessVariable("assigned_to", $reviewer_username, $processID);
+  //add that user to our maestro process variable.
+  MaestroEngine::setProcessVariable("assigned_to", $reviewer_username, $processID);
 
-    //Provide some feedback
-    \Drupal::messenger()->addStatus("Content Reassigned");
+  //Provide some feedback
+  \Drupal::messenger()->addStatus("Content Reassigned");
 
 }
 
@@ -126,44 +105,44 @@ function os2forms_forloeb_workflow_maestro_reassign_form_submit(&$form, &$form_s
  *     * in the edit task form under the handler field.
  *      */
 function os2forms_forloeb_maestro_batch_handlers() {
-      return [
-              'end_notification_batch_function' => t('Batch function to send out flow completion notification to initiator.'),
-      ];
+  return [
+    'end_notification_batch_function' => t('Batch function to send out flow completion notification to initiator.'),
+  ];
 }
 
 /**
-    *  * @param int $processID
-    *   *   The Maestro process ID.
-    *    * @param int $queueID
-    *     *   The Maestro queue ID.
-    *      */
+ *  * @param int $processID
+ *   *   The Maestro process ID.
+ *    * @param int $queueID
+ *     *   The Maestro queue ID.
+ *      */
 function end_notification_batch_function($processID, $queueID) {
 
-   /*
-    * Pseudocode for handling this:
-    *
-    *     * Get entity item for webform which spawned this process
-    *      (ID "submission").
-    *       foreach handler in webform: {
-    *           if (email_handler) {
-    *               email_handler.submit();
-    *           }
-    *       }
-    */
-    $sid = MaestroEngine::getEntityIdentiferByUniqueID($processID, 'submission');
+  /*
+   * Pseudocode for handling this:
+   *
+   *     * Get entity item for webform which spawned this process
+   *      (ID "submission").
+   *       foreach handler in webform: {
+   *           if (email_handler) {
+   *               email_handler.submit();
+   *           }
+   *       }
+   */
+  $sid = MaestroEngine::getEntityIdentiferByUniqueID($processID, 'submission');
 
-    if ($sid) {
-        $webform_submission = \Drupal\webform\Entity\WebformSubmission::load($sid);
-        $webform =  $webform_submission->getWebform();
-        $handlers = $webform->getHandlers();
+  if ($sid) {
+    $webform_submission = \Drupal\webform\Entity\WebformSubmission::load($sid);
+    $webform =  $webform_submission->getWebform();
+    $handlers = $webform->getHandlers();
 
-        foreach ($handlers as $handler) {
-            if (method_exists($handler, 'getMessage')) {
-                $message = $handler->getMessage($webform_submission);
-                $handler->sendMessage($webform_submission, $message);
-            }
-        }
+    foreach ($handlers as $handler) {
+      if (method_exists($handler, 'getMessage')) {
+        $message = $handler->getMessage($webform_submission);
+        $handler->sendMessage($webform_submission, $message);
+      }
     }
+  }
 
-    return TRUE;
+  return TRUE;
 }
