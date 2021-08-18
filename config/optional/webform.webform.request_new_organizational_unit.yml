@@ -3,6 +3,27 @@ status: open
 dependencies:
   module:
     - maestro_webform
+    - os2forms
+    - webform_entity_print
+third_party_settings:
+  os2forms:
+    os2forms_nemid:
+      webform_type: ''
+      nemlogin_auto_redirect: 0
+  webform_entity_print:
+    template:
+      header: ''
+      footer: ''
+      css: ''
+    export_types:
+      pdf:
+        enabled: true
+        link_text: ''
+        link_attributes: {  }
+      word_docx:
+        enabled: false
+        link_text: ''
+        link_attributes: {  }
 open: null
 close: null
 weight: 0
@@ -10,10 +31,55 @@ uid: 1
 template: false
 archive: false
 id: request_new_organizational_unit
-title: 'Request New Organizational Unit'
+title: 'Request New External Organizational Unit'
 description: 'Send a request for creating a new organizational unit and submit it for approval.'
 category: GIR
-elements: "organizational_data:\n  '#type': fieldset\n  '#title': 'Organizational Data'\n  name:\n    '#type': textfield\n    '#title': Name\n    '#required': true\n  display_in_gui:\n    '#type': checkbox\n    '#title': 'Display in GUI'\n  parent_unit:\n    '#type': entity_autocomplete\n    '#title': 'Parent Unit'\n    '#target_type': taxonomy_term\n    '#selection_handler': 'default:taxonomy_term'\n    '#selection_settings':\n      target_bundles:\n        orgunit: orgunit\n      sort:\n        field: name\n        direction: ASC\n      auto_create: false\n      auto_create_bundle: orgunit\n  location:\n    '#type': webform_term_select\n    '#title': Location\n    '#vocabulary': location\n    '#breadcrumb_delimiter': ''\n  start_date:\n    '#type': date\n    '#title': 'Start date'\n    '#date_date_format': ''\n  end_date:\n    '#type': date\n    '#title': 'End date'\n    '#date_date_format': ''\napproval_information:\n  '#type': fieldset\n  '#title': 'Approval Information'\n  time_limit:\n    '#type': date\n    '#title': 'Time Limit'\n    '#date_date_format': ''\n  justification:\n    '#type': textfield\n    '#title': Justification\n  approver:\n    '#type': webform_entity_select\n    '#title': Approver\n    '#target_type': user\n    '#selection_handler': 'default:user'\n    '#selection_settings':\n      include_anonymous: false\n      filter:\n        type: _none\nowner:\n  '#type': webform_entity_select\n  '#title': Owner\n  '#target_type': user\n  '#selection_handler': 'default:user'\n  '#selection_settings':\n    include_anonymous: true\n    filter:\n      type: _none"
+elements: |
+  organizational_data:
+    '#type': fieldset
+    '#title': 'Organizational Data'
+    name:
+      '#type': textfield
+      '#title': Name
+      '#required': true
+    owner:
+      '#type': entity_autocomplete
+      '#title': Owner
+      '#target_type': user
+      '#selection_handler': 'default:user'
+      '#selection_settings':
+        include_anonymous: false
+        filter:
+          type: _none
+      '#required': true
+    start_date:
+      '#type': date
+      '#title': 'Start date'
+      '#date_date_format': ''
+      '#required': true
+    end_date:
+      '#type': date
+      '#title': 'End date'
+      '#date_date_format': ''
+  approval_information:
+    '#type': fieldset
+    '#title': 'Approval Information'
+    time_limit:
+      '#type': date
+      '#title': 'Time Limit'
+      '#date_date_format': ''
+    justification:
+      '#type': textfield
+      '#title': Justification
+    approver:
+      '#type': webform_entity_select
+      '#title': Approver
+      '#target_type': user
+      '#selection_handler': 'default:user'
+      '#selection_settings':
+        include_anonymous: false
+        filter:
+          type: _none
 css: ''
 javascript: ''
 settings:
@@ -206,4 +272,3 @@ handlers:
       maestro_message_success: ''
       maestro_message_failure: ''
 variants: {  }
-
