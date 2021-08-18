@@ -27,6 +27,7 @@ elements: |
       '#suffix__access': false
       '#degree__access': false
       '#flexbox': '1'
+      '#required': true
     telephone_number:
       '#type': tel
       '#title': 'Telephone Number'
@@ -43,9 +44,16 @@ elements: |
           consultancy: consultancy
         auto_create: false
         auto_create_bundle: consultancy
+      '#required': true
   employment_data:
     '#type': fieldset
     '#title': 'Employment Data'
+    consultant_type:
+      '#type': webform_term_select
+      '#title': 'Consultant Type'
+      '#vocabulary': consultant_type
+      '#breadcrumb_delimiter': ''
+      '#required': true
     location:
       '#type': webform_term_select
       '#title': Location
@@ -61,21 +69,22 @@ elements: |
           cost_center: cost_center
         auto_create: false
         auto_create_bundle: cost_center
+      '#required': true
     organizational_unit:
       '#type': entity_autocomplete
       '#title': 'Organizational Unit'
+      '#multiple': true
       '#target_type': taxonomy_term
       '#selection_handler': 'default:taxonomy_term'
       '#selection_settings':
         target_bundles:
           orgunit: orgunit
+        sort:
+          field: name
+          direction: ASC
         auto_create: false
         auto_create_bundle: orgunit
-    consultant_type:
-      '#type': webform_term_select
-      '#title': 'Consultant Type'
-      '#vocabulary': consultant_type
-      '#breadcrumb_delimiter': ''
+      '#required': true
     start_date:
       '#type': date
       '#title': 'Start date'
