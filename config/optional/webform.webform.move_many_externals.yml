@@ -2,6 +2,27 @@ langcode: en
 status: open
 dependencies:
   module:
+    - os2forms
+    - webform_entity_print
+third_party_settings:
+  os2forms:
+    os2forms_nemid:
+      webform_type: ''
+      nemlogin_auto_redirect: 0
+  webform_entity_print:
+    template:
+      header: ''
+      footer: ''
+      css: ''
+    export_types:
+      pdf:
+        enabled: true
+        link_text: ''
+        link_attributes: {  }
+      word_docx:
+        enabled: false
+        link_text: ''
+        link_attributes: {  }
 open: null
 close: null
 weight: 0
@@ -11,8 +32,8 @@ archive: false
 id: move_many_externals
 title: 'Move many externals'
 description: ''
-category: ''
-elements: "origin_and_destination_units:\n  '#type': fieldset\n  '#title': 'Origin and Destination Units'\n  origin:\n    '#type': webform_term_select\n    '#title': 'Origin Unit'\n    '#vocabulary': orgunit\n    '#breadcrumb_delimiter': ''\n  destination_unit:\n    '#type': webform_term_select\n    '#title': 'Destination Unit'\n    '#vocabulary': orgunit\n    '#breadcrumb_delimiter': ''\nexternals:\n  '#type': fieldset\n  '#title': Externals\n  peter_hansen:\n    '#type': checkbox\n    '#title': 'Peter Hansen'\n  julie_jorgensen:\n    '#type': checkbox\n    '#title': 'Julie Jørgensen'\n  morten_hansen:\n    '#type': checkbox\n    '#title': 'Morten Hansen'\n  sdasds:\n    '#type': checkbox\n    '#title': ...\napproval_information:\n  '#type': fieldset\n  '#title': 'Approval Information'\n  time_limit:\n    '#type': date\n    '#title': 'Time Limit'\n    '#date_date_format': ''\n  justification:\n    '#type': textfield\n    '#title': Justification\n  approver:\n    '#type': webform_entity_select\n    '#title': Approver\n    '#target_type': user\n    '#selection_handler': 'default:user'\n    '#selection_settings':\n      include_anonymous: true\n      filter:\n        type: _none"
+category: GIR
+elements: "origin_and_destination_units:\n  '#type': fieldset\n  '#title': 'Origin and Destination Units'\n  origin_unit:\n    '#type': entity_autocomplete\n    '#title': 'Origin Unit'\n    '#target_type': taxonomy_term\n    '#selection_handler': 'default:taxonomy_term'\n    '#selection_settings':\n      target_bundles:\n        orgunit: orgunit\n      auto_create: false\n      auto_create_bundle: orgunit\n  destination_unit:\n    '#type': entity_autocomplete\n    '#title': 'Destination Unit'\n    '#target_type': taxonomy_term\n    '#selection_handler': 'default:taxonomy_term'\n    '#selection_settings':\n      target_bundles:\n        orgunit: orgunit\n      auto_create: false\n      auto_create_bundle: orgunit\nexternals:\n  '#type': fieldset\n  '#title': Externals\n  peter_hansen:\n    '#type': checkbox\n    '#title': 'Peter Hansen'\n  julie_jorgensen:\n    '#type': checkbox\n    '#title': 'Julie Jørgensen'\n  morten_hansen:\n    '#type': checkbox\n    '#title': 'Morten Hansen'\n  sdasds:\n    '#type': checkbox\n    '#title': ...\napproval_information:\n  '#type': fieldset\n  '#title': 'Approval Information'\n  time_limit:\n    '#type': date\n    '#title': 'Time Limit'\n    '#date_date_format': ''\n  justification:\n    '#type': textfield\n    '#title': Justification\n  approver:\n    '#type': entity_autocomplete\n    '#title': Approver\n    '#target_type': user\n    '#selection_handler': 'default:user'\n    '#selection_settings':\n      include_anonymous: false\n      filter:\n        type: _none"
 css: ''
 javascript: ''
 settings:

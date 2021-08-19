@@ -36,10 +36,15 @@ class OrgunitWebformHandler extends WebformHandlerBase {
 
         $values = $webform_submission->getData();
 
-        $org_unit_id = $values['organizational_unit'];
+	$org_unit_id = $values['organizational_unit'];
+
         $org_unit_term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($org_unit_id);
 
-        $uuid = $org_unit_term->get('field_uuid')->value;
+	$uuid = $org_unit_term->get('field_uuid')->value;
+
+	if (!$uuid) {
+            return;
+	}
 
         $mo_url = get_gir_url();
 
@@ -49,14 +54,14 @@ class OrgunitWebformHandler extends WebformHandlerBase {
         $ou_url = $mo_url . $org_unit_path;
         // Authenticate
         $headers = [ 'Authorization' => 'Bearer ' . $auth_token, 'Accept' => 'application/json', ];
-
+        
 	try {
             $response = \Drupal::httpClient()->request(
                 'GET', $ou_url, [
                 'headers' => $headers
                 ]
             );
-        } catch (GuzzleHttp\Exception\BadResponseException $e) {
+        } catch (GuzzleHttp\Exception\ClientException $e) {
             $response = $e->getResponse();
         }
 
