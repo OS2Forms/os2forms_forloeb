@@ -1,0 +1,89 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.taxonomy_term.consultant_type.field_user_key
+    - field.field.taxonomy_term.consultant_type.field_uuid
+    - taxonomy.vocabulary.consultant_type
+  module:
+    - feeds_ex
+    - os2forms_forloeb
+    - taxonomy
+id: consultant_types
+label: 'Consultant types'
+description: 'Import all members of the GIR facet "engagement_type"'
+help: ''
+import_period: 3600
+fetcher: keycloakauth
+fetcher_configuration:
+  auto_detect_feeds: 0
+  use_pubsubhubbub: 0
+  always_download: 0
+  fallback_hub: ''
+  request_timeout: '30'
+parser: jsonpath
+parser_configuration:
+  context:
+    value: '$.data.items.*'
+  sources:
+    name:
+      label: name
+      value: name
+    user_key:
+      label: user_key
+      value: user_key
+    uuid:
+      label: uuid
+      value: uuid
+  display_errors: false
+  source_encoding:
+    - auto
+  debug_mode: false
+  line_limit: 100
+processor: 'entity:taxonomy_term'
+processor_configuration:
+  langcode: en
+  update_existing: 0
+  update_non_existent: _keep
+  expire: -1
+  skip_hash_check: false
+  values:
+    vid: consultant_type
+  owner_id: 0
+  authorize: false
+  owner_feed_author: false
+custom_sources:
+  name:
+    label: name
+    value: name
+    machine_name: name
+  user_key:
+    label: user_key
+    value: user_key
+    machine_name: user_key
+  uuid:
+    label: uuid
+    value: uuid
+    machine_name: uuid
+mappings:
+  -
+    target: name
+    map:
+      value: name
+    unique: {  }
+    settings:
+      language: null
+  -
+    target: field_user_key
+    map:
+      value: user_key
+    unique: {  }
+    settings:
+      language: null
+  -
+    target: field_uuid
+    map:
+      value: uuid
+    unique: {  }
+    settings:
+      language: null
