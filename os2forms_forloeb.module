@@ -224,6 +224,14 @@ function get_gir_url() {
 }
 
 
+function get_externals_parent() {
+
+    $forloeb_configuration = \Drupal::config('os2forms_forloeb.settings');
+    $gir_url = $forloeb_configuration->get('externals_root');
+
+    return $gir_url;
+}
+
 function get_openid_auth_token() {
     // TODO: This is a utility token to get an OpenID Connect bearer token from Keycloak.
     // At some point, this should be moved to a "utilities" file.
@@ -299,10 +307,8 @@ function os2forms_forloeb_gir_create_org_unit($processID, $queueID) {
 
         // Org data
 	$name = $values['name'];
-        $display_in_gui = $values['display_in_gui'];
-        $parent_unit_id = $values['parent_unit'];
-        // TODO: Extract MO UUID for location.
-        $location = $values['location'];
+        $parent_unit_id = get_externals_parent();
+        // TODO: Handle location/address data correctly.
         $start_date = $values['start_date'];
         $end_date = $values['end_date'];
 
@@ -355,12 +361,12 @@ function os2forms_forloeb_gir_create_org_unit($processID, $queueID) {
     } catch (GuzzleHttp\Exception\BadResponseException $e) {
         $response = $e->getResponse();
     }
-    $body = $response->getBody();
     $status_code = $response->getStatusCode();
     if ($status_code == 201) {
         $url_status = "Success";
         $url_body = "Org unit " . $name . "was created.";
     } else {
+        $body = $response->getBody();
         $url_status = "Failed";
         $url_body = "Unable to create org unit " . $name . ": " . $body;
     }
@@ -391,7 +397,8 @@ function os2forms_forloeb_gir_create_external($processID, $queueID) {
 
         // Employee Data
 	$name = $values['name']['first'] . ' ' . $values['name']['last'];
-        // TODO: Extract MO UUID for parent unit.
+        // TODO: Format data with MO UUIDs for consultancy, consultant
+        // type, cost center and org units.
         $start_date = $values['start_date'];
         $end_date = $values['end_date'];
 
@@ -420,16 +427,24 @@ function os2forms_forloeb_gir_create_external($processID, $queueID) {
     // Get access token for authentication.
     $access_token = get_openid_auth_token();
     $headers = [ 'Authorization' => 'Bearer ' . $access_token, 'Accept' => 'application/json', ];
+    
+    try {
+        $response = \Drupal::httpClient()->request(
+            'POST', $create_url, [ 'body' => $post_data, 'headers' => $headers ]
+        );
+    } catch (GuzzleHttp\Exception\BadResponseException $e) {
+        $response = $e->getResponse();
+    }
 
-    $response = \Drupal::httpClient()->request(
-	'POST', $create_url, [ 'body' => $post_data, 'headers' => $headers ]
-    );
     $status_code = $response->getStatusCode();
-    if ($status_code == 200 or $status_code == 201) {
-        $body = $response->getBody();
+    if ($status_code == 201) {
+        $url_status = "Success";
+        $url_body = "Org unit " . $name . "was created.";
     }
     else {
-        $body = '';
+        $body = $response->getBody();
+        $url_status = "Failed";
+        $url_body = "Unable to create org unit " . $name . ": " . $body;
     }
 
     MaestroEngine::setProcessVariable('url_status', $status_code, $processID);
