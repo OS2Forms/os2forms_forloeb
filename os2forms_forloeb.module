@@ -349,7 +349,11 @@ function os2forms_forloeb_gir_create_org_unit($processID, $queueID) {
     $access_token = get_openid_auth_token();
 
     \Drupal::logger('os2forms_forloeb')->notice('Org Unit JSON sent: ' . '<' . $post_data . '>');
-    $headers = [ 'Authorization' => 'Bearer ' . $access_token, 'Accept' => 'application/json', ];
+    $headers = [
+        'Authorization' => 'Bearer ' . $access_token,
+        'Accept' => 'application/json', 
+        'content-type' => 'application/json',
+    ];
 
     try {
         $response = \Drupal::httpClient()->request(
@@ -426,7 +430,11 @@ function os2forms_forloeb_gir_create_external($processID, $queueID) {
     
     // Get access token for authentication.
     $access_token = get_openid_auth_token();
-    $headers = [ 'Authorization' => 'Bearer ' . $access_token, 'Accept' => 'application/json', ];
+    $headers = [
+        'Authorization' => 'Bearer ' . $access_token,
+        'Accept' => 'application/json', 
+        'content-type' => 'application/json',
+    ];
     
     try {
         $response = \Drupal::httpClient()->request(
@@ -448,7 +456,7 @@ function os2forms_forloeb_gir_create_external($processID, $queueID) {
     }
 
     MaestroEngine::setProcessVariable('url_status', $status_code, $processID);
-    MaestroEngine::setProcessVariable('url_body', $body, $processID);
+    MaestroEngine::setProcessVariable('url_body', $url_body, $processID);
 
     return TRUE;
 
