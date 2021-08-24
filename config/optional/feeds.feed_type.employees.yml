@@ -1,0 +1,80 @@
+uuid: 087da3ce-f628-41f7-9452-1ea55abffc30
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.user.user.field_uuid
+  module:
+    - feeds_ex
+    - os2forms_forloeb
+    - user
+id: employees
+label: Employees
+description: 'Import GIR employees as users in EGIR/Drupal'
+help: 'You can import all employees in an organisation using /service/o/<org-uuid>/e/.'
+import_period: 3600
+fetcher: keycloakauth
+fetcher_configuration:
+  auto_detect_feeds: 0
+  use_pubsubhubbub: 0
+  always_download: 0
+  fallback_hub: ''
+  request_timeout: '30'
+parser: jsonpath
+parser_configuration:
+  context:
+    value: '$.items.*'
+  sources:
+    user_key:
+      label: user_key
+      value: user_key
+    field_uuid:
+      label: uuid
+      value: uuid
+  display_errors: false
+  source_encoding:
+    - auto
+  debug_mode: false
+  line_limit: 100
+processor: 'entity:user'
+processor_configuration:
+  langcode: en
+  update_existing: 0
+  update_non_existent: _keep
+  expire: -1
+  skip_hash_check: false
+  owner_id: 0
+  values: {  }
+  authorize: false
+  owner_feed_author: false
+custom_sources:
+  user_key:
+    label: user_key
+    value: user_key
+    machine_name: user_key
+  uuid:
+    label: uuid
+    value: uuid
+    machine_name: uuid
+  '':
+    label: ''
+    value: ''
+    machine_name: ''
+  field_uuid:
+    label: uuid
+    value: uuid
+    machine_name: field_uuid
+mappings:
+  -
+    target: name
+    map:
+      value: user_key
+    unique: {  }
+    settings: {  }
+  -
+    target: field_uuid
+    map:
+      value: field_uuid
+    unique: {  }
+    settings:
+      language: null
