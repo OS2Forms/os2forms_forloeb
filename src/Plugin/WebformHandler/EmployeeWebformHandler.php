@@ -6,8 +6,6 @@ use Drupal\webform\Plugin\WebformHandlerBase;
 use Drupal\webform\WebformSubmissionInterface;
 use Drupal\Core\Form\FormStateInterface;
 
-use Drupal\os2forms_forloeb\get_gir_url;
-use Drupal\os2forms_forloeb\get_openid_auth_token;
 use Drupal\os2forms_forloeb\get_json_from_api;
 
 /**
@@ -41,6 +39,10 @@ class EmployeeWebformHandler extends WebformHandlerBase {
         $employee_term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($employee_id);
 
         $uuid = $employee_term->get('field_uuid')->value;
+        
+        if (!$uuid) {
+            return;
+	}
 
         // Now get all the right data from MO.
         $employee_path = '/service/e/' . $uuid . '/';
@@ -60,12 +62,12 @@ class EmployeeWebformHandler extends WebformHandlerBase {
             return;
         }
 
-        if $details_json['address'] {
+        if ($details_json['address']) {
             $address_path = $details_path . 'address';
             $address_json = get_json_from_api($address_path);
         }
 
-        if $details_json['engagement'] {
+        if ($details_json['engagement']) {
             $engagement_path = $details_path . 'engagement';
             $engagement_json = get_json_from_api($engagement_path);
         }
@@ -76,6 +78,5 @@ class EmployeeWebformHandler extends WebformHandlerBase {
 	    $webform_submission->setElementData('sur_name', $employee_json['sur_name']);
 	    $webform_submission->setElementData('start_date', $employee_json['validity']['from']);
 	    $webform_submission->setElementData('end_date', $employee_json['validity']['to']);
-        }
     }
 }

@@ -6,8 +6,7 @@ use Drupal\webform\Plugin\WebformHandlerBase;
 use Drupal\webform\WebformSubmissionInterface;
 use Drupal\Core\Form\FormStateInterface;
 
-use Drupal\os2forms_forloeb\get_gir_url;
-use Drupal\os2forms_forloeb\get_openid_auth_token;
+use Drupal\os2forms_forloeb\get_json_from_api;
 
 /**
  * Webform submission handler for loading org units.
@@ -37,44 +36,25 @@ class OrgunitWebformHandler extends WebformHandlerBase {
         $values = $webform_submission->getData();
 
 	$org_unit_id = $values['organizational_unit'];
-
         $org_unit_term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($org_unit_id);
 
 	$uuid = $org_unit_term->get('field_uuid')->value;
 
 	if (!$uuid) {
+            \Drupal::logger('os2forms_forloeb')->notice(
+                'No UUID found for org unit: ' . $orgUnit_id
+            );
+
             return;
 	}
 
-        $mo_url = get_gir_url();
-
         // Now get all the right data from MO.
-        $auth_token = get_openid_auth_token();
-        $org_unit_path = '/service/ou/' . $uuid . '/';
-        $ou_url = $mo_url . $org_unit_path;
-        // Authenticate
-        $headers = [ 'Authorization' => 'Bearer ' . $auth_token, 'Accept' => 'application/json', ];
-        
-	try {
-            $response = \Drupal::httpClient()->request(
-                'GET', $ou_url, [
-                'headers' => $headers
-                ]
-            );
-        } catch (GuzzleHttp\Exception\ClientException $e) {
-            $response = $e->getResponse();
-        }
+        $ou_path = '/service/ou/' . $uuid . '/';
+        $ou_json = get_json_from_api($ou_path);
 
-        $status_code = $response->getStatusCode();
-
-        if ($status_code == 200) {
-            $ou_json = json_decode($response->getBody(), true);
-            // \Drupal::logger('os2forms_forloeb')->notice('OU Body: ' . '<' . json_encode($ou_json) . '>');
-
-            // Fill out the form.
-	    $webform_submission->setElementData('name', $ou_json['name']);
-	    $webform_submission->setElementData('start_date', $ou_json['validity']['from']);
-	    $webform_submission->setElementData('end_date', $ou_json['validity']['to']);
-        }
+        // Fill out the form.
+	$webform_submission->setElementData('name', $ou_json['name']);
+	$webform_submission->setElementData('start_date', $ou_json['validity']['from']);
+	$webform_submission->setElementData('end_date', $ou_json['validity']['to']);
     }
 }
