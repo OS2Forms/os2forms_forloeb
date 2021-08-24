@@ -8,6 +8,7 @@ use Drupal\Core\Form\FormStateInterface;
 
 use Drupal\os2forms_forloeb\get_gir_url;
 use Drupal\os2forms_forloeb\get_openid_auth_token;
+use Drupal\os2forms_forloeb\get_json_from_api;
 
 /**
  * Webform submission handler for loading employees.
@@ -41,33 +42,38 @@ class EmployeeWebformHandler extends WebformHandlerBase {
 
         $uuid = $employee_term->get('field_uuid')->value;
 
-        $mo_url = get_gir_url();
-
         // Now get all the right data from MO.
-        $auth_token = get_openid_auth_token();
         $employee_path = '/service/e/' . $uuid . '/';
-        $employee_url = $mo_url . $employee_path;
-        // Authenticate
-        $headers = [ 'Authorization' => 'Bearer ' . $auth_token, 'Accept' => 'application/json', ];
 
-	try {
-            $response = \Drupal::httpClient()->request(
-                'GET', $employee_url, [
-                'headers' => $headers
-                ]
-            );
-        } catch (GuzzleHttp\Exception\BadResponseException $e) {
-            $response = $e->getResponse();
+        $employee_json = get_json_from_api($employee_path);
+
+        if ($employee_json == "") {
+            return;
         }
 
-        $status_code = $response->getStatusCode();
+        // Get details link and extract addresses etc.
+        $details_path = $employee_path . 'details/';
 
-        if ($status_code == 200) {
-            $employee_json = json_decode($response->getBody(), true);
-            \Drupal::logger('os2forms_forloeb')->notice('Employee Body: ' . '<' . json_encode($employee_json) . '>');
+        $details_json = get_json_from_api($details_path);
+
+        if ($details_json == "") {
+            return;
+        }
+
+        if $details_json['address'] {
+            $address_path = $details_path . 'address';
+            $address_json = get_json_from_api($address_path);
+        }
+
+        if $details_json['engagement'] {
+            $engagement_path = $details_path . 'engagement';
+            $engagement_json = get_json_from_api($engagement_path);
+        }
 
             // Fill out the form.
 	    $webform_submission->setElementData('name', $employee_json['name']);
+	    $webform_submission->setElementData('given_name', $employee_json['given_name']);
+	    $webform_submission->setElementData('sur_name', $employee_json['sur_name']);
 	    $webform_submission->setElementData('start_date', $employee_json['validity']['from']);
 	    $webform_submission->setElementData('end_date', $employee_json['validity']['to']);
         }

@@ -232,6 +232,36 @@ function get_externals_parent() {
     return $gir_url;
 }
 
+function get_json_from_api($path) {
+
+        $mo_url = get_gir_url();
+        $auth_token = get_openid_auth_token();
+
+        // Authenticate
+        $headers = [ 'Authorization' => 'Bearer ' . $auth_token, 'Accept' => 'application/json', ];
+
+	try {
+            $response = \Drupal::httpClient()->request(
+                'GET', $mo_url . $path, [
+                'headers' => $headers
+                ]
+            );
+        } catch (GuzzleHttp\Exception\BadResponseException $e) {
+            $response = $e->getResponse();
+        }
+
+        if ($response->getStatusCode() == 200) {
+            return json_decode($response->getBody(), true);
+        }
+        else {
+
+            \Drupal::logger(
+                'os2forms_forloeb'
+            )->notice('Call to URL'  . $url . 'failed:' . $response->getBody());
+            return "";
+        }
+}
+
 function get_openid_auth_token() {
     // TODO: This is a utility token to get an OpenID Connect bearer token from Keycloak.
     // At some point, this should be moved to a "utilities" file.

@@ -73,8 +73,6 @@ class OrgunitWebformHandler extends WebformHandlerBase {
 
             // Fill out the form.
 	    $webform_submission->setElementData('name', $ou_json['name']);
-	    $webform_submission->setElementData('parent_unit', $ou_json['parent']['name']);
-	    $webform_submission->setElementData('location', $ou_json['location']);
 	    $webform_submission->setElementData('start_date', $ou_json['validity']['from']);
 	    $webform_submission->setElementData('end_date', $ou_json['validity']['to']);
         }
