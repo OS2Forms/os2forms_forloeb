@@ -24,6 +24,20 @@ use Drupal\os2forms_forloeb\get_json_from_api;
  */
 
 
+/* Utility function for looking up the ID of a taxonomy term from the name. */
+
+function get_term_id_by_name($name) {
+
+    $properties = [];
+    $properties['name'] = $name;
+    $terms = \Drupal::entityManager()->getStorage(
+        'taxonomy_term'
+    )->loadByProperties($properties);
+    $term = reset($terms);
+    return $term->id();
+}
+
+
 class EmployeeWebformHandler extends WebformHandlerBase {
 
     /**
@@ -85,7 +99,13 @@ class EmployeeWebformHandler extends WebformHandlerBase {
             }
         }
 
-        // Get org unit for current engagement from engagement details.
+        $cost_center_id = "";
+        $organizational_unit_id = "";
+        $consultant_type_id = "";
+        $start_date = "";
+        $end_date = "";
+        
+       // Get org unit for current engagement from engagement details.
         if ($details_json['engagement']) {
             $engagement_path = $details_path . 'engagement'. '?at=' . $today;
             $engagement_json = get_json_from_api($engagement_path);
@@ -93,31 +113,74 @@ class EmployeeWebformHandler extends WebformHandlerBase {
             $engagement = reset($engagement_json);
 
             $consultancy_name = $engagement['org_unit']['name'];
-            $properties = [];
-            $properties['name'] = $consultancy_name;
-            $terms = \Drupal::entityManager()->getStorage(
-                'taxonomy_term'
-            )->loadByProperties($properties);
-            $term = reset($terms);
-            $consultancy_id = $term->id();
+
+            $consultancy_id = get_term_id_by_name($consultancy_name);
+
+            $consultant_type_name = $engagement['engagement_type']['name'];
+            $consultant_type_id = get_term_id_by_name($consultant_type_name); 
+
+            $start_date = $engagement['validity']['from'];
+            $end_date = $engagement['validity']['to'];
+
+            // Now for the engagement associations.
+            // This only makes sense if there is an engagement.
+            $engagement_uuid = $engagement['uuid'];
+            $ea_path = (
+                '/api/v1/engagement_association' . '?engagement=' . $engagement_uuid .
+                '&at=' . $today
+            );
+            $ea_json = get_json_from_api($ea_path);
+
+            if ($ea_json) {
+                // There might not be any.
+                foreach ($ea_json as $ea) {
+                    if ($ea['engagement_association_type']['user_key'] == "Legal Company") {
+                        // This is the placement in the legal organization.
+                    } elseif (
+                        $ea['engagement_association_type']['user_key'] == "Cost Center"
+                    ) {
+                        // This is the cost center.
+                        $cost_center_name = $ea['org_unit']['name'];
+                        $cost_center_id = get_term_id_by_name($cost_center_name);
+                    } elseif (
+                        $ea['engagement_association_type']['user_key'] == "External"
+                    ) {
+                        // This is the org unit where the external is working.
+                        // Note, we should really be handling those as an array
+                        // as there may be more than one. Similar for legal org.
+                        $org_unit_name = $ea['org_unit']['name'];
+                        $organizational_unit_id = get_term_id_by_name($org_unit_name);
+                    }
+                }
+            }
+
+
         }
-
-
+        /*
         \Drupal::logger('os2forms_forloeb')->notice(
             'Engagement JSON: ' . json_encode($engagement_json)
         );
+         */
         
-        \Drupal::logger('os2forms_forloeb')->notice(
-            'Address JSON: ' . json_encode($address_json)
-        );
-
         // Fill out the form.
         $webform_submission->setElementData('first_name', $employee_json['givenname']);
         $webform_submission->setElementData('last_name', $employee_json['surname']);
+        $webform_submission->setElementData('telephone_number', $telephone_number);
+        $webform_submission->setElementData('email_address', $email_address);
         if ($details_json['engagement']) {
             $webform_submission->setElementData('consultancy', $consultancy_id);
         }
-        $webform_submission->setElementData('telephone_number', $telephone_number);
-        $webform_submission->setElementData('email_address', $email_address);
+        if ($cost_center_id) {
+            $webform_submission->setElementData('cost_center', $cost_center_id);
+        }
+        if ($consultant_type_id) {
+            $webform_submission->setElementData('consultant_type', $consultant_type_id);
+        }
+        if ($start_date) {
+            $webform_submission->setElementData('start_date', $start_date);
+        }
+        if ($end_date) {
+            $webform_submission->setElementData('end_date', $end_date);
+        }
     }
 }
