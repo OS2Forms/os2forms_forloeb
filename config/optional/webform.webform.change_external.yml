@@ -4,6 +4,7 @@ dependencies:
   module:
     - maestro_webform
     - os2forms
+    - os2forms_forloeb
     - webform_entity_print
 third_party_settings:
   os2forms:
@@ -34,7 +35,96 @@ id: change_external
 title: 'Change External'
 description: 'Create an entity for a person joining GIR, along with the corresponding organizational&nbsp; identities.'
 category: GIR
-elements: "search_external:\n  '#type': webform_wizard_page\n  '#title': 'Search for External'\n  external_employee:\n    '#type': entity_autocomplete\n    '#title': 'External Employee'\n    '#target_type': user\n    '#selection_handler': 'default:user'\n    '#selection_settings':\n      include_anonymous: true\n      filter:\n        type: _none\nedit_external:\n  '#type': webform_wizard_page\n  '#title': 'Edit External'\n  personal_data:\n    '#type': fieldset\n    '#title': 'Personal Data'\n    name:\n      '#type': webform_name\n      '#title': Name\n      '#title__access': false\n      '#first__required': true\n      '#middle__access': false\n      '#last__required': true\n      '#suffix__access': false\n      '#degree__access': false\n      '#flexbox': '1'\n    consultancy:\n      '#type': webform_term_select\n      '#title': Consultancy\n      '#vocabulary': consultancies\n      '#breadcrumb_delimiter': ''\n    telephone_number:\n      '#type': tel\n      '#title': 'Telephone Number'\n    email_address:\n      '#type': email\n      '#title': 'Email Address'\n  employment_data:\n    '#type': fieldset\n    '#title': 'Employment Data'\n    cost_center:\n      '#type': webform_term_select\n      '#title': 'Cost Center'\n      '#vocabulary': cost_centers\n      '#breadcrumb_delimiter': ''\n    location:\n      '#type': webform_term_select\n      '#title': Location\n      '#vocabulary': locations\n      '#breadcrumb_delimiter': ''\n    consultant_type:\n      '#type': webform_term_select\n      '#title': 'Consultant Type'\n      '#vocabulary': consultant_types\n      '#breadcrumb_delimiter': ''\n    start_date:\n      '#type': date\n      '#title': 'Start date'\n      '#date_date_format': ''\n    end_date:\n      '#type': date\n      '#title': 'End date'\n      '#date_date_format': ''\n  approval_information:\n    '#type': fieldset\n    '#title': 'Approval Information'\n    time_limit:\n      '#type': date\n      '#title': 'Time Limit'\n      '#date_date_format': ''\n    justification:\n      '#type': textfield\n      '#title': Justification\n    approver:\n      '#type': entity_autocomplete\n      '#title': Approver\n      '#target_type': user\n      '#selection_handler': 'default:user'\n      '#selection_settings':\n        include_anonymous: false\n        filter:\n          type: _none"
+elements: |
+  search_external:
+    '#type': webform_wizard_page
+    '#title': 'Search for External'
+    external_employee:
+      '#type': entity_autocomplete
+      '#title': 'External Employee'
+      '#target_type': user
+      '#selection_handler': 'default:user'
+      '#selection_settings':
+        include_anonymous: true
+        filter:
+          type: _none
+  edit_external:
+    '#type': webform_wizard_page
+    '#title': 'Edit External'
+    personal_data:
+      '#type': fieldset
+      '#title': 'Personal Data'
+      first_name:
+        '#type': textfield
+        '#title': 'First Name'
+      last_name:
+        '#type': textfield
+        '#title': 'Last Name'
+      telephone_number:
+        '#type': tel
+        '#title': 'Telephone Number'
+      email_address:
+        '#type': email
+        '#title': 'Email Address'
+      consultancy:
+        '#type': entity_autocomplete
+        '#title': Consultancy
+        '#target_type': taxonomy_term
+        '#selection_handler': 'default:taxonomy_term'
+        '#selection_settings':
+          target_bundles:
+            consultancy: consultancy
+            orgunit: orgunit
+          sort:
+            field: name
+            direction: ASC
+          auto_create: false
+          auto_create_bundle: orgunit
+    employment_data:
+      '#type': fieldset
+      '#title': 'Employment Data'
+      cost_center:
+        '#type': webform_term_select
+        '#title': 'Cost Center'
+        '#vocabulary': cost_centers
+        '#breadcrumb_delimiter': ''
+      location:
+        '#type': webform_term_select
+        '#title': Location
+        '#vocabulary': locations
+        '#breadcrumb_delimiter': ''
+      consultant_type:
+        '#type': webform_term_select
+        '#title': 'Consultant Type'
+        '#vocabulary': consultant_types
+        '#breadcrumb_delimiter': ''
+      start_date:
+        '#type': date
+        '#title': 'Start date'
+        '#date_date_format': ''
+      end_date:
+        '#type': date
+        '#title': 'End date'
+        '#date_date_format': ''
+    approval_information:
+      '#type': fieldset
+      '#title': 'Approval Information'
+      time_limit:
+        '#type': date
+        '#title': 'Time Limit'
+        '#date_date_format': ''
+      justification:
+        '#type': textfield
+        '#title': Justification
+      approver:
+        '#type': entity_autocomplete
+        '#title': Approver
+        '#target_type': user
+        '#selection_handler': 'default:user'
+        '#selection_settings':
+          include_anonymous: false
+          filter:
+            type: _none
 css: ''
 javascript: ''
 settings:
@@ -226,4 +316,13 @@ handlers:
       maestro_template: create_external
       maestro_message_success: ''
       maestro_message_failure: ''
+  load_employee:
+    id: employee
+    label: 'Load Employee'
+    notes: ''
+    handler_id: load_employee
+    status: true
+    conditions: {  }
+    weight: 0
+    settings: {  }
 variants: {  }

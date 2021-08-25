@@ -35,8 +35,8 @@ class EmployeeWebformHandler extends WebformHandlerBase {
 
         $values = $webform_submission->getData();
 
-        $employee_id = $values['employee'];
-        $employee_term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($employee_id);
+        $employee_id = $values['external_employee'];
+        $employee_term = \Drupal::entityTypeManager()->getStorage('user')->load($employee_id);
 
         $uuid = $employee_term->get('field_uuid')->value;
         
@@ -62,21 +62,60 @@ class EmployeeWebformHandler extends WebformHandlerBase {
             return;
         }
 
+        // Get email and phone from address details. 
+        $email_address = "";
+        $mobile_number = "";
+        $telephone_number = "";
         if ($details_json['address']) {
             $address_path = $details_path . 'address';
             $address_json = get_json_from_api($address_path);
+
+            foreach ($address_json as $address) {
+
+                if ($address['address_type']['name'] == 'Mobile') {
+                    $mobile_number = $address['value'];
+                } elseif ($address['address_type']['name'] == 'Phone') {
+                    $telephone_number = $address['value'];
+                } elseif ($address['address_type']['scope'] == 'EMAIL') {
+                    $email_address = $address['value'];
+                }
+
+            }
         }
 
+        // Get org unit for current engagement from engagement details.
         if ($details_json['engagement']) {
             $engagement_path = $details_path . 'engagement';
             $engagement_json = get_json_from_api($engagement_path);
+            // TODO: Later, handle multiple engagements.
+            $engagement = reset($engagement_json);
+
+            $consultancy_name = $engagement['org_unit']['name'];
+            $properties = [];
+            $properties['name'] = $consultancy_name;
+            $terms = \Drupal::entityManager()->getStorage(
+                'taxonomy_term'
+            )->loadByProperties($properties);
+            $term = reset($terms);
+            $consultancy_id = $term->id();
         }
 
-            // Fill out the form.
-	    $webform_submission->setElementData('name', $employee_json['name']);
-	    $webform_submission->setElementData('given_name', $employee_json['given_name']);
-	    $webform_submission->setElementData('sur_name', $employee_json['sur_name']);
-	    $webform_submission->setElementData('start_date', $employee_json['validity']['from']);
-	    $webform_submission->setElementData('end_date', $employee_json['validity']['to']);
+
+        \Drupal::logger('os2forms_forloeb')->notice(
+            'Engagement JSON: ' . json_encode($engagement_json)
+        );
+        
+        \Drupal::logger('os2forms_forloeb')->notice(
+            'Address JSON: ' . json_encode($address_json)
+        );
+
+        // Fill out the form.
+        $webform_submission->setElementData('first_name', $employee_json['givenname']);
+        $webform_submission->setElementData('last_name', $employee_json['surname']);
+        if ($details_json['engagement']) {
+            $webform_submission->setElementData('consultancy', $consultancy_id);
+        }
+        $webform_submission->setElementData('telephone_number', $telephone_number);
+        $webform_submission->setElementData('email_address', $email_address);
     }
 }
