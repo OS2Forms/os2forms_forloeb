@@ -84,19 +84,20 @@ elements: |
       '#type': fieldset
       '#title': 'Employment Data'
       cost_center:
-        '#type': webform_term_select
+        '#type': entity_autocomplete
         '#title': 'Cost Center'
-        '#vocabulary': cost_centers
-        '#breadcrumb_delimiter': ''
-      location:
-        '#type': webform_term_select
-        '#title': Location
-        '#vocabulary': locations
-        '#breadcrumb_delimiter': ''
+        '#target_type': taxonomy_term
+        '#selection_handler': 'default:taxonomy_term'
+        '#selection_settings':
+          target_bundles:
+            cost_center: cost_center
+            orgunit: orgunit
+          auto_create: false
+          auto_create_bundle: cost_center
       consultant_type:
         '#type': webform_term_select
         '#title': 'Consultant Type'
-        '#vocabulary': consultant_types
+        '#vocabulary': consultant_type
         '#breadcrumb_delimiter': ''
       start_date:
         '#type': date
@@ -106,6 +107,16 @@ elements: |
         '#type': date
         '#title': 'End date'
         '#date_date_format': ''
+      organizational_unit:
+        '#type': entity_autocomplete
+        '#title': 'Organizational Unit'
+        '#target_type': taxonomy_term
+        '#selection_handler': 'default:taxonomy_term'
+        '#selection_settings':
+          target_bundles:
+            orgunit: orgunit
+          auto_create: false
+          auto_create_bundle: orgunit
     approval_information:
       '#type': fieldset
       '#title': 'Approval Information'

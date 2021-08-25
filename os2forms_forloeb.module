@@ -430,7 +430,8 @@ function os2forms_forloeb_gir_create_external($processID, $queueID) {
         $values = $webform_submission->getData();
 
         // Employee Data
-	$name = $values['name']['first'] . ' ' . $values['name']['last'];
+	$first_name = $values['first_name'];
+	$last_name = $values['last_name'];
         // TODO: Format data with MO UUIDs for consultancy, consultant
         // type, cost center and org units.
         $start_date = $values['start_date'];
@@ -448,7 +449,8 @@ function os2forms_forloeb_gir_create_external($processID, $queueID) {
         return FALSE;
     }
     $gir_json = new \stdClass();
-    $gir_json->name = $name;
+    $gir_json->givenname = $first_name;
+    $gir_json->surname = $last_name;
 
     $gir_json->validity = new \stdClass();
     $gir_json->validity->from = $start_date;
@@ -477,7 +479,7 @@ function os2forms_forloeb_gir_create_external($processID, $queueID) {
     $status_code = $response->getStatusCode();
     if ($status_code == 201) {
         $url_status = "Success";
-        $url_body = "Org unit " . $name . "was created.";
+        $url_body = "Employee " . $first_name . " " . $last_name . " was created.";
     }
     else {
         $body = $response->getBody();
