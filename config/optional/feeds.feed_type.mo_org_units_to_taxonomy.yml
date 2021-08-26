@@ -13,7 +13,7 @@ id: mo_org_units_to_taxonomy
 label: ' Org Units'
 description: 'Import Org Units from GIR'
 help: "In order to import organizational units from GIR, you must create a feed with this Feed Type and as the feed URL specify \r\n\r\n<gir-toplevel-url>/service/o/<org-uuid>/ou/\r\n\r\nThis will import all organizational units and make them available when creating new units or externals."
-import_period: -1
+import_period: 3600
 fetcher: keycloakauth
 fetcher_configuration:
   auto_detect_feeds: 0
@@ -43,8 +43,8 @@ parser_configuration:
 processor: 'entity:taxonomy_term'
 processor_configuration:
   langcode: en
-  update_existing: 0
-  update_non_existent: _keep
+  update_existing: 2
+  update_non_existent: _delete
   expire: -1
   skip_hash_check: false
   values:

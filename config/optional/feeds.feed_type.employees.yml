@@ -11,7 +11,7 @@ id: employees
 label: Employees
 description: 'Import GIR employees as users in EGIR/Drupal'
 help: 'You can import all employees in an organisation using /service/o/<org-uuid>/e/.'
-import_period: -1
+import_period: 3600
 fetcher: keycloakauth
 fetcher_configuration:
   auto_detect_feeds: 0
@@ -38,7 +38,7 @@ parser_configuration:
 processor: 'entity:user'
 processor_configuration:
   langcode: en
-  update_existing: 0
+  update_existing: 2
   update_non_existent: _keep
   expire: -1
   skip_hash_check: false
@@ -74,6 +74,7 @@ mappings:
     target: field_uuid
     map:
       value: field_uuid
-    unique: {  }
+    unique:
+      value: '1'
     settings:
       language: null

@@ -13,7 +13,7 @@ id: consultant_types
 label: 'Consultant types'
 description: 'Import all members of the GIR facet "engagement_type"'
 help: ''
-import_period: -1
+import_period: 3600
 fetcher: keycloakauth
 fetcher_configuration:
   auto_detect_feeds: 0
@@ -43,7 +43,7 @@ parser_configuration:
 processor: 'entity:taxonomy_term'
 processor_configuration:
   langcode: en
-  update_existing: 0
+  update_existing: 2
   update_non_existent: _keep
   expire: -1
   skip_hash_check: false
@@ -84,6 +84,7 @@ mappings:
     target: field_uuid
     map:
       value: uuid
-    unique: {  }
+    unique:
+      value: '1'
     settings:
       language: null

@@ -373,15 +373,8 @@ function os2forms_forloeb_gir_create_org_unit($processID, $queueID) {
     $gir_json->validity = new \stdClass();
     $gir_json->validity->from = $start_date;
     $gir_json->validity->to = $end_date;
-
-    // Get Parent Unit UUID from imported data.
-    if ($parent_unit_id) {
-        $gir_json->parent = new \stdClass();
-        # Get term UUID
-        $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($parent_unit_id);
-        $parent_uuid = $term->field_uuid->value;
-        $gir_json->parent->uuid = $parent_uuid;
-    }
+    $gir_json->parent = new \stdClass();
+    $gir_json->parent->uuid = $parent_unit_id;
 
     // TODO: Get Org Unit Type from imported data.
     $gir_json->org_unit_type = new \stdClass();

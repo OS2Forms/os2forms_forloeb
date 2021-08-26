@@ -10,10 +10,10 @@ dependencies:
     - os2forms_forloeb
     - taxonomy
 id: consultancies
-label: 'Consultancies'
+label: Consultancies
 description: 'Import consultancies from GIR'
-help: "In order to import consultancies fro GIR, you must create a feed of this Feed Type and enter a feed URL like this:\r\n\r\n<gir-toplevel-URL>/service/ou/<external-uuid>/children\r\n\r\nwhere <external-uuid> is the \"top level\" UUID for the list of external companies."
-import_period: -1
+help: "In order to import consultancies fro GIR, you must create a feed of this Feed Type and enter a feed URL like this:\r\n\r\n$GIR_TOPLEVEL_URL/service/ou/$EXTERNAL_UUID/children\r\n\r\nwhere $EXTERNAL_UUID is the \"top level\" UUID for the list of external companies."
+import_period: 3600
 fetcher: keycloakauth
 fetcher_configuration:
   auto_detect_feeds: 0
@@ -84,6 +84,7 @@ mappings:
     target: field_uuid
     map:
       value: uuid
-    unique: {  }
+    unique:
+      value: '1'
     settings:
       language: null
