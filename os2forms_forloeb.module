@@ -232,6 +232,20 @@ function get_externals_parent() {
     return $gir_url;
 }
 
+
+/* Utility function for looking up the ID of a taxonomy term from the name. */
+
+function get_term_id_by_name($name) {
+
+    $properties = [];
+    $properties['name'] = $name;
+    $terms = \Drupal::entityManager()->getStorage(
+        'taxonomy_term'
+    )->loadByProperties($properties);
+    $term = reset($terms);
+    return $term->id();
+}
+
 function get_json_from_api($path) {
 
         $mo_url = get_gir_url();

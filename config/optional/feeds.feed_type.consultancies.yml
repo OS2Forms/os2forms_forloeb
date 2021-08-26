@@ -13,7 +13,7 @@ id: consultancies
 label: 'Consultancies'
 description: 'Import consultancies from GIR'
 help: "In order to import consultancies fro GIR, you must create a feed of this Feed Type and enter a feed URL like this:\r\n\r\n<gir-toplevel-URL>/service/ou/<external-uuid>/children\r\n\r\nwhere <external-uuid> is the \"top level\" UUID for the list of external companies."
-import_period: 3600
+import_period: -1
 fetcher: keycloakauth
 fetcher_configuration:
   auto_detect_feeds: 0

@@ -13,7 +13,7 @@ id: consultant_types
 label: 'Consultant types'
 description: 'Import all members of the GIR facet "engagement_type"'
 help: ''
-import_period: 3600
+import_period: -1
 fetcher: keycloakauth
 fetcher_configuration:
   auto_detect_feeds: 0

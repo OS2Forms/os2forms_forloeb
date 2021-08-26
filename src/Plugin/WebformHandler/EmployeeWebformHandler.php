@@ -7,6 +7,7 @@ use Drupal\webform\WebformSubmissionInterface;
 use Drupal\Core\Form\FormStateInterface;
 
 use Drupal\os2forms_forloeb\get_json_from_api;
+use Drupal\os2forms_forloeb\get_term_id_by_name;
 
 /**
  * Webform submission handler for loading employees.
@@ -22,20 +23,6 @@ use Drupal\os2forms_forloeb\get_json_from_api;
  *   tokens = TRUE,
  * )
  */
-
-
-/* Utility function for looking up the ID of a taxonomy term from the name. */
-
-function get_term_id_by_name($name) {
-
-    $properties = [];
-    $properties['name'] = $name;
-    $terms = \Drupal::entityManager()->getStorage(
-        'taxonomy_term'
-    )->loadByProperties($properties);
-    $term = reset($terms);
-    return $term->id();
-}
 
 
 class EmployeeWebformHandler extends WebformHandlerBase {
@@ -104,6 +91,7 @@ class EmployeeWebformHandler extends WebformHandlerBase {
         $consultant_type_id = "";
         $start_date = "";
         $end_date = "";
+        $engagement = [];
         
        // Get org unit for current engagement from engagement details.
         if ($details_json['engagement']) {
@@ -111,7 +99,9 @@ class EmployeeWebformHandler extends WebformHandlerBase {
             $engagement_json = get_json_from_api($engagement_path);
             // TODO: Later, handle multiple engagements.
             $engagement = reset($engagement_json);
+        }
 
+        if ($engagement) {
             $consultancy_name = $engagement['org_unit']['name'];
 
             $consultancy_id = get_term_id_by_name($consultancy_name);
@@ -167,7 +157,7 @@ class EmployeeWebformHandler extends WebformHandlerBase {
         $webform_submission->setElementData('last_name', $employee_json['surname']);
         $webform_submission->setElementData('telephone_number', $telephone_number);
         $webform_submission->setElementData('email_address', $email_address);
-        if ($details_json['engagement']) {
+        if ($engagement) {
             $webform_submission->setElementData('consultancy', $consultancy_id);
         }
         if ($cost_center_id) {
