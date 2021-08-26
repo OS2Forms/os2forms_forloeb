@@ -92,6 +92,7 @@ class EmployeeWebformHandler extends WebformHandlerBase {
         $start_date = "";
         $end_date = "";
         $engagement = [];
+        $org_units = [];
         
        // Get org unit for current engagement from engagement details.
         if ($details_json['engagement']) {
@@ -140,6 +141,7 @@ class EmployeeWebformHandler extends WebformHandlerBase {
                         // as there may be more than one. Similar for legal org.
                         $org_unit_name = $ea['org_unit']['name'];
                         $organizational_unit_id = get_term_id_by_name($org_unit_name);
+                        $org_units[] = $organizational_unit_id;
                     }
                 }
             }
@@ -171,6 +173,9 @@ class EmployeeWebformHandler extends WebformHandlerBase {
         }
         if ($end_date) {
             $webform_submission->setElementData('end_date', $end_date);
+        }
+        if ($org_units) {
+            $webform_submission->setElementData('organizational_unit', $org_units);
         }
     }
 }
