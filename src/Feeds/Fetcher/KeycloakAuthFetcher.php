@@ -1,14 +1,12 @@
 <?php
 
+namespace Drupal\os2forms_forloeb\Feeds\Fetcher;
+
 // This class was heavily inspired by the corresponding class from the
 // feeds_http_auth_fetcher Drupal module by Michael Favia and is used
 // under the provisions of the GNU General Public License version 2.0.
 // See https://www.drupal.org/project/feeds_http_auth_fetcher for more
 // details.
-
-namespace Drupal\os2forms_forloeb\Feeds\Fetcher;
-
-
 use Drupal\feeds\Exception\EmptyFeedException;
 use Drupal\feeds\Feeds\Fetcher\HttpFetcher;
 use Drupal\feeds\Result\HttpFetcherResult;
@@ -19,7 +17,6 @@ use GuzzleHttp\RequestOptions;
 use Symfony\Component\HttpFoundation\Response;
 use Drupal\feeds\FeedInterface;
 use Drupal\os2forms_forloeb\get_openid_auth_token;
-
 
 /**
  * Defines an HTTP fetcher.
@@ -36,6 +33,9 @@ use Drupal\os2forms_forloeb\get_openid_auth_token;
  */
 class KeycloakAuthFetcher extends HTTPFetcher {
 
+  /**
+   * Specify default configuration of feed.
+   */
   public function defaultFeedConfiguration() {
     $default_configuration = parent::defaultConfiguration();
     $default_configuration['token'] = '';
@@ -63,6 +63,7 @@ class KeycloakAuthFetcher extends HTTPFetcher {
 
     return new HttpFetcherResult($sink, $response->getHeaders());
   }
+
   /**
    * Performs a GET request.
    *
@@ -84,13 +85,13 @@ class KeycloakAuthFetcher extends HTTPFetcher {
    *
    * @see \GuzzleHttp\RequestOptions
    */
-  protected function get($url, $sink, $cache_key = FALSE, $token = null) {
+  protected function get($url, $sink, $cache_key = FALSE, $token = NULL) {
     $url = Feed::translateSchemes($url);
 
     $options = [RequestOptions::SINK => $sink];
 
-    // This is the magic add the headers here so allows the request
-    if($token !== null) {
+    // This is the magic add the headers here so allows the request.
+    if ($token !== NULL) {
       $options[RequestOptions::HEADERS]['Authorization'] = 'Bearer ' . $token;
     }
     // Add cached headers if requested.
@@ -117,4 +118,5 @@ class KeycloakAuthFetcher extends HTTPFetcher {
 
     return $response;
   }
+
 }

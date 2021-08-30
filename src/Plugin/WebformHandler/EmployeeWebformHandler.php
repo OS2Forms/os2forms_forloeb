@@ -23,15 +23,18 @@ use Drupal\os2forms_forloeb\get_term_id_by_name;
  *   tokens = TRUE,
  * )
  */
-
-
 class EmployeeWebformHandler extends WebformHandlerBase {
 
   /**
    * {@inheritdoc}
    */
 
-  // Function to be called after submitting the webform.
+  /**
+   * Collect data for proper display in form.
+   *
+   * This function will be called when user has just entered the employee's
+   *  initials, before any changes or editing are made.
+   */
   public function submitForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission) {
 
     \Drupal::logger('os2forms_forloeb')->notice(
@@ -74,7 +77,7 @@ class EmployeeWebformHandler extends WebformHandlerBase {
       return;
     }
 
-    // Get email and phone from address details. 
+    // Get email and phone from address details.
     $email_address = "";
     $mobile_number = "";
     $telephone_number = "";
@@ -86,9 +89,11 @@ class EmployeeWebformHandler extends WebformHandlerBase {
 
         if ($address['address_type']['name'] == 'Mobile') {
           $mobile_number = $address['value'];
-        } elseif ($address['address_type']['name'] == 'Phone') {
+        }
+        elseif ($address['address_type']['name'] == 'Phone') {
           $telephone_number = $address['value'];
-        } elseif ($address['address_type']['scope'] == 'EMAIL') {
+        }
+        elseif ($address['address_type']['scope'] == 'EMAIL') {
           $email_address = $address['value'];
         }
 
@@ -105,9 +110,9 @@ class EmployeeWebformHandler extends WebformHandlerBase {
 
     // Get org unit for current engagement from engagement details.
     if ($details_json['engagement']) {
-      $engagement_path = $details_path . 'engagement'. '?at=' . $today;
+      $engagement_path = $details_path . 'engagement' . '?at=' . $today;
       $engagement_json = get_json_from_api($engagement_path);
-      // TODO: Later, handle multiple engagements.
+      // @todo Later, handle multiple engagements.
       $engagement = reset($engagement_json);
     }
 
@@ -117,7 +122,7 @@ class EmployeeWebformHandler extends WebformHandlerBase {
       $consultancy_id = get_term_id_by_name($consultancy_name);
 
       $consultant_type_name = $engagement['engagement_type']['name'];
-      $consultant_type_id = get_term_id_by_name($consultant_type_name); 
+      $consultant_type_id = get_term_id_by_name($consultant_type_name);
 
       $start_date = $engagement['validity']['from'];
       $end_date = $engagement['validity']['to'];
@@ -136,13 +141,15 @@ class EmployeeWebformHandler extends WebformHandlerBase {
         foreach ($ea_json as $ea) {
           if ($ea['engagement_association_type']['user_key'] == "Legal Company") {
             // This is the placement in the legal organization.
-          } elseif (
+          }
+          elseif (
             $ea['engagement_association_type']['user_key'] == "Cost Center"
           ) {
             // This is the cost center.
             $cost_center_name = $ea['org_unit']['name'];
             $cost_center_id = get_term_id_by_name($cost_center_name);
-          } elseif (
+          }
+          elseif (
             $ea['engagement_association_type']['user_key'] == "External"
           ) {
             // This is the org unit where the external is working.
@@ -154,14 +161,12 @@ class EmployeeWebformHandler extends WebformHandlerBase {
           }
         }
       }
-
-
     }
-        /*
-        \Drupal::logger('os2forms_forloeb')->notice(
-            'Engagement JSON: ' . json_encode($engagement_json)
-        );
-         */
+    /*
+    \Drupal::logger('os2forms_forloeb')->notice(
+    'Engagement JSON: ' . json_encode($engagement_json)
+    );
+     */
 
     // Fill out the form.
     $webform_submission->setElementData('first_name', $employee_json['givenname']);
@@ -187,4 +192,5 @@ class EmployeeWebformHandler extends WebformHandlerBase {
       $webform_submission->setElementData('organizational_unit', $org_units);
     }
   }
+
 }

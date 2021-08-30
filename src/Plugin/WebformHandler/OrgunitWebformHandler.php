@@ -22,15 +22,15 @@ use Drupal\os2forms_forloeb\get_json_from_api;
  *   tokens = TRUE,
  * )
  */
-
-
 class OrgunitWebformHandler extends WebformHandlerBase {
 
   /**
    * {@inheritdoc}
    */
 
-  // Function to be called after submitting the webform.
+  /**
+   * Function to be called after submitting the webform.
+   */
   public function submitForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission) {
 
     $values = $webform_submission->getData();
@@ -57,4 +57,5 @@ class OrgunitWebformHandler extends WebformHandlerBase {
     $webform_submission->setElementData('start_date', $ou_json['validity']['from']);
     $webform_submission->setElementData('end_date', $ou_json['validity']['to']);
   }
+
 }
