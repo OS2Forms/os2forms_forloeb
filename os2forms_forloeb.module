@@ -79,12 +79,119 @@ function os2forms_forloeb_workflow_maestro_reassign_form(&$form, $queueID = 0, $
     return $form;
 }
 
+
 /**
- * This is a simple handler to display the result
- * of calling the fetch_from_http_endpoint_batch_function handler
- * below.
+ * GIR-related utility functions START - we should probably move them to
+ * a separate module as we get more of them.
+ */
+
+function get_gir_url() {
+
+    $forloeb_configuration = \Drupal::config('os2forms_forloeb.settings');
+    $gir_url = $forloeb_configuration->get('gir_url');
+
+    return $gir_url;
+}
+
+
+function get_externals_parent() {
+
+    $forloeb_configuration = \Drupal::config('os2forms_forloeb.settings');
+    $gir_url = $forloeb_configuration->get('externals_root');
+
+    return $gir_url;
+}
+
+
+/* Utility function for looking up the ID of a taxonomy term from the name. */
+
+function get_term_id_by_name($name) {
+
+    $properties = [];
+    $properties['name'] = $name;
+    $terms = \Drupal::entityManager()->getStorage(
+        'taxonomy_term'
+    )->loadByProperties($properties);
+    $term = reset($terms);
+    return $term->id();
+}
+
+function get_json_from_api($path) {
+
+        $mo_url = get_gir_url();
+        $auth_token = get_openid_auth_token();
+
+        // Authenticate
+        $headers = [ 'Authorization' => 'Bearer ' . $auth_token, 'Accept' => 'application/json', ];
+
+	try {
+            $response = \Drupal::httpClient()->request(
+                'GET', $mo_url . $path, [
+                'headers' => $headers
+                ]
+            );
+        } catch (GuzzleHttp\Exception\BadResponseException $e) {
+            $response = $e->getResponse();
+        }
+
+        if ($response->getStatusCode() == 200) {
+            return json_decode($response->getBody(), true);
+        }
+        else {
+
+            \Drupal::logger(
+                'os2forms_forloeb'
+            )->notice('Call to URL'  . $url . 'failed:' . $response->getBody());
+            return "";
+        }
+}
+
+function get_openid_auth_token() {
+    // TODO: This is a utility token to get an OpenID Connect bearer token from Keycloak.
+    // At some point, this should be moved to a "utilities" file.
+
+    $keycloak_configuration = \Drupal::config('openid_connect.settings.keycloak');
+
+    $keycloak_settings = $keycloak_configuration->get('settings');
+    $keycloak_base = $keycloak_settings['keycloak_base'];
+    $keycloak_realm = $keycloak_settings['keycloak_realm'];
+    $client_id = $keycloak_settings['client_id'];
+    $client_secret = $keycloak_settings['client_secret'];
+  
+
+    $token_url = $keycloak_base . '/realms/' . $keycloak_realm . '/protocol/openid-connect/token';
+
+    $payload['grant_type'] = 'client_credentials';
+    $payload['client_id'] = $client_id;
+    $payload['client_secret'] = $client_secret;
+    
+    $json = json_encode($payload);
+    $response = \Drupal::httpClient()->request(
+	'POST', $token_url, [ 'form_params' => $payload ]
+    );
+    $status_code = $response->getStatusCode();
+
+    if ($status_code == 200) {
+	$body = json_decode($response->getBody(), true); 
+	$access_token = $body['access_token'];
+
+        return $access_token;
+    } else {
+        return '';	    
+    }
+}
+
+/**
+ * GIR-related utility functions END.
+ */
+
+
+/**
+ * This is a simple batch handler to display the result
+ * of calling an external URL.
  *
- * Requires two process variables, 'url_status' and 'url_body'.
+ * Requires two process variables, 'url_status' and 'url_body', and
+ * requires the batch function calling the URL to set these variables.
  *
  * @param array $form
  *   The form you will create with this function.
@@ -215,104 +322,7 @@ function os2forms_forloeb_fetch_from_http_endpoint_batch_function($processID, $q
 
 }
 
-function get_gir_url() {
-
-    $forloeb_configuration = \Drupal::config('os2forms_forloeb.settings');
-    $gir_url = $forloeb_configuration->get('gir_url');
-
-    return $gir_url;
-}
-
-
-function get_externals_parent() {
-
-    $forloeb_configuration = \Drupal::config('os2forms_forloeb.settings');
-    $gir_url = $forloeb_configuration->get('externals_root');
-
-    return $gir_url;
-}
-
-
-/* Utility function for looking up the ID of a taxonomy term from the name. */
-
-function get_term_id_by_name($name) {
-
-    $properties = [];
-    $properties['name'] = $name;
-    $terms = \Drupal::entityManager()->getStorage(
-        'taxonomy_term'
-    )->loadByProperties($properties);
-    $term = reset($terms);
-    return $term->id();
-}
-
-function get_json_from_api($path) {
-
-        $mo_url = get_gir_url();
-        $auth_token = get_openid_auth_token();
-
-        // Authenticate
-        $headers = [ 'Authorization' => 'Bearer ' . $auth_token, 'Accept' => 'application/json', ];
-
-	try {
-            $response = \Drupal::httpClient()->request(
-                'GET', $mo_url . $path, [
-                'headers' => $headers
-                ]
-            );
-        } catch (GuzzleHttp\Exception\BadResponseException $e) {
-            $response = $e->getResponse();
-        }
-
-        if ($response->getStatusCode() == 200) {
-            return json_decode($response->getBody(), true);
-        }
-        else {
-
-            \Drupal::logger(
-                'os2forms_forloeb'
-            )->notice('Call to URL'  . $url . 'failed:' . $response->getBody());
-            return "";
-        }
-}
-
-function get_openid_auth_token() {
-    // TODO: This is a utility token to get an OpenID Connect bearer token from Keycloak.
-    // At some point, this should be moved to a "utilities" file.
-
-    $keycloak_configuration = \Drupal::config('openid_connect.settings.keycloak');
-
-    $keycloak_settings = $keycloak_configuration->get('settings');
-    $keycloak_base = $keycloak_settings['keycloak_base'];
-    $keycloak_realm = $keycloak_settings['keycloak_realm'];
-    $client_id = $keycloak_settings['client_id'];
-    $client_secret = $keycloak_settings['client_secret'];
-  
-
-    $token_url = $keycloak_base . '/realms/' . $keycloak_realm . '/protocol/openid-connect/token';
-
-    $payload['grant_type'] = 'client_credentials';
-    $payload['client_id'] = $client_id;
-    $payload['client_secret'] = $client_secret;
-    
-    $json = json_encode($payload);
-    $response = \Drupal::httpClient()->request(
-	'POST', $token_url, [ 'form_params' => $payload ]
-    );
-    $status_code = $response->getStatusCode();
-
-    if ($status_code == 200) {
-	$body = json_decode($response->getBody(), true); 
-	$access_token = $body['access_token'];
-
-        return $access_token;
-    } else {
-        return '';	    
-    }
-}
-
-
-function os2forms_forloeb_gir_approver_is_initiator($processID, $queueID) {
+ function os2forms_forloeb_gir_approver_is_initiator($processID, $queueID) {
     // Function to determine whether the initiator of this process is set as approver.
     // It would be nice to be able to handle this in an IF task, but currently Maestro's
     //  IF tasks only allows you to compare a process variable to a constant value.
