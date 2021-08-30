@@ -26,35 +26,35 @@ use Drupal\os2forms_forloeb\get_json_from_api;
 
 class OrgunitWebformHandler extends WebformHandlerBase {
 
-    /**
-     * {@inheritdoc}
-     */
+  /**
+   * {@inheritdoc}
+   */
 
-    // Function to be called after submitting the webform.
-    public function submitForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission) {
+  // Function to be called after submitting the webform.
+  public function submitForm(array &$form, FormStateInterface $form_state, WebformSubmissionInterface $webform_submission) {
 
-        $values = $webform_submission->getData();
+    $values = $webform_submission->getData();
 
-	$org_unit_id = $values['organizational_unit'];
-        $org_unit_term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($org_unit_id);
+    $org_unit_id = $values['organizational_unit'];
+    $org_unit_term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($org_unit_id);
 
-	$uuid = $org_unit_term->get('field_uuid')->value;
+    $uuid = $org_unit_term->get('field_uuid')->value;
 
-	if (!$uuid) {
-            \Drupal::logger('os2forms_forloeb')->notice(
-                'No UUID found for org unit: ' . $orgUnit_id
-            );
+    if (!$uuid) {
+      \Drupal::logger('os2forms_forloeb')->notice(
+        'No UUID found for org unit: ' . $orgUnit_id
+      );
 
-            return;
-	}
-
-        // Now get all the right data from MO.
-        $ou_path = '/service/ou/' . $uuid . '/';
-        $ou_json = get_json_from_api($ou_path);
-
-        // Fill out the form.
-	$webform_submission->setElementData('name', $ou_json['name']);
-	$webform_submission->setElementData('start_date', $ou_json['validity']['from']);
-	$webform_submission->setElementData('end_date', $ou_json['validity']['to']);
+      return;
     }
+
+    // Now get all the right data from MO.
+    $ou_path = '/service/ou/' . $uuid . '/';
+    $ou_json = get_json_from_api($ou_path);
+
+    // Fill out the form.
+    $webform_submission->setElementData('name', $ou_json['name']);
+    $webform_submission->setElementData('start_date', $ou_json['validity']['from']);
+    $webform_submission->setElementData('end_date', $ou_json['validity']['to']);
+  }
 }

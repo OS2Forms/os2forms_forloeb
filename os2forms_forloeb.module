@@ -11,24 +11,24 @@ use Drupal\webform\Entity\WebformSubmission;
  * Implements hook_install().
  */
 function os2forms_forloeb_install() {
-    $theme_list = [
-        'claro',
-        'gin',
-        'bootstrap',
-        'custom_theme'
-    ];
+  $theme_list = [
+    'claro',
+    'gin',
+    'bootstrap',
+    'custom_theme'
+  ];
 
-    // Install themes
-    \Drupal::service('theme_installer')->install($theme_list);
+  // Install themes
+  \Drupal::service('theme_installer')->install($theme_list);
 
-    // Get theme manager
-    $system_theme = \Drupal::configFactory()->getEditable('system.theme');
+  // Get theme manager
+  $system_theme = \Drupal::configFactory()->getEditable('system.theme');
 
-    // Set default and admin themes
-    $system_theme
-        ->set('default', 'custom_theme')
-        ->set('admin', 'gin')
-        ->save();
+  // Set default and admin themes
+  $system_theme
+    ->set('default', 'custom_theme')
+    ->set('admin', 'gin')
+    ->save();
 }
 
 use Drupal\maestro\Engine\MaestroEngine;
@@ -39,10 +39,10 @@ use Drupal\maestro\Engine\MaestroEngine;
  * form under the handler field.
  */
 function os2forms_forloeb_maestro_interactive_handlers() {
-    return [
-        'os2forms_forloeb_workflow_maestro_reassign_form' => t('Tilføj sagsbehandler'),
-        'os2forms_forloeb_show_url_results' => t('Test URL fetch - requires process variables from that handler'),
-    ];
+  return [
+    'os2forms_forloeb_workflow_maestro_reassign_form' => t('Tilføj sagsbehandler'),
+    'os2forms_forloeb_show_url_results' => t('Test URL fetch - requires process variables from that handler'),
+  ];
 }
 
 /**
@@ -57,26 +57,26 @@ function os2forms_forloeb_maestro_interactive_handlers() {
  */
 function os2forms_forloeb_workflow_maestro_reassign_form(&$form, $queueID = 0, $obj) {
 
-    $form['reviewer'] = array(
-        '#id' => 'select_assigned_user',
-        '#type' => 'entity_autocomplete',
-        '#target_type' => 'user',
-        '#default_value' => '',
-        '#selection_settings' => ['include_anonymous' => FALSE],
-        '#title' =>  t('Assign for Review to'),
-    );
+  $form['reviewer'] = array(
+    '#id' => 'select_assigned_user',
+    '#type' => 'entity_autocomplete',
+    '#target_type' => 'user',
+    '#default_value' => '',
+    '#selection_settings' => ['include_anonymous' => FALSE],
+    '#title' =>  t('Assign for Review to'),
+  );
 
-    $form['queueID'] = array(
-        '#type' => 'hidden',
-        '#title' => 'the queue ID in the event we need it in later processing',
-        '#default_value' => $queueID,
-        '#description' => ('queueID'),
-    );
+  $form['queueID'] = array(
+    '#type' => 'hidden',
+    '#title' => 'the queue ID in the event we need it in later processing',
+    '#default_value' => $queueID,
+    '#description' => ('queueID'),
+  );
 
-    //overriding the default label "complete"
-    $form['actions']['submit']['#value'] = t('Assign');
+  //overriding the default label "complete"
+  $form['actions']['submit']['#value'] = t('Assign');
 
-    return $form;
+  return $form;
 }
 
 
@@ -87,19 +87,19 @@ function os2forms_forloeb_workflow_maestro_reassign_form(&$form, $queueID = 0, $
 
 function get_gir_url() {
 
-    $forloeb_configuration = \Drupal::config('os2forms_forloeb.settings');
-    $gir_url = $forloeb_configuration->get('gir_url');
+  $forloeb_configuration = \Drupal::config('os2forms_forloeb.settings');
+  $gir_url = $forloeb_configuration->get('gir_url');
 
-    return $gir_url;
+  return $gir_url;
 }
 
 
 function get_externals_parent() {
 
-    $forloeb_configuration = \Drupal::config('os2forms_forloeb.settings');
-    $gir_url = $forloeb_configuration->get('externals_root');
+  $forloeb_configuration = \Drupal::config('os2forms_forloeb.settings');
+  $gir_url = $forloeb_configuration->get('externals_root');
 
-    return $gir_url;
+  return $gir_url;
 }
 
 
@@ -107,78 +107,78 @@ function get_externals_parent() {
 
 function get_term_id_by_name($name) {
 
-    $properties = [];
-    $properties['name'] = $name;
-    $terms = \Drupal::entityManager()->getStorage(
-        'taxonomy_term'
-    )->loadByProperties($properties);
-    $term = reset($terms);
-    return $term->id();
+  $properties = [];
+  $properties['name'] = $name;
+  $terms = \Drupal::entityManager()->getStorage(
+    'taxonomy_term'
+  )->loadByProperties($properties);
+  $term = reset($terms);
+  return $term->id();
 }
 
 function get_json_from_api($path) {
 
-        $mo_url = get_gir_url();
-        $auth_token = get_openid_auth_token();
+  $mo_url = get_gir_url();
+  $auth_token = get_openid_auth_token();
 
-        // Authenticate
-        $headers = [ 'Authorization' => 'Bearer ' . $auth_token, 'Accept' => 'application/json', ];
+  // Authenticate
+  $headers = [ 'Authorization' => 'Bearer ' . $auth_token, 'Accept' => 'application/json', ];
 
-	try {
-            $response = \Drupal::httpClient()->request(
-                'GET', $mo_url . $path, [
-                'headers' => $headers
-                ]
-            );
-        } catch (GuzzleHttp\Exception\BadResponseException $e) {
-            $response = $e->getResponse();
-        }
+  try {
+    $response = \Drupal::httpClient()->request(
+      'GET', $mo_url . $path, [
+        'headers' => $headers
+      ]
+    );
+  } catch (GuzzleHttp\Exception\BadResponseException $e) {
+    $response = $e->getResponse();
+  }
 
-        if ($response->getStatusCode() == 200) {
-            return json_decode($response->getBody(), true);
-        }
-        else {
+  if ($response->getStatusCode() == 200) {
+    return json_decode($response->getBody(), true);
+  }
+  else {
 
-            \Drupal::logger(
-                'os2forms_forloeb'
-            )->notice('Call to URL'  . $url . 'failed:' . $response->getBody());
-            return "";
-        }
+    \Drupal::logger(
+      'os2forms_forloeb'
+    )->notice('Call to URL'  . $url . 'failed:' . $response->getBody());
+    return "";
+  }
 }
 
 function get_openid_auth_token() {
-    // TODO: This is a utility token to get an OpenID Connect bearer token from Keycloak.
-    // At some point, this should be moved to a "utilities" file.
+  // TODO: This is a utility token to get an OpenID Connect bearer token from Keycloak.
+  // At some point, this should be moved to a "utilities" file.
 
-    $keycloak_configuration = \Drupal::config('openid_connect.settings.keycloak');
+  $keycloak_configuration = \Drupal::config('openid_connect.settings.keycloak');
 
-    $keycloak_settings = $keycloak_configuration->get('settings');
-    $keycloak_base = $keycloak_settings['keycloak_base'];
-    $keycloak_realm = $keycloak_settings['keycloak_realm'];
-    $client_id = $keycloak_settings['client_id'];
-    $client_secret = $keycloak_settings['client_secret'];
-  
+  $keycloak_settings = $keycloak_configuration->get('settings');
+  $keycloak_base = $keycloak_settings['keycloak_base'];
+  $keycloak_realm = $keycloak_settings['keycloak_realm'];
+  $client_id = $keycloak_settings['client_id'];
+  $client_secret = $keycloak_settings['client_secret'];
 
-    $token_url = $keycloak_base . '/realms/' . $keycloak_realm . '/protocol/openid-connect/token';
 
-    $payload['grant_type'] = 'client_credentials';
-    $payload['client_id'] = $client_id;
-    $payload['client_secret'] = $client_secret;
-    
-    $json = json_encode($payload);
-    $response = \Drupal::httpClient()->request(
-	'POST', $token_url, [ 'form_params' => $payload ]
-    );
-    $status_code = $response->getStatusCode();
+  $token_url = $keycloak_base . '/realms/' . $keycloak_realm . '/protocol/openid-connect/token';
 
-    if ($status_code == 200) {
-	$body = json_decode($response->getBody(), true); 
-	$access_token = $body['access_token'];
+  $payload['grant_type'] = 'client_credentials';
+  $payload['client_id'] = $client_id;
+  $payload['client_secret'] = $client_secret;
 
-        return $access_token;
-    } else {
-        return '';	    
-    }
+  $json = json_encode($payload);
+  $response = \Drupal::httpClient()->request(
+    'POST', $token_url, [ 'form_params' => $payload ]
+  );
+  $status_code = $response->getStatusCode();
+
+  if ($status_code == 200) {
+    $body = json_decode($response->getBody(), true); 
+    $access_token = $body['access_token'];
+
+    return $access_token;
+  } else {
+    return '';	    
+  }
 }
 
 /**
@@ -232,19 +232,19 @@ function os2forms_forloeb_show_url_results(array &$form, $queueID = 0, $obj = NU
  */
 function os2forms_forloeb_workflow_maestro_reassign_form_submit(&$form, &$form_state) {
 
-    $queueID = intval($form_state->getValue('queueID'));
-    $processID = MaestroEngine::getProcessIdFromQueueId($queueID);
+  $queueID = intval($form_state->getValue('queueID'));
+  $processID = MaestroEngine::getProcessIdFromQueueId($queueID);
 
-    //Who was selected? Load their username, which is the user attribute that Maestro assigns tasks by.
-    $reviewer_uid = $form_state->getValue('reviewer');
-    $reviewer = \Drupal\user\Entity\User::load($reviewer_uid); // pass your uid
-    $reviewer_username = $reviewer->getUsername();
+  //Who was selected? Load their username, which is the user attribute that Maestro assigns tasks by.
+  $reviewer_uid = $form_state->getValue('reviewer');
+  $reviewer = \Drupal\user\Entity\User::load($reviewer_uid); // pass your uid
+  $reviewer_username = $reviewer->getUsername();
 
-    //add that user to our maestro process variable.
-    MaestroEngine::setProcessVariable("assigned_to", $reviewer_username, $processID);
+  //add that user to our maestro process variable.
+  MaestroEngine::setProcessVariable("assigned_to", $reviewer_username, $processID);
 
-    //Provide some feedback
-    \Drupal::messenger()->addStatus("Content Reassigned");
+  //Provide some feedback
+  \Drupal::messenger()->addStatus("Content Reassigned");
 
 }
 
@@ -255,259 +255,259 @@ function os2forms_forloeb_workflow_maestro_reassign_form_submit(&$form, &$form_s
  *     * in the edit task form under the handler field.
  *      */
 function os2forms_forloeb_maestro_batch_handlers() {
-      return [
-              'os2forms_forloeb_end_notification_batch_function' => t('Batch function to send out flow completion notification to initiator.'),
-              'os2forms_forloeb_fetch_from_http_endpoint_batch_function' => t('Batch function to fetch data from an external HTTP endpoint. Returns data in two process variables, url_status and url_body.'),
-              'os2forms_forloeb_gir_create_org_unit' => t('Batch function to create a new org unit in GIR.'),
-              'os2forms_forloeb_gir_create_external' => t('Batch function to create a new external employee in GIR.'),
-              'os2forms_forloeb_gir_approver_is_initiator' => t('Batch function to compare approver and initiator of a submission'),
-      ];
+  return [
+    'os2forms_forloeb_end_notification_batch_function' => t('Batch function to send out flow completion notification to initiator.'),
+    'os2forms_forloeb_fetch_from_http_endpoint_batch_function' => t('Batch function to fetch data from an external HTTP endpoint. Returns data in two process variables, url_status and url_body.'),
+    'os2forms_forloeb_gir_create_org_unit' => t('Batch function to create a new org unit in GIR.'),
+    'os2forms_forloeb_gir_create_external' => t('Batch function to create a new external employee in GIR.'),
+    'os2forms_forloeb_gir_approver_is_initiator' => t('Batch function to compare approver and initiator of a submission'),
+  ];
 }
 
 /**
-    *  * @param int $processID
-    *   *   The Maestro process ID.
-    *    * @param int $queueID
-    *     *   The Maestro queue ID.
-    *      */
+ *  * @param int $processID
+ *   *   The Maestro process ID.
+ *    * @param int $queueID
+ *     *   The Maestro queue ID.
+ *      */
 function os2forms_forloeb_end_notification_batch_function($processID, $queueID) {
 
-   /*
-    * Pseudocode for handling this:
-    *
-    *     * Get entity item for webform which spawned this process
-    *      (ID "submission").
-    *       foreach handler in webform: {
-    *           if (email_handler) {
-    *               email_handler.submit();
-    *           }
-    *       }
-    */
-    $sid = MaestroEngine::getEntityIdentiferByUniqueID($processID, 'submission');
+  /*
+   * Pseudocode for handling this:
+   *
+   *     * Get entity item for webform which spawned this process
+   *      (ID "submission").
+   *       foreach handler in webform: {
+   *           if (email_handler) {
+   *               email_handler.submit();
+   *           }
+   *       }
+   */
+  $sid = MaestroEngine::getEntityIdentiferByUniqueID($processID, 'submission');
 
-    if ($sid) {
-        $webform_submission = \Drupal\webform\Entity\WebformSubmission::load($sid);
-        $webform =  $webform_submission->getWebform();
-        $handlers = $webform->getHandlers();
+  if ($sid) {
+    $webform_submission = \Drupal\webform\Entity\WebformSubmission::load($sid);
+    $webform =  $webform_submission->getWebform();
+    $handlers = $webform->getHandlers();
 
-        foreach ($handlers as $handler) {
-            if (method_exists($handler, 'getMessage')) {
-                $message = $handler->getMessage($webform_submission);
-                $handler->sendMessage($webform_submission, $message);
-            }
-        }
+    foreach ($handlers as $handler) {
+      if (method_exists($handler, 'getMessage')) {
+        $message = $handler->getMessage($webform_submission);
+        $handler->sendMessage($webform_submission, $message);
+      }
     }
+  }
 
-    return TRUE;
+  return TRUE;
 }
 
 function os2forms_forloeb_fetch_from_http_endpoint_batch_function($processID, $queueID) {
 
-    // TODO: get URL from process variable.
-    $url = MaestroEngine::getProcessVariable('url', $processID);
+  // TODO: get URL from process variable.
+  $url = MaestroEngine::getProcessVariable('url', $processID);
 
-    $response = \Drupal::httpClient()->get($url);
-    $status_code = $response->getStatusCode();
-    if ($status_code == 200) {
-        $body = $response->getBody();
-    }
-    else {
-        $body = '';
-    }
+  $response = \Drupal::httpClient()->get($url);
+  $status_code = $response->getStatusCode();
+  if ($status_code == 200) {
+    $body = $response->getBody();
+  }
+  else {
+    $body = '';
+  }
 
-    MaestroEngine::setProcessVariable('url_status', $status_code, $processID);
-    MaestroEngine::setProcessVariable('url_body', $body, $processID);
+  MaestroEngine::setProcessVariable('url_status', $status_code, $processID);
+  MaestroEngine::setProcessVariable('url_body', $body, $processID);
 
-    return TRUE;
+  return TRUE;
 
 }
 
- function os2forms_forloeb_gir_approver_is_initiator($processID, $queueID) {
-    // Function to determine whether the initiator of this process is set as approver.
-    // It would be nice to be able to handle this in an IF task, but currently Maestro's
-    //  IF tasks only allows you to compare a process variable to a constant value.
-    // This function will succeed if the approver is initiator and fail otherwise - this
-    //  means that it can be combined with an IF task set up to branch according to the
-    //  result of the preceding task.
-    $initiator = MaestroEngine::getProcessVariable('initiator', $processID);
-    $approver = MaestroEngine::getProcessVariable('approver', $processID);
+function os2forms_forloeb_gir_approver_is_initiator($processID, $queueID) {
+  // Function to determine whether the initiator of this process is set as approver.
+  // It would be nice to be able to handle this in an IF task, but currently Maestro's
+  //  IF tasks only allows you to compare a process variable to a constant value.
+  // This function will succeed if the approver is initiator and fail otherwise - this
+  //  means that it can be combined with an IF task set up to branch according to the
+  //  result of the preceding task.
+  $initiator = MaestroEngine::getProcessVariable('initiator', $processID);
+  $approver = MaestroEngine::getProcessVariable('approver', $processID);
 
-    \Drupal::logger('os2forms_forloeb')->notice('initiator: ' . $initiator . ', approver: ' . $approver);
-    if ($initiator === $approver) {
-	// S'all good, man!
-        return TRUE;
-    } else {
-        \Drupal::logger('os2forms_forloeb')->notice('Cancelling task!');
-        return [ 'execution_status' => TASK_STATUS_CANCEL, 'completion_status' => MAESTRO_TASK_COMPLETION_NORMAL, 'status' => TRUE ];
-    }
+  \Drupal::logger('os2forms_forloeb')->notice('initiator: ' . $initiator . ', approver: ' . $approver);
+  if ($initiator === $approver) {
+    // S'all good, man!
+    return TRUE;
+  } else {
+    \Drupal::logger('os2forms_forloeb')->notice('Cancelling task!');
+    return [ 'execution_status' => TASK_STATUS_CANCEL, 'completion_status' => MAESTRO_TASK_COMPLETION_NORMAL, 'status' => TRUE ];
+  }
 }
 
 
 function os2forms_forloeb_gir_create_org_unit($processID, $queueID) {
 
-    // Get GIR URL from configuration.
-    $url = get_gir_url();
+  // Get GIR URL from configuration.
+  $url = get_gir_url();
 
-    $create_url = $url . '/service/ou/create';
+  $create_url = $url . '/service/ou/create';
 
-    // Get ID for webform which spawned this process.
-    $sid = MaestroEngine::getEntityIdentiferByUniqueID($processID, 'submission');
-    if ($sid) {
+  // Get ID for webform which spawned this process.
+  $sid = MaestroEngine::getEntityIdentiferByUniqueID($processID, 'submission');
+  if ($sid) {
 
-        $webform_submission = \Drupal\webform\Entity\WebformSubmission::load($sid);
-        // cf.
-        // https://www.drupal.org/project/webform/issues/2911356#comment-12271553
-        $values = $webform_submission->getData();
+    $webform_submission = \Drupal\webform\Entity\WebformSubmission::load($sid);
+    // cf.
+    // https://www.drupal.org/project/webform/issues/2911356#comment-12271553
+    $values = $webform_submission->getData();
 
-        // Org data
-	$name = $values['name'];
-        $parent_unit_id = get_externals_parent();
-        // TODO: Handle location/address data correctly.
-        $start_date = $values['start_date'];
-        $end_date = $values['end_date'];
+    // Org data
+    $name = $values['name'];
+    $parent_unit_id = get_externals_parent();
+    // TODO: Handle location/address data correctly.
+    $start_date = $values['start_date'];
+    $end_date = $values['end_date'];
 
-        // Approval information
-        $time_limit = $values['time_limit'];
-        $justification = $values['justification'];
-        // Extract MO UUIDs for these entities.
-        $approver = $values['approver'];
-        $owner = $values['owner'];
+    // Approval information
+    $time_limit = $values['time_limit'];
+    $justification = $values['justification'];
+    // Extract MO UUIDs for these entities.
+    $approver = $values['approver'];
+    $owner = $values['owner'];
 
-    }
-    else {
-        return FALSE;
-    }
-    $gir_json = new \stdClass();
-    $gir_json->name = $name;
+  }
+  else {
+    return FALSE;
+  }
+  $gir_json = new \stdClass();
+  $gir_json->name = $name;
 
-    $gir_json->validity = new \stdClass();
-    $gir_json->validity->from = $start_date;
-    $gir_json->validity->to = $end_date;
-    $gir_json->parent = new \stdClass();
-    $gir_json->parent->uuid = $parent_unit_id;
+  $gir_json->validity = new \stdClass();
+  $gir_json->validity->from = $start_date;
+  $gir_json->validity->to = $end_date;
+  $gir_json->parent = new \stdClass();
+  $gir_json->parent->uuid = $parent_unit_id;
 
-    // TODO: Get Org Unit Type from imported data.
-    $gir_json->org_unit_type = new \stdClass();
-    $gir_json->org_unit_type->uuid = "b244f1f1-8cb5-4f90-ba7c-d451c7244e0b";
+  // TODO: Get Org Unit Type from imported data.
+  $gir_json->org_unit_type = new \stdClass();
+  $gir_json->org_unit_type->uuid = "b244f1f1-8cb5-4f90-ba7c-d451c7244e0b";
 
-    $post_data = json_encode($gir_json);
+  $post_data = json_encode($gir_json);
 
-    // Get access token for authentication.
-    $access_token = get_openid_auth_token();
+  // Get access token for authentication.
+  $access_token = get_openid_auth_token();
 
-    \Drupal::logger('os2forms_forloeb')->notice('Org Unit JSON sent: ' . '<' . $post_data . '>');
-    $headers = [
-        'Authorization' => 'Bearer ' . $access_token,
-        'Accept' => 'application/json', 
-        'content-type' => 'application/json',
-    ];
+  \Drupal::logger('os2forms_forloeb')->notice('Org Unit JSON sent: ' . '<' . $post_data . '>');
+  $headers = [
+    'Authorization' => 'Bearer ' . $access_token,
+    'Accept' => 'application/json', 
+    'content-type' => 'application/json',
+  ];
 
-    try {
-        $response = \Drupal::httpClient()->request(
-	        'POST', $create_url, [
-                    'body' => $post_data,
-                    'headers' => $headers
-                 ]
-        );
-    } catch (GuzzleHttp\Exception\BadResponseException $e) {
-        $response = $e->getResponse();
-    }
-    $status_code = $response->getStatusCode();
-    if ($status_code == 201) {
-        $url_status = "Success";
-        $url_body = "Org unit " . $name . "was created.";
-    } else {
-        $body = $response->getBody();
-        $url_status = "Failed";
-        $url_body = "Unable to create org unit " . $name . ": " . $body;
-    }
+  try {
+    $response = \Drupal::httpClient()->request(
+      'POST', $create_url, [
+        'body' => $post_data,
+        'headers' => $headers
+      ]
+    );
+  } catch (GuzzleHttp\Exception\BadResponseException $e) {
+    $response = $e->getResponse();
+  }
+  $status_code = $response->getStatusCode();
+  if ($status_code == 201) {
+    $url_status = "Success";
+    $url_body = "Org unit " . $name . "was created.";
+  } else {
+    $body = $response->getBody();
+    $url_status = "Failed";
+    $url_body = "Unable to create org unit " . $name . ": " . $body;
+  }
 
-    MaestroEngine::setProcessVariable('url_status', $url_status, $processID);
-    MaestroEngine::setProcessVariable('url_body', $url_body, $processID);
+  MaestroEngine::setProcessVariable('url_status', $url_status, $processID);
+  MaestroEngine::setProcessVariable('url_body', $url_body, $processID);
 
-    return TRUE;
+  return TRUE;
 
 }
 
 
 function os2forms_forloeb_gir_create_external($processID, $queueID) {
 
-    // Get GIR URL from process variable.
-    $url = get_gir_url();
+  // Get GIR URL from process variable.
+  $url = get_gir_url();
 
-    $create_url = $url . '/service/e/create';
+  $create_url = $url . '/service/e/create';
 
-    // Get ID for webform which spawned this process.
-    $sid = MaestroEngine::getEntityIdentiferByUniqueID($processID, 'submission');
-    if ($sid) {
+  // Get ID for webform which spawned this process.
+  $sid = MaestroEngine::getEntityIdentiferByUniqueID($processID, 'submission');
+  if ($sid) {
 
-        $webform_submission = \Drupal\webform\Entity\WebformSubmission::load($sid);
-        // cf.
-        // https://www.drupal.org/project/webform/issues/2911356#comment-12271553
-        $values = $webform_submission->getData();
+    $webform_submission = \Drupal\webform\Entity\WebformSubmission::load($sid);
+    // cf.
+    // https://www.drupal.org/project/webform/issues/2911356#comment-12271553
+    $values = $webform_submission->getData();
 
-        // Employee Data
-	$first_name = $values['first_name'];
-	$last_name = $values['last_name'];
-        // TODO: Format data with MO UUIDs for consultancy, consultant
-        // type, cost center and org units.
-        $start_date = $values['start_date'];
-        $end_date = $values['end_date'];
+    // Employee Data
+    $first_name = $values['first_name'];
+    $last_name = $values['last_name'];
+    // TODO: Format data with MO UUIDs for consultancy, consultant
+    // type, cost center and org units.
+    $start_date = $values['start_date'];
+    $end_date = $values['end_date'];
 
-        // Approval information
-        $time_limit = $values['time_limit'];
-        $justification = $values['justification'];
-        // Extract MO UUIDs for these entities.
-        $approver = $values['approver'];
-        // $owner = $values['owner'];
+    // Approval information
+    $time_limit = $values['time_limit'];
+    $justification = $values['justification'];
+    // Extract MO UUIDs for these entities.
+    $approver = $values['approver'];
+    // $owner = $values['owner'];
 
-    }
-    else {
-        return FALSE;
-    }
-    $gir_json = new \stdClass();
-    $gir_json->givenname = $first_name;
-    $gir_json->surname = $last_name;
+  }
+  else {
+    return FALSE;
+  }
+  $gir_json = new \stdClass();
+  $gir_json->givenname = $first_name;
+  $gir_json->surname = $last_name;
 
-    $gir_json->validity = new \stdClass();
-    $gir_json->validity->from = $start_date;
-    if ($end_date)
-        $gir_json->validity->to = $end_date;
+  $gir_json->validity = new \stdClass();
+  $gir_json->validity->from = $start_date;
+  if ($end_date)
+    $gir_json->validity->to = $end_date;
 
-    $post_data = json_encode($gir_json);
-    \Drupal::logger('os2forms_forloeb')->notice('Employee JSON sent: ' . '<' . $post_data . '>'); 
-    
-    // Get access token for authentication.
-    $access_token = get_openid_auth_token();
-    $headers = [
-        'Authorization' => 'Bearer ' . $access_token,
-        'Accept' => 'application/json', 
-        'content-type' => 'application/json',
-    ];
-    
-    try {
-        $response = \Drupal::httpClient()->request(
-            'POST', $create_url, [ 'body' => $post_data, 'headers' => $headers ]
-        );
-    } catch (GuzzleHttp\Exception\BadResponseException $e) {
-        $response = $e->getResponse();
-    }
+  $post_data = json_encode($gir_json);
+  \Drupal::logger('os2forms_forloeb')->notice('Employee JSON sent: ' . '<' . $post_data . '>'); 
 
-    $status_code = $response->getStatusCode();
-    if ($status_code == 201) {
-        $url_status = "Success";
-        $url_body = "Employee " . $first_name . " " . $last_name . " was created.";
-    }
-    else {
-        $body = $response->getBody();
-        $url_status = "Failed";
-        $url_body = "Unable to create org unit " . $name . ": " . $body;
-    }
+  // Get access token for authentication.
+  $access_token = get_openid_auth_token();
+  $headers = [
+    'Authorization' => 'Bearer ' . $access_token,
+    'Accept' => 'application/json', 
+    'content-type' => 'application/json',
+  ];
 
-    MaestroEngine::setProcessVariable('url_status', $status_code, $processID);
-    MaestroEngine::setProcessVariable('url_body', $url_body, $processID);
+  try {
+    $response = \Drupal::httpClient()->request(
+      'POST', $create_url, [ 'body' => $post_data, 'headers' => $headers ]
+    );
+  } catch (GuzzleHttp\Exception\BadResponseException $e) {
+    $response = $e->getResponse();
+  }
 
-    return TRUE;
+  $status_code = $response->getStatusCode();
+  if ($status_code == 201) {
+    $url_status = "Success";
+    $url_body = "Employee " . $first_name . " " . $last_name . " was created.";
+  }
+  else {
+    $body = $response->getBody();
+    $url_status = "Failed";
+    $url_body = "Unable to create org unit " . $name . ": " . $body;
+  }
+
+  MaestroEngine::setProcessVariable('url_status', $status_code, $processID);
+  MaestroEngine::setProcessVariable('url_body', $url_body, $processID);
+
+  return TRUE;
 
 }
 

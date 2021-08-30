@@ -36,33 +36,33 @@ use Drupal\os2forms_forloeb\get_openid_auth_token;
  */
 class KeycloakAuthFetcher extends HTTPFetcher {
 
-    public function defaultFeedConfiguration() {
-        $default_configuration = parent::defaultConfiguration();
-        $default_configuration['token'] = '';
-        return $default_configuration;
+  public function defaultFeedConfiguration() {
+    $default_configuration = parent::defaultConfiguration();
+    $default_configuration['token'] = '';
+    return $default_configuration;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function fetch(FeedInterface $feed, StateInterface $state) {
+    $sink = $this->fileSystem->tempnam('temporary://', 'feeds_http_fetcher');
+    $sink = $this->fileSystem->realpath($sink);
+
+    $response = $this->get($feed->getSource(), $sink, $this->getCacheKey($feed), get_openid_auth_token());
+    // @todo Handle redirects.
+    // @codingStandardsIgnoreStart
+    // $feed->setSource($response->getEffectiveUrl());
+    // @codingStandardsIgnoreEnd
+
+    // 304, nothing to see here.
+    if ($response->getStatusCode() == Response::HTTP_NOT_MODIFIED) {
+      $state->setMessage($this->t('The feed has not been updated.'));
+      throw new EmptyFeedException();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function fetch(FeedInterface $feed, StateInterface $state) {
-        $sink = $this->fileSystem->tempnam('temporary://', 'feeds_http_fetcher');
-        $sink = $this->fileSystem->realpath($sink);
-
-        $response = $this->get($feed->getSource(), $sink, $this->getCacheKey($feed), get_openid_auth_token());
-        // @todo Handle redirects.
-        // @codingStandardsIgnoreStart
-        // $feed->setSource($response->getEffectiveUrl());
-        // @codingStandardsIgnoreEnd
-
-        // 304, nothing to see here.
-        if ($response->getStatusCode() == Response::HTTP_NOT_MODIFIED) {
-            $state->setMessage($this->t('The feed has not been updated.'));
-            throw new EmptyFeedException();
-        }
-
-        return new HttpFetcherResult($sink, $response->getHeaders());
-    }
+    return new HttpFetcherResult($sink, $response->getHeaders());
+  }
   /**
    * Performs a GET request.
    *
@@ -93,7 +93,7 @@ class KeycloakAuthFetcher extends HTTPFetcher {
     if($token !== null) {
       $options[RequestOptions::HEADERS]['Authorization'] = 'Bearer ' . $token;
     }
-      // Add cached headers if requested.
+    // Add cached headers if requested.
     if ($cache_key && ($cache = $this->cache->get($cache_key))) {
       if (isset($cache->data['etag'])) {
         $options[RequestOptions::HEADERS]['If-None-Match'] = $cache->data['etag'];
