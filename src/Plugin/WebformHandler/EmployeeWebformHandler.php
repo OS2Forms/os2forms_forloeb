@@ -82,7 +82,7 @@ class EmployeeWebformHandler extends WebformHandlerBase {
     $mobile_number = "";
     $telephone_number = "";
     if ($details_json['address']) {
-      $address_path = $details_path . 'address' . '?at=' . $today;
+      $address_path = "{$details_path}address?at={$today}";
       $address_json = get_json_from_api($address_path);
 
       foreach ($address_json as $address) {
@@ -110,7 +110,7 @@ class EmployeeWebformHandler extends WebformHandlerBase {
 
     // Get org unit for current engagement from engagement details.
     if ($details_json['engagement']) {
-      $engagement_path = $details_path . 'engagement' . '?at=' . $today;
+      $engagement_path = "{$details_path}engagement?at={$today}";
       $engagement_json = get_json_from_api($engagement_path);
       // @todo Later, handle multiple engagements.
       $engagement = reset($engagement_json);
