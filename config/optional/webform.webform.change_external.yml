@@ -33,7 +33,7 @@ template: false
 archive: false
 id: change_external
 title: 'Change External'
-description: 'Create an entity for a person joining GIR, along with the corresponding organizational&nbsp; identities.'
+description: 'Update an entity for an external in GIR, along with the corresponding organizational&nbsp; identities.'
 category: GIR
 elements: |
   search_external:
@@ -324,7 +324,7 @@ handlers:
     conditions: {  }
     weight: 0
     settings:
-      maestro_template: create_external
+      maestro_template: change_external
       maestro_message_success: ''
       maestro_message_failure: ''
   load_employee:

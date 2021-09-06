@@ -1,0 +1,358 @@
+langcode: en
+status: true
+dependencies: {  }
+id: change_external
+label: 'GIR Change External'
+app_group: 0
+canvas_height: 900
+canvas_width: 800
+default_workflow_timeline_stage_count: 3
+show_details: true
+validated: true
+views_attached:
+  maestro_entity_identifiers:
+    view_machine_name: maestro_entity_identifiers
+    view_weight: -10
+    view_display: 'taskconsole_display;Task Console Display'
+  maestro_completed_tasks:
+    view_machine_name: maestro_completed_tasks
+    view_weight: -9
+    view_display: default;Master
+variables:
+  initiator:
+    variable_id: initiator
+    variable_value: '0'
+  workflow_timeline_stage_count:
+    variable_id: workflow_timeline_stage_count
+    variable_value: ''
+  workflow_current_stage:
+    variable_id: workflow_current_stage
+    variable_value: ''
+  workflow_current_stage_message:
+    variable_id: workflow_current_stage_message
+    variable_value: ''
+  approver:
+    variable_id: approver
+    variable_value: ''
+  url_status:
+    variable_id: url_status
+    variable_value: ''
+  url_body:
+    variable_id: url_body
+    variable_value: ''
+initiator: null
+workflow_timeline_stage_count: null
+workflow_current_stage: null
+workflow_current_stage_message: null
+tasks:
+  start:
+    id: start
+    tasktype: MaestroStart
+    label: Start
+    nextstep: set_approver
+    nextfalsestep: ''
+    top: '60'
+    left: '460'
+    assignby: fixed
+    assignto: engine
+  end:
+    id: end
+    tasktype: MaestroEnd
+    label: End
+    nextstep: ''
+    nextfalsestep: ''
+    top: '750'
+    left: '50'
+    assignby: fixed
+    assignto: engine
+  fill_in_information:
+    id: fill_in_information
+    label: 'Edit external'
+    tasktype: MaestroWebform
+    nextstep: set_approver
+    nextfalsestep: ''
+    top: '184'
+    left: '254'
+    assignby: fixed
+    assignto: ''
+    raphael: ''
+    to: ''
+    pointedfrom: ''
+    falsebranch: ''
+    lines: {  }
+    data:
+      unique_id: submission
+      webform_machine_name: change_external
+      modal: notmodal
+      skip_webform_handlers: 0
+      webform_nodes_attached_to: none
+      use_nodes_attached: 0
+      webform_nodes_attached_variable: none
+      redirect_to: taskconsole
+      show_edit_form: 1
+    assigned: 'user:variable:initiator'
+    runonce: false
+    handler: ''
+    showindetail: true
+    participate_in_workflow_status_stage: false
+    workflow_status_stage_number: 1
+    workflow_status_stage_message: ''
+    notifications:
+      notification_assignment_subject: ''
+      notification_assignment: ''
+      notification_reminder_subject: ''
+      notification_reminder: ''
+      notification_escalation_subject: ''
+      notification_escalation: ''
+      reminder_after: 0
+      escalation_after: 0
+  request_approval:
+    id: request_approval
+    label: 'Approve or Reject Changed External'
+    tasktype: MaestroWebform
+    nextstep: if_approved
+    nextfalsestep: ''
+    top: '440'
+    left: '470'
+    assignby: fixed
+    assignto: ''
+    raphael: ''
+    to: ''
+    pointedfrom: ''
+    falsebranch: ''
+    lines: {  }
+    data:
+      unique_id: submission
+      webform_machine_name: change_external
+      modal: notmodal
+      skip_webform_handlers: 0
+      webform_nodes_attached_to: none
+      use_nodes_attached: 0
+      webform_nodes_attached_variable: none
+      redirect_to: taskconsole
+      show_edit_form: 0
+    assigned: 'user:variable:approver'
+    runonce: false
+    handler: ''
+    showindetail: true
+    participate_in_workflow_status_stage: true
+    workflow_status_stage_number: 2
+    workflow_status_stage_message: ''
+    notifications:
+      notification_assignment_subject: ''
+      notification_assignment: ''
+      notification_reminder_subject: ''
+      notification_reminder: ''
+      notification_escalation_subject: ''
+      notification_escalation: ''
+      reminder_after: 0
+      escalation_after: 0
+  if_approved:
+    id: if_approved
+    label: 'If Approved'
+    tasktype: MaestroIf
+    nextstep: entity_and_identity_update
+    nextfalsestep: fill_in_information
+    top: '450'
+    left: '260'
+    assignby: fixed
+    assignto: ''
+    raphael: ''
+    to: ''
+    pointedfrom: ''
+    falsebranch: ''
+    lines: {  }
+    data:
+      if:
+        method: bylasttaskstatus
+        variable: is_approved
+        operator: '='
+        variable_value: '1'
+        status: '1'
+    assigned: ''
+    runonce: false
+    handler: ''
+    showindetail: true
+    participate_in_workflow_status_stage: false
+    workflow_status_stage_number: 0
+    workflow_status_stage_message: ''
+    notifications:
+      notification_assignment_subject: null
+      notification_assignment: null
+      notification_reminder_subject: null
+      notification_reminder: null
+      notification_escalation_subject: null
+      notification_escalation: null
+      reminder_after: null
+      escalation_after: null
+  entity_and_identity_update:
+    id: entity_and_identity_update
+    label: 'Update External in GIR'
+    tasktype: MaestroBatchFunction
+    nextstep: gir_update_result
+    nextfalsestep: ''
+    top: '620'
+    left: '260'
+    assignby: fixed
+    assignto: ''
+    raphael: ''
+    to: ''
+    pointedfrom: ''
+    falsebranch: ''
+    lines: {  }
+    handler: os2forms_forloeb_gir_change_external
+    assigned: ''
+    runonce: false
+    showindetail: true
+    participate_in_workflow_status_stage: false
+    workflow_status_stage_number: 0
+    workflow_status_stage_message: ''
+    notifications:
+      notification_assignment_subject: null
+      notification_assignment: null
+      notification_reminder_subject: null
+      notification_reminder: null
+      notification_escalation_subject: null
+      notification_escalation: null
+      reminder_after: null
+      escalation_after: null
+  set_approver:
+    id: set_approver
+    label: 'Set Approver'
+    tasktype: MaestroSetProcessVariable
+    nextstep: is_initiator_approver
+    nextfalsestep: ''
+    top: '315'
+    left: '465'
+    assignby: fixed
+    assignto: ''
+    raphael: ''
+    to: ''
+    pointedfrom: ''
+    falsebranch: ''
+    lines: {  }
+    data:
+      spv:
+        variable: approver
+        method: bycontentfunction
+        variable_value: 'os2forms_forloeb_spv_fetch_entity_username:submission,approver'
+    assigned: ''
+    runonce: false
+    handler: ''
+    showindetail: true
+    participate_in_workflow_status_stage: false
+    workflow_status_stage_number: 0
+    workflow_status_stage_message: ''
+    notifications:
+      notification_assignment_subject: null
+      notification_assignment: null
+      notification_reminder_subject: null
+      notification_reminder: null
+      notification_escalation_subject: null
+      notification_escalation: null
+      reminder_after: null
+      escalation_after: null
+  gir_update_result:
+    id: gir_update_result
+    label: 'GIR Update Result'
+    tasktype: MaestroInteractive
+    nextstep: end
+    nextfalsestep: ''
+    top: '750'
+    left: '260'
+    assignby: fixed
+    assignto: ''
+    raphael: ''
+    to: ''
+    pointedfrom: ''
+    falsebranch: ''
+    lines: {  }
+    handler: os2forms_forloeb_show_url_results
+    data:
+      modal: modal
+      redirect_to: taskconsole
+    assigned: 'user:variable:initiator'
+    runonce: false
+    showindetail: true
+    participate_in_workflow_status_stage: true
+    workflow_status_stage_number: 3
+    workflow_status_stage_message: ''
+    notifications:
+      notification_assignment_subject: ''
+      notification_assignment: ''
+      notification_reminder_subject: ''
+      notification_reminder: ''
+      notification_escalation_subject: ''
+      notification_escalation: ''
+      reminder_after: 0
+      escalation_after: 0
+  approver_is_initiator:
+    id: approver_is_initiator
+    label: 'Skip approval?'
+    tasktype: MaestroIf
+    nextstep: entity_and_identity_update
+    nextfalsestep: request_approval
+    top: '500'
+    left: '660'
+    assignby: fixed
+    assignto: ''
+    raphael: ''
+    to: ''
+    pointedfrom: ''
+    falsebranch: ''
+    lines: {  }
+    data:
+      if:
+        method: bylasttaskstatus
+        variable: initiator
+        operator: '='
+        variable_value: 'os2forms_forloeb_spv_fetch_entity_username:submission,approver'
+        status: '1'
+    assigned: ''
+    runonce: false
+    handler: ''
+    showindetail: true
+    participate_in_workflow_status_stage: false
+    workflow_status_stage_number: 0
+    workflow_status_stage_message: ''
+    notifications:
+      notification_assignment_subject: null
+      notification_assignment: null
+      notification_reminder_subject: null
+      notification_reminder: null
+      notification_escalation_subject: null
+      notification_escalation: null
+      reminder_after: null
+      escalation_after: null
+  is_initiator_approver:
+    id: is_initiator_approver
+    label: 'Initiator = Approver'
+    tasktype: MaestroBatchFunction
+    nextstep: approver_is_initiator
+    nextfalsestep: ''
+    top: '320'
+    left: '660'
+    assignby: fixed
+    assignto: ''
+    raphael: ''
+    to: ''
+    pointedfrom: ''
+    falsebranch: ''
+    lines: {  }
+    handler: os2forms_forloeb_gir_approver_is_initiator
+    assigned: ''
+    runonce: false
+    showindetail: true
+    participate_in_workflow_status_stage: false
+    workflow_status_stage_number: 0
+    workflow_status_stage_message: ''
+    notifications:
+      notification_assignment_subject: null
+      notification_assignment: null
+      notification_reminder_subject: null
+      notification_reminder: null
+      notification_escalation_subject: null
+      notification_escalation: null
+      reminder_after: null
+      escalation_after: null
+

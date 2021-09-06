@@ -31,7 +31,7 @@ template: false
 archive: false
 id: change_organizational_unit
 title: 'Change External Organizational Unit'
-description: 'Send a request for creating a new organizational unit and submit it for approval.'
+description: 'Send a request for updating a new organizational unit and submit it for approval.'
 category: GIR
 elements: |
   search_for_unit:
@@ -275,6 +275,18 @@ access:
     users: {  }
     permissions: {  }
 handlers:
+  spawn_maestro_workflow:
+    id: maestro
+    label: 'Spawn Maestro Workflow'
+    notes: ''
+    handler_id: spawn_maestro_workflow
+    status: true
+    conditions: {  }
+    weight: 0
+    settings:
+      maestro_template: change_org_unit
+      maestro_message_success: ''
+      maestro_message_failure: ''
   load_organization_unit:
     id: org_unit
     label: 'Load Organization Unit'
