@@ -41,9 +41,6 @@ class EmployeeWebformHandler extends WebformHandlerBase {
       'FORM: ' . json_encode($form)
     );
     \Drupal::logger('os2forms_forloeb')->notice(
-      'FORM STATE: ' . json_encode($form_state)
-    );
-    \Drupal::logger('os2forms_forloeb')->notice(
       'SUBMISSION: ' . json_encode($webform_submission)
     );
     $values = $webform_submission->getData();
@@ -107,6 +104,7 @@ class EmployeeWebformHandler extends WebformHandlerBase {
     $end_date = "";
     $engagement = [];
     $org_units = [];
+    $org_unit_options = [];
 
     // Get org unit for current engagement from engagement details.
     if ($details_json['engagement']) {
@@ -158,6 +156,7 @@ class EmployeeWebformHandler extends WebformHandlerBase {
             $org_unit_name = $ea['org_unit']['name'];
             $organizational_unit_id = get_term_id_by_name($org_unit_name);
             $org_units[] = $organizational_unit_id;
+            $org_unit_options[$organizational_unit_id] = $org_unit_name;
           }
         }
       }
@@ -190,7 +189,13 @@ class EmployeeWebformHandler extends WebformHandlerBase {
     }
     if ($org_units) {
       $webform_submission->setElementData('organizational_unit', $org_units);
+      $webform = $webform_submission->getWebform();
+      $form["elements"]["move_external"]["old_organizational_unit"]["#options"] = $org_unit_options;
+      //$webform->setElements($form["elements"]);
+      \Drupal::logger('os2forms_forloeb')->notice(
+        'Org Units: ' . json_encode($form["elements"]["move_external"]["old_organizational_unit"]["#options"])
+      );
+      $webform_submission->setElementData('organizational_unit', $org_units);
     }
   }
-
 }
