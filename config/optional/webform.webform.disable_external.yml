@@ -276,6 +276,18 @@ access:
     users: {  }
     permissions: {  }
 handlers:
+  spawn_maestro_workflow:
+    id: maestro
+    label: 'Spawn Maestro Workflow'
+    notes: ''
+    handler_id: spawn_maestro_workflow
+    status: true
+    conditions: {  }
+    weight: 0
+    settings:
+      maestro_template: disable_external
+      maestro_message_success: ''
+      maestro_message_failure: ''
   load_employee:
     id: employee
     label: 'Load Employee'

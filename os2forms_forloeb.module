@@ -260,8 +260,10 @@ function os2forms_forloeb_maestro_batch_handlers() {
     'os2forms_forloeb_fetch_from_http_endpoint_batch_function' => t('Batch function to fetch data from an external HTTP endpoint. Returns data in two process variables, url_status and url_body.'),
     'os2forms_forloeb_gir_create_org_unit' => t('Batch function to create a new org unit in GIR.'),
     'os2forms_forloeb_gir_change_org_unit' => t('Batch function to change an org unit in GIR.'),
+    'os2forms_forloeb_gir_disable_org_unit' => t('Batch function to disable an org unit in GIR.'),
     'os2forms_forloeb_gir_create_external' => t('Batch function to create a new external employee in GIR.'),
     'os2forms_forloeb_gir_change_external' => t('Batch function to change an external employee in GIR.'),
+    'os2forms_forloeb_gir_disable_external' => t('Batch function to disable an external employee in GIR.'),
     'os2forms_forloeb_gir_approver_is_initiator' => t('Batch function to compare approver and initiator of a submission'),
   ];
 }
@@ -351,6 +353,16 @@ function os2forms_forloeb_gir_change_org_unit($processID, $queueID) {
 
 
 function os2forms_forloeb_gir_change_external($processID, $queueID) {
+    // TODO: Implement this.
+}
+
+
+function os2forms_forloeb_gir_disable_org_unit($processID, $queueID) {
+    // TODO: Implement this.
+}
+
+
+function os2forms_forloeb_gir_disable_external($processID, $queueID) {
     // TODO: Implement this.
 }
 
