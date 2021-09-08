@@ -563,7 +563,7 @@ function os2forms_forloeb_spv_fetch_entity_username($uniqueWebformIdentifier, $w
     $returnValue = $webform_submission->getData()[$webformFieldMachineName];
   }
   // At this point, the submission's value OR 'unset' is in the $returnValue.
-  if ($returnValue == 'unset') {
+  if ($returnValue == 'unset' or !$returnValue) {
     return $returnValue;
   }
   $account = \Drupal\user\Entity\User::load($returnValue);
