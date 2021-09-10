@@ -160,7 +160,6 @@ function get_openid_auth_token() {
 
 
   $token_url = $keycloak_base . '/realms/' . $keycloak_realm . '/protocol/openid-connect/token';
-  \Drupal::logger('os2forms_forloeb')->notice('URL: ' . $token_url);
 
   $payload['grant_type'] = 'client_credentials';
   $payload['client_id'] = $client_id;
@@ -183,7 +182,7 @@ function get_openid_auth_token() {
 }
 
 function get_employees_for_org_unit($org_unit_uuid) {
-  // Get all employees attached to this org unit.
+  // Get all employees with engagements in this  org unit
   // NOTE: Do not recurse into children.
   $engagement_path = "/service/ou/{$org_unit_uuid}/details/engagement?validity=present";
 
@@ -196,9 +195,25 @@ function get_employees_for_org_unit($org_unit_uuid) {
   
   return $employees;
 
-
-
 }
+
+function get_externals_for_org_unit($org_unit_uuid) {
+  $engagement_associations_path = "/api/v1/engagement_association?validity=present&org_unit={$org_unit_uuid}";
+  $engagement_associations = get_json_from_api($engagement_associations_path);
+
+  $externals = [];
+
+  foreach ($engagement_associations as $ea) {
+    if ($ea["engagement_association_type"]["user_key"] == "External") {
+      $externals[] = $ea["engagement"]["person"];
+    }
+  }
+
+  return $externals;
+}
+
+
+
 /**
  * GIR-related utility functions END.
  */
