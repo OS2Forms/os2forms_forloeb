@@ -110,11 +110,15 @@ elements: |
       organizational_unit:
         '#type': entity_autocomplete
         '#title': 'Organizational Unit'
+        '#multiple': true
         '#target_type': taxonomy_term
         '#selection_handler': 'default:taxonomy_term'
         '#selection_settings':
           target_bundles:
             orgunit: orgunit
+          sort:
+            field: name
+            direction: ASC
           auto_create: false
           auto_create_bundle: orgunit
     approval_information:
