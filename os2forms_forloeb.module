@@ -205,7 +205,7 @@ function get_externals_for_org_unit($org_unit_uuid) {
 
   foreach ($engagement_associations as $ea) {
     if ($ea["engagement_association_type"]["user_key"] == "External") {
-      $externals[] = $ea["engagement"]["person"];
+      $externals[$ea["engagement"]["user_key"]] = $ea["engagement"]["person"];
     }
   }
 

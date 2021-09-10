@@ -7,6 +7,7 @@ use Drupal\webform\WebformSubmissionInterface;
 use Drupal\Core\Form\FormStateInterface;
 
 use Drupal\os2forms_forloeb\get_json_from_api;
+use Drupal\os2forms_forloeb\get_externals_for_org_unit;
 
 /**
  * Webform submission handler for loading org units.
@@ -56,6 +57,25 @@ class OrgunitWebformHandler extends WebformHandlerBase {
     $webform_submission->setElementData('name', $ou_json['name']);
     $webform_submission->setElementData('start_date', $ou_json['validity']['from']);
     $webform_submission->setElementData('end_date', $ou_json['validity']['to']);
-  }
 
+    // This is relevant for "Move Many Externals".
+    // TODO: Detect that we need to do this to save performance when just editing org unit.
+    
+    $webform_submission->setElementData('origin_unit', $ou_json['name']);
+    $externals = get_externals_for_org_unit($uuid);
+
+    \Drupal::logger('os2forms_forloeb')->notice('Externals found: ' . '<' . json_encode($externals) . '>');
+    if ($externals) {
+      $external_ids = [];
+      foreach ($externals as $username => $e) {
+        // Get ID from username
+        \Drupal::logger('os2forms_forloeb')->notice('Username: ' . '<' . json_encode($username) . '>');
+        $user = user_load_by_name($username);
+        $external_ids[] = $user->id();
+      }
+      \Drupal::logger('os2forms_forloeb')->notice('Exts found: ' . '<' . json_encode($external_ids) . '>');
+      $webform_submission->setElementData('externals', $external_ids);
+
+  }
+  }
 }
