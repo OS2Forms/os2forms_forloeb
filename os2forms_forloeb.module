@@ -297,6 +297,7 @@ function os2forms_forloeb_maestro_batch_handlers() {
     'os2forms_forloeb_gir_create_external' => t('Batch function to create a new external employee in GIR.'),
     'os2forms_forloeb_gir_change_external' => t('Batch function to change an external employee in GIR.'),
     'os2forms_forloeb_gir_disable_external' => t('Batch function to disable an external employee in GIR.'),
+    'os2forms_forloeb_gir_move_many_externals' => t('Batch function to move several external employees from one unit to another.'),
     'os2forms_forloeb_gir_approver_is_initiator' => t('Batch function to compare approver and initiator of a submission'),
   ];
 }
@@ -399,6 +400,12 @@ function os2forms_forloeb_gir_disable_org_unit($processID, $queueID) {
 
 
 function os2forms_forloeb_gir_disable_external($processID, $queueID) {
+  // TODO: Implement this.
+  return TRUE;
+}
+
+
+function os2forms_forloeb_gir_move_many_externals($processID, $queueID) {
   // TODO: Implement this.
   return TRUE;
 }

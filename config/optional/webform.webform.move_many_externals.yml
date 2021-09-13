@@ -2,8 +2,10 @@ langcode: en
 status: open
 dependencies:
   module:
+    - maestro_webform
     - os2forms
     - os2forms_forloeb
+    - webform_entity_print
 third_party_settings:
   os2forms:
     os2forms_nemid:
@@ -290,4 +292,16 @@ handlers:
           empty: true
     weight: 0
     settings: {  }
+  spawn_maestro_workflow:
+    id: maestro
+    label: 'Spawn Maestro Workflow'
+    notes: ''
+    handler_id: spawn_maestro_workflow
+    status: true
+    conditions: {  }
+    weight: 0
+    settings:
+      maestro_template: move_many_externals
+      maestro_message_success: ''
+      maestro_message_failure: ''
 variants: {  }
