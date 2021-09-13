@@ -64,16 +64,13 @@ class OrgunitWebformHandler extends WebformHandlerBase {
     $webform_submission->setElementData('origin_unit', $ou_json['name']);
     $externals = get_externals_for_org_unit($uuid);
 
-    \Drupal::logger('os2forms_forloeb')->notice('Externals found: ' . '<' . json_encode($externals) . '>');
     if ($externals) {
       $external_ids = [];
       foreach ($externals as $username => $e) {
         // Get ID from username
-        \Drupal::logger('os2forms_forloeb')->notice('Username: ' . '<' . json_encode($username) . '>');
         $user = user_load_by_name($username);
         $external_ids[] = $user->id();
       }
-      \Drupal::logger('os2forms_forloeb')->notice('Exts found: ' . '<' . json_encode($external_ids) . '>');
       $webform_submission->setElementData('externals', $external_ids);
 
   }
