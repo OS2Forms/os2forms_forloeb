@@ -425,7 +425,9 @@ function os2forms_forloeb_gir_create_org_unit($processID, $queueID) {
     $parent_unit_id = get_externals_parent();
     // TODO: Handle location/address data correctly.
     $start_date = $values['start_date'];
-    $end_date = $values['end_date'];
+    $_end = $values['end_date'];
+    # Sending empty strings is bad
+    $end_date = $_end !== '' ? $_end : null ;
 
     // Approval information
     $time_limit = $values['time_limit'];
@@ -438,18 +440,39 @@ function os2forms_forloeb_gir_create_org_unit($processID, $queueID) {
   else {
     return FALSE;
   }
-  $gir_json = new \stdClass();
-  $gir_json->name = $name;
 
-  $gir_json->validity = new \stdClass();
-  $gir_json->validity->from = $start_date;
-  $gir_json->validity->to = $end_date;
-  $gir_json->parent = new \stdClass();
-  $gir_json->parent->uuid = $parent_unit_id;
+  # Get org unit type from data
+  $ou_type_items = get_json_from_api('/service/f/org_unit_type/')['data']['items'];
+  $ou_type_id = null;
+  
+  foreach ($ou_type_items as $item) {
+    if ($item['user_key'] === 'External'){
+      $ou_type_id = $item['uuid'];
+      break;
+    }
+  }
 
-  // TODO: Get Org Unit Type from imported data.
-  $gir_json->org_unit_type = new \stdClass();
-  $gir_json->org_unit_type->uuid = "b244f1f1-8cb5-4f90-ba7c-d451c7244e0b";
+  # TODO: Org unit level should come from user data as well 
+  # since there will probably be more than one
+  $ou_level_items = get_json_from_api('/service/f/org_unit_level/')['data']['items'];
+  $ou_level_id = null;
+
+  foreach ($ou_level_items as $item) {
+    if ($item['user_key'] === 'L0'){
+      $ou_level_id = $item['uuid'];
+      break;
+    }
+  }
+
+  $gir_json = [
+    'name' => $name,
+    'user_key' => $name,
+    'validity' => ['from' => $start_date, 'to' => $end_date],
+    'parent' => ['uuid' => $parent_unit_id],
+    'org_unit_type' => ['uuid' => $ou_type_id],
+    'org_unit_level' => ['uuid' => $ou_level_id],
+  ];
+
 
   $post_data = json_encode($gir_json);
 
