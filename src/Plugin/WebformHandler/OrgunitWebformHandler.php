@@ -60,7 +60,7 @@ class OrgunitWebformHandler extends WebformHandlerBase {
 
     // This is relevant for "Move Many Externals".
     // TODO: Detect that we need to do this to save performance when just editing org unit.
-    
+
     $webform_submission->setElementData('origin_unit', $ou_json['name']);
     $externals = get_externals_for_org_unit($uuid);
 
@@ -73,6 +73,6 @@ class OrgunitWebformHandler extends WebformHandlerBase {
       }
       $webform_submission->setElementData('externals', $external_ids);
 
-  }
+    }
   }
 }

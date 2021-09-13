@@ -3,7 +3,7 @@ status: open
 dependencies:
   module:
     - os2forms
-    - webform_entity_print
+    - os2forms_forloeb
 third_party_settings:
   os2forms:
     os2forms_nemid:
@@ -31,9 +31,72 @@ template: false
 archive: false
 id: move_many_externals
 title: 'Move many externals'
-description: ''
+description: 'Move many external consultants from one org unit to the other.'
 category: GIR
-elements: "origin_and_destination_units:\n  '#type': fieldset\n  '#title': 'Origin and Destination Units'\n  origin_unit:\n    '#type': entity_autocomplete\n    '#title': 'Origin Unit'\n    '#target_type': taxonomy_term\n    '#selection_handler': 'default:taxonomy_term'\n    '#selection_settings':\n      target_bundles:\n        orgunit: orgunit\n      auto_create: false\n      auto_create_bundle: orgunit\n  destination_unit:\n    '#type': entity_autocomplete\n    '#title': 'Destination Unit'\n    '#target_type': taxonomy_term\n    '#selection_handler': 'default:taxonomy_term'\n    '#selection_settings':\n      target_bundles:\n        orgunit: orgunit\n      auto_create: false\n      auto_create_bundle: orgunit\nexternals:\n  '#type': fieldset\n  '#title': Externals\n  peter_hansen:\n    '#type': checkbox\n    '#title': 'Peter Hansen'\n  julie_jorgensen:\n    '#type': checkbox\n    '#title': 'Julie Jørgensen'\n  morten_hansen:\n    '#type': checkbox\n    '#title': 'Morten Hansen'\n  sdasds:\n    '#type': checkbox\n    '#title': ...\napproval_information:\n  '#type': fieldset\n  '#title': 'Approval Information'\n  time_limit:\n    '#type': date\n    '#title': 'Time Limit'\n    '#date_date_format': ''\n  justification:\n    '#type': textfield\n    '#title': Justification\n  approver:\n    '#type': entity_autocomplete\n    '#title': Approver\n    '#target_type': user\n    '#selection_handler': 'default:user'\n    '#selection_settings':\n      include_anonymous: false\n      filter:\n        type: _none"
+elements: |
+  find_origin_unit:
+    '#type': webform_wizard_page
+    '#title': 'Find origin unit'
+    organizational_unit:
+      '#type': entity_autocomplete
+      '#title': 'Organizational Unit'
+      '#target_type': taxonomy_term
+      '#selection_handler': 'default:taxonomy_term'
+      '#selection_settings':
+        target_bundles:
+          orgunit: orgunit
+        auto_create: false
+        auto_create_bundle: orgunit
+  move_externals:
+    '#type': webform_wizard_page
+    '#title': 'Move Externals'
+    origin_and_destination_units:
+      '#type': fieldset
+      '#title': 'Origin and Destination Units'
+      origin_unit:
+        '#type': textfield
+        '#title': 'Origin Unit'
+        '#readonly': true
+      destination_unit:
+        '#type': entity_autocomplete
+        '#title': 'Destination Unit'
+        '#target_type': taxonomy_term
+        '#selection_handler': 'default:taxonomy_term'
+        '#selection_settings':
+          target_bundles:
+            orgunit: orgunit
+          auto_create: false
+          auto_create_bundle: orgunit
+    externals:
+      '#type': entity_autocomplete
+      '#title': Externals
+      '#multiple': true
+      '#description': 'Please remove the externals that you do NOT want to move from the list.'
+      '#target_type': user
+      '#selection_handler': 'default:user'
+      '#selection_settings':
+        include_anonymous: false
+        filter:
+          type: _none
+    approval_information:
+      '#type': fieldset
+      '#title': 'Approval Information'
+      time_limit:
+        '#type': date
+        '#title': 'Time Limit'
+        '#date_date_format': ''
+      justification:
+        '#type': textfield
+        '#title': Justification
+      approver:
+        '#type': entity_autocomplete
+        '#title': Approver
+        '#target_type': user
+        '#selection_handler': 'default:user'
+        '#selection_settings':
+          include_anonymous: false
+          filter:
+            type: _none
 css: ''
 javascript: ''
 settings:
@@ -212,5 +275,19 @@ access:
     roles: {  }
     users: {  }
     permissions: {  }
-handlers: {  }
+handlers:
+  load_organization_unit:
+    id: org_unit
+    label: 'Load Organization Unit'
+    notes: ''
+    handler_id: load_organization_unit
+    status: true
+    conditions:
+      enabled:
+        ':input[name="organizational_unit"]':
+          filled: true
+        ':input[name="origin_unit"]':
+          empty: true
+    weight: 0
+    settings: {  }
 variants: {  }
