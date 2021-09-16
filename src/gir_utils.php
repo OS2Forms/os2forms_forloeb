@@ -29,6 +29,16 @@ function get_externals_parent() {
 }
 
 /**
+ * Get user field values by Drupal ID.
+ */
+function get_user_field($user_id, $field) {
+  $term = \Drupal::entityTypeManager()->getStorage('user')->load($user_id);
+  if (!is_null($term)) {
+    return $term->get($field)->value;
+  }
+}
+
+/**
  * Get term ID by name.
  */
 function get_term_id_by_name($name) {

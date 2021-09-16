@@ -275,26 +275,24 @@ function os2forms_forloeb_gir_create_org_unit($processID, $queueID) {
     // Org data.
     $name = $values['name'];
     $parent_unit_id = get_externals_parent();
+
     // @todo Fix address data.
+    $address = NULL;
+
+    // Validity data.
     $start_date = $values['start_date'];
     $_end = $values['end_date'];
-
     // Sending empty strings will fail.
     $end_date = $_end !== '' ? $_end : NULL;
 
-    // Approval information.
-    $time_limit = $values['time_limit'];
-    $justification = $values['justification'];
-
-    // Extract MO UUIDs for these entities.
-    $approver = $values['approver'];
     $owner_id = $values['owner'];
   }
   else {
     return FALSE;
   }
 
-  \Drupal::logger('os2forms_forloeb')->notice('Owner: ' . $owner_id);
+  // Validity.
+  $validity = ['from' => $start_date, 'to' => $end_date];
 
   // Get org unit type from data.
   $ou_type_items = get_json_from_api('/service/f/org_unit_type/')['data']['items'];
@@ -308,7 +306,7 @@ function os2forms_forloeb_gir_create_org_unit($processID, $queueID) {
   }
 
   // @todo Org unit level should come from user data as well,
-  // since there will probably be more than one
+  // since there will probably be more than one.
   $ou_level_items = get_json_from_api('/service/f/org_unit_level/')['data']['items'];
   $ou_level_id = NULL;
 
@@ -318,16 +316,23 @@ function os2forms_forloeb_gir_create_org_unit($processID, $queueID) {
       break;
     }
   }
-  // Parse owners.
-  $owner_term = \Drupal::entityTypeManager()->getStorage('user')->load($owner_id);
+  // Owner data.
+  $owner_uuid = get_user_field($owner_id, 'field_uuid');
+  $owner_details = [
+    'type' => 'owner',
+    'owner' => ['uuid' => $owner_uuid],
+    'validity' => $validity,
+  ];
 
+  // Full OU data.
   $ou_data = [
     'name' => $name,
     'user_key' => $name,
-    'validity' => ['from' => $start_date, 'to' => $end_date],
+    'validity' => $validity,
     'parent' => ['uuid' => $parent_unit_id],
     'org_unit_type' => ['uuid' => $ou_type_id],
     'org_unit_level' => ['uuid' => $ou_level_id],
+    'details' => [$owner_details],
   ];
 
   $json_data = json_encode($ou_data);
@@ -342,7 +347,6 @@ function os2forms_forloeb_gir_create_org_unit($processID, $queueID) {
     $url_status = 'Failed';
     $err_msg = json_decode($resp->getBody(), TRUE)['description'];
     $url_body = 'Unable to create organisation unit ' . $name . ': ' . $err_msg;
-    return FALSE;
   };
 
   MaestroEngine::setProcessVariable('url_status', $url_status, $processID);
@@ -383,7 +387,7 @@ function os2forms_forloeb_gir_create_external($processID, $queueID) {
     // $justification = $values['justification'];
     // Extract MO UUIDs for these entities.
     // $approver = $values['approver'];
-    // $owner = $values['owner'];
+    // $owner = $values['owner'];.
   }
   else {
     return FALSE;
