@@ -2,6 +2,8 @@
 
 use Drupal\webform\Entity\WebformSubmission;
 
+include 'src/gir_utils.php';
+
 /**
  * @file
  * Install, update and uninstall functions for the os2forms_forloeb_profile installation profile.
@@ -85,132 +87,14 @@ function os2forms_forloeb_workflow_maestro_reassign_form(&$form, $queueID = 0, $
  * a separate module as we get more of them.
  */
 
-function get_gir_url() {
-
-  $forloeb_configuration = \Drupal::config('os2forms_forloeb.settings');
-  $gir_url = $forloeb_configuration->get('gir_url');
-
-  return $gir_url;
-}
 
 
-function get_externals_parent() {
 
-  $forloeb_configuration = \Drupal::config('os2forms_forloeb.settings');
-  $gir_url = $forloeb_configuration->get('externals_root');
-
-  return $gir_url;
-}
 
 
 /* Utility function for looking up the ID of a taxonomy term from the name. */
 
-function get_term_id_by_name($name) {
 
-  $properties = [];
-  $properties['name'] = $name;
-  $terms = \Drupal::entityManager()->getStorage(
-    'taxonomy_term'
-  )->loadByProperties($properties);
-  $term = reset($terms);
-  return $term->id();
-}
-
-function get_json_from_api($path) {
-
-  $mo_url = get_gir_url();
-  $auth_token = get_openid_auth_token();
-
-  // Authenticate
-  $headers = [ 'Authorization' => 'Bearer ' . $auth_token, 'Accept' => 'application/json', ];
-
-  try {
-    $response = \Drupal::httpClient()->request(
-      'GET', $mo_url . $path, [
-        'headers' => $headers
-      ]
-    );
-  } catch (GuzzleHttp\Exception\BadResponseException $e) {
-    $response = $e->getResponse();
-  }
-
-  if ($response->getStatusCode() == 200) {
-    return json_decode($response->getBody(), true);
-  }
-  else {
-
-    \Drupal::logger(
-      'os2forms_forloeb'
-    )->notice('Call to URL'  . $url . 'failed:' . $response->getBody());
-    return "";
-  }
-}
-
-function get_openid_auth_token() {
-  // TODO: This is a utility token to get an OpenID Connect bearer token from Keycloak.
-  // At some point, this should be moved to a "utilities" file.
-
-  $keycloak_configuration = \Drupal::config('openid_connect.settings.keycloak');
-
-  $keycloak_settings = $keycloak_configuration->get('settings');
-  $keycloak_base = $keycloak_settings['keycloak_base'];
-  $keycloak_realm = $keycloak_settings['keycloak_realm'];
-  $client_id = $keycloak_settings['client_id'];
-  $client_secret = $keycloak_settings['client_secret'];
-
-
-  $token_url = $keycloak_base . '/realms/' . $keycloak_realm . '/protocol/openid-connect/token';
-
-  $payload['grant_type'] = 'client_credentials';
-  $payload['client_id'] = $client_id;
-  $payload['client_secret'] = $client_secret;
-
-  $json = json_encode($payload);
-  $response = \Drupal::httpClient()->request(
-    'POST', $token_url, [ 'form_params' => $payload ]
-  );
-  $status_code = $response->getStatusCode();
-
-  if ($status_code == 200) {
-    $body = json_decode($response->getBody(), true); 
-    $access_token = $body['access_token'];
-
-    return $access_token;
-  } else {
-    return '';	    
-  }
-}
-
-function get_employees_for_org_unit($org_unit_uuid) {
-  // Get all employees with engagements in this  org unit
-  // NOTE: Do not recurse into children.
-  $engagement_path = "/service/ou/{$org_unit_uuid}/details/engagement?validity=present";
-
-  $engagements = get_json_from_api($engagement_path);
-
-  $employees = [];
-
-  foreach ($engagements as $engagement)
-    $employees[$engagement['uuid']] = $engagement["person"];
-  
-  return $employees;
-
-}
-
-function get_externals_for_org_unit($org_unit_uuid) {
-  $engagement_associations_path = "/api/v1/engagement_association?validity=present&org_unit={$org_unit_uuid}";
-  $engagement_associations = get_json_from_api($engagement_associations_path);
-
-  $externals = [];
-
-  foreach ($engagement_associations as $ea) {
-    if ($ea["engagement_association_type"]["user_key"] == "External") {
-      $externals[$ea["engagement"]["user_key"]] = $ea["engagement"]["person"];
-    }
-  }
-
-  return $externals;
-}
 
 
 
@@ -278,7 +162,6 @@ function os2forms_forloeb_workflow_maestro_reassign_form_submit(&$form, &$form_s
 
   //Provide some feedback
   \Drupal::messenger()->addStatus("Content Reassigned");
-
 }
 
 /**
@@ -347,8 +230,7 @@ function os2forms_forloeb_fetch_from_http_endpoint_batch_function($processID, $q
   $status_code = $response->getStatusCode();
   if ($status_code == 200) {
     $body = $response->getBody();
-  }
-  else {
+  } else {
     $body = '';
   }
 
@@ -356,7 +238,6 @@ function os2forms_forloeb_fetch_from_http_endpoint_batch_function($processID, $q
   MaestroEngine::setProcessVariable('url_body', $body, $processID);
 
   return TRUE;
-
 }
 
 function os2forms_forloeb_gir_approver_is_initiator($processID, $queueID) {
@@ -375,7 +256,7 @@ function os2forms_forloeb_gir_approver_is_initiator($processID, $queueID) {
     return TRUE;
   } else {
     \Drupal::logger('os2forms_forloeb')->notice('Cancelling task!');
-    return [ 'execution_status' => TASK_STATUS_CANCEL, 'completion_status' => MAESTRO_TASK_COMPLETION_NORMAL, 'status' => TRUE ];
+    return ['execution_status' => TASK_STATUS_CANCEL, 'completion_status' => MAESTRO_TASK_COMPLETION_NORMAL, 'status' => TRUE];
   }
 }
 
@@ -405,12 +286,6 @@ function os2forms_forloeb_gir_disable_external($processID, $queueID) {
 
 
 function os2forms_forloeb_gir_create_org_unit($processID, $queueID) {
-
-  // Get GIR URL from configuration.
-  $url = get_gir_url();
-
-  $create_url = $url . '/service/ou/create';
-
   // Get ID for webform which spawned this process.
   $sid = MaestroEngine::getEntityIdentiferByUniqueID($processID, 'submission');
   if ($sid) {
@@ -426,45 +301,49 @@ function os2forms_forloeb_gir_create_org_unit($processID, $queueID) {
     // TODO: Handle location/address data correctly.
     $start_date = $values['start_date'];
     $_end = $values['end_date'];
-    # Sending empty strings is bad
-    $end_date = $_end !== '' ? $_end : null ;
+
+    // Sending empty strings will fail
+    $end_date = $_end !== '' ? $_end : null;
 
     // Approval information
     $time_limit = $values['time_limit'];
     $justification = $values['justification'];
     // Extract MO UUIDs for these entities.
     $approver = $values['approver'];
-    $owner = $values['owner'];
-
-  }
-  else {
+    $owner_id = $values['owner'];
+  } else {
     return FALSE;
   }
 
-  # Get org unit type from data
+  \Drupal::logger('os2forms_forloeb')->notice('Owner: ' . $owner);
+
+  // Get org unit type from data
   $ou_type_items = get_json_from_api('/service/f/org_unit_type/')['data']['items'];
   $ou_type_id = null;
-  
+
   foreach ($ou_type_items as $item) {
-    if ($item['user_key'] === 'External'){
+    if ($item['user_key'] === 'External') {
       $ou_type_id = $item['uuid'];
       break;
     }
   }
 
-  # TODO: Org unit level should come from user data as well 
-  # since there will probably be more than one
+  // TODO: Org unit level should come from user data as well 
+  // since there will probably be more than one
   $ou_level_items = get_json_from_api('/service/f/org_unit_level/')['data']['items'];
   $ou_level_id = null;
 
   foreach ($ou_level_items as $item) {
-    if ($item['user_key'] === 'L0'){
+    if ($item['user_key'] === 'L0') {
       $ou_level_id = $item['uuid'];
       break;
     }
   }
+  // Parse owners
+  $owner_term = \Drupal::entityTypeManager()->getStorage('user')->load($owner_id);
+  $owner_uuid = \Drupal::
 
-  $gir_json = [
+  $ou_data = [
     'name' => $name,
     'user_key' => $name,
     'validity' => ['from' => $start_date, 'to' => $end_date],
@@ -474,43 +353,23 @@ function os2forms_forloeb_gir_create_org_unit($processID, $queueID) {
   ];
 
 
-  $post_data = json_encode($gir_json);
+  $json_data = json_encode($ou_data);
 
-  // Get access token for authentication.
-  $access_token = get_openid_auth_token();
+  $resp = post_json_to_api('/service/ou/create', $json_data);
 
-  \Drupal::logger('os2forms_forloeb')->notice('Org Unit JSON sent: ' . '<' . $post_data . '>');
-  $headers = [
-    'Authorization' => 'Bearer ' . $access_token,
-    'Accept' => 'application/json', 
-    'content-type' => 'application/json',
-  ];
-
-  try {
-    $response = \Drupal::httpClient()->request(
-      'POST', $create_url, [
-        'body' => $post_data,
-        'headers' => $headers
-      ]
-    );
-  } catch (GuzzleHttp\Exception\BadResponseException $e) {
-    $response = $e->getResponse();
-  }
-  $status_code = $response->getStatusCode();
-  if ($status_code == 201) {
-    $url_status = "Success";
-    $url_body = "Org unit " . $name . "was created.";
+  if ($resp->getStatusCode() === 201) {
+    $url_status = 'Success';
+    $url_body = 'Organisation unit ' . $name . ' was successfully created.';
   } else {
-    $body = $response->getBody();
-    $url_status = "Failed";
-    $url_body = "Unable to create org unit " . $name . ": " . $body;
-  }
+    $url_status = 'Failed';
+    $err_msg = json_decode($resp->getBody(), TRUE)['description'];
+    $url_body = 'Unable to create organisation unit ' . $name . ': ' . $err_msg;
+  };
 
   MaestroEngine::setProcessVariable('url_status', $url_status, $processID);
   MaestroEngine::setProcessVariable('url_body', $url_body, $processID);
 
   return TRUE;
-
 }
 
 
@@ -545,8 +404,7 @@ function os2forms_forloeb_gir_create_external($processID, $queueID) {
     $approver = $values['approver'];
     // $owner = $values['owner'];
 
-  }
-  else {
+  } else {
     return FALSE;
   }
   $gir_json = new \stdClass();
@@ -559,19 +417,21 @@ function os2forms_forloeb_gir_create_external($processID, $queueID) {
     $gir_json->validity->to = $end_date;
 
   $post_data = json_encode($gir_json);
-  \Drupal::logger('os2forms_forloeb')->notice('Employee JSON sent: ' . '<' . $post_data . '>'); 
+  \Drupal::logger('os2forms_forloeb')->notice('Employee JSON sent: ' . '<' . $post_data . '>');
 
   // Get access token for authentication.
   $access_token = get_openid_auth_token();
   $headers = [
     'Authorization' => 'Bearer ' . $access_token,
-    'Accept' => 'application/json', 
+    'Accept' => 'application/json',
     'content-type' => 'application/json',
   ];
 
   try {
     $response = \Drupal::httpClient()->request(
-      'POST', $create_url, [ 'body' => $post_data, 'headers' => $headers ]
+      'POST',
+      $create_url,
+      ['body' => $post_data, 'headers' => $headers]
     );
   } catch (GuzzleHttp\Exception\BadResponseException $e) {
     $response = $e->getResponse();
@@ -581,8 +441,7 @@ function os2forms_forloeb_gir_create_external($processID, $queueID) {
   if ($status_code == 201) {
     $url_status = "Success";
     $url_body = "Employee " . $first_name . " " . $last_name . " was created.";
-  }
-  else {
+  } else {
     $body = $response->getBody();
     $url_status = "Failed";
     $url_body = "Unable to create org unit " . $name . ": " . $body;
@@ -592,7 +451,6 @@ function os2forms_forloeb_gir_create_external($processID, $queueID) {
   MaestroEngine::setProcessVariable('url_body', $url_body, $processID);
 
   return TRUE;
-
 }
 
 /**
@@ -630,4 +488,3 @@ function os2forms_forloeb_spv_fetch_entity_username($uniqueWebformIdentifier, $w
   $username = $account->getUsername();
   return $username;
 }
-
