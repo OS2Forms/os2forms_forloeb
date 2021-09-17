@@ -274,7 +274,6 @@ function os2forms_forloeb_gir_create_org_unit($processID, $queueID) {
 
     // Org data.
     $name = $values['name'];
-    $parent_unit_id = get_externals_parent();
 
     // @todo Fix address data.
     $address = NULL;
@@ -291,31 +290,15 @@ function os2forms_forloeb_gir_create_org_unit($processID, $queueID) {
     return FALSE;
   }
 
+  // Get configured UUIDs.
+  $config = get_config();
+  $ou_parent_id = $config->get('external_ou_root');
+  $ou_type_id = $config->get('external_ou_type');
+  $ou_level_id = $config->get('external_ou_level');
+
   // Validity.
   $validity = ['from' => $start_date, 'to' => $end_date];
 
-  // Get org unit type from data.
-  $ou_type_items = get_json_from_api('/service/f/org_unit_type/')['data']['items'];
-  $ou_type_id = NULL;
-
-  foreach ($ou_type_items as $item) {
-    if ($item['user_key'] === 'External') {
-      $ou_type_id = $item['uuid'];
-      break;
-    }
-  }
-
-  // @todo Org unit level should come from user data as well,
-  // since there will probably be more than one.
-  $ou_level_items = get_json_from_api('/service/f/org_unit_level/')['data']['items'];
-  $ou_level_id = NULL;
-
-  foreach ($ou_level_items as $item) {
-    if ($item['user_key'] === 'L0') {
-      $ou_level_id = $item['uuid'];
-      break;
-    }
-  }
   // Owner data.
   $owner_uuid = get_user_data($owner_id, 'field_uuid');
   $owner_details = [
@@ -329,7 +312,7 @@ function os2forms_forloeb_gir_create_org_unit($processID, $queueID) {
     'name' => $name,
     'user_key' => $name,
     'validity' => $validity,
-    'parent' => ['uuid' => $parent_unit_id],
+    'parent' => ['uuid' => $ou_parent_id],
     'org_unit_type' => ['uuid' => $ou_type_id],
     'org_unit_level' => ['uuid' => $ou_level_id],
     'details' => [$owner_details],
