@@ -317,7 +317,7 @@ function os2forms_forloeb_gir_create_org_unit($processID, $queueID) {
     }
   }
   // Owner data.
-  $owner_uuid = get_user_field($owner_id, 'field_uuid');
+  $owner_uuid = get_user_data($owner_id, 'field_uuid');
   $owner_details = [
     'type' => 'owner',
     'owner' => ['uuid' => $owner_uuid],
@@ -374,7 +374,7 @@ function os2forms_forloeb_gir_create_external($processID, $queueID) {
     // https://www.drupal.org/project/webform/issues/2911356#comment-12271553
     $values = $webform_submission->getData();
 
-    // Employee Data.
+    // Employee data.
     $first_name = $values['first_name'];
     $last_name = $values['last_name'];
     // @todo Format data with MO UUIDs for consultancy, consultant

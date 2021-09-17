@@ -10,7 +10,7 @@ use GuzzleHttp\Exception\BadResponseException;
 /**
  * Get config.
  */
-function get_settings() {
+function get_config() {
   return \Drupal::config('os2forms_forloeb.settings');
 }
 
@@ -18,24 +18,22 @@ function get_settings() {
  * Get GIR base url from config.
  */
 function get_gir_url() {
-  return get_settings()->get('gir_url');
+  return get_config()->get('gir_url');
 }
 
 /**
  * Get external UUID from config.
  */
 function get_externals_parent() {
-  return get_settings()->get('externals_root');
+  return get_config()->get('external_ou_root');
 }
 
 /**
- * Get user field values by Drupal ID.
+ * Get user data by Drupal ID and field name.
  */
-function get_user_field($user_id, $field) {
+function get_user_data($user_id, $field_name) {
   $term = \Drupal::entityTypeManager()->getStorage('user')->load($user_id);
-  if (!is_null($term)) {
-    return $term->get($field)->value;
-  }
+  return $term->getTypedData()->get($field_name)->value;
 }
 
 /**
