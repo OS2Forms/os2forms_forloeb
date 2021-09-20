@@ -290,12 +290,6 @@ function os2forms_forloeb_gir_create_org_unit($processID, $queueID) {
     return FALSE;
   }
 
-  // Get configured UUIDs.
-  $config = get_config();
-  $ou_parent_id = $config->get('external_ou_root');
-  $ou_type_id = $config->get('external_ou_type');
-  $ou_level_id = $config->get('external_ou_level');
-
   // Validity.
   $validity = ['from' => $start_date, 'to' => $end_date];
 
@@ -312,9 +306,9 @@ function os2forms_forloeb_gir_create_org_unit($processID, $queueID) {
     'name' => $name,
     'user_key' => $name,
     'validity' => $validity,
-    'parent' => ['uuid' => $ou_parent_id],
-    'org_unit_type' => ['uuid' => $ou_type_id],
-    'org_unit_level' => ['uuid' => $ou_level_id],
+    'parent' => ['uuid' => external_ou_root()],
+    'org_unit_type' => ['uuid' => ou_type_id()],
+    'org_unit_level' => ['uuid' => ou_level_id()],
     'details' => [$owner_details],
   ];
 
@@ -344,7 +338,7 @@ function os2forms_forloeb_gir_create_org_unit($processID, $queueID) {
 function os2forms_forloeb_gir_create_external($processID, $queueID) {
 
   // Get GIR URL from process variable.
-  $url = get_gir_url();
+  $url = gir_url();
 
   $create_url = $url . '/service/e/create';
 

@@ -10,22 +10,53 @@ use GuzzleHttp\Exception\BadResponseException;
 /**
  * Get config.
  */
-function get_config() {
+function gir_config() {
   return \Drupal::config('os2forms_forloeb.settings');
 }
 
 /**
- * Get GIR base url from config.
+ * Get GIR base url from environment or config.
  */
-function get_gir_url() {
-  return get_config()->get('gir_url');
+function gir_url() {
+  $gir_url = $_ENV('GIR_URL') ?? gir_config()->get('gir_url');
+
+  return $gir_url;
 }
 
 /**
- * Get external UUID from config.
+ * Get external ou root UUID from environment or config.
  */
-function get_externals_parent() {
-  return get_config()->get('external_ou_root');
+function external_ou_root() {
+  $ou_root = $_ENV('GIR_EXTERNAL_OU_ROOT') ?? gir_config()->get('external_ou_root');
+
+  return $ou_root;
+}
+
+/**
+ * Get external ou type UUID from environment or config.
+ */
+function ou_type_id() {
+  $ou_type = $_ENV('GIR_EXTERNAL_OU_TYPE') ?? gir_config()->get('external_ou_type');
+
+  return $ou_type;
+}
+
+/**
+ * Get external ou level UUID from environment or config.
+ */
+function ou_level_id() {
+  $ou_level = $_ENV('GIR_EXTERNAL_OU_LEVEL') ?? gir_config()->get('external_ou_level');
+
+  return $ou_level;
+}
+
+/**
+ * Get job function UUID from environment or config.
+ */
+function external_job_function() {
+  $job_function = $_ENV('GIR_EXTERNAL_JOB_FUNCTION') ?? gir_config()->get('external');
+
+  return $job_function;
 }
 
 /**
@@ -55,7 +86,7 @@ function get_term_id_by_name($name) {
  */
 function get_json_from_api($path) {
 
-  $mo_url = get_gir_url();
+  $mo_url = gir_url();
   $url = $mo_url . $path;
   $auth_token = get_openid_auth_token();
 
@@ -93,7 +124,7 @@ function get_json_from_api($path) {
  */
 function post_json_to_api($path, $data) {
   // Full API path.
-  $url = get_gir_url() . $path;
+  $url = gir_url() . $path;
   // Authentication headers.
   $access_token = get_openid_auth_token();
   $headers = [
