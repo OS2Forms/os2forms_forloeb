@@ -18,7 +18,7 @@ function gir_config() {
  * Get GIR base url from environment or config.
  */
 function gir_url() {
-  $gir_url = $_ENV('GIR_URL') ?? gir_config()->get('gir_url');
+  $gir_url = $_ENV['GIR_URL'] ?? gir_config()->get('gir_url');
 
   return $gir_url;
 }
@@ -27,7 +27,7 @@ function gir_url() {
  * Get external ou root UUID from environment or config.
  */
 function external_ou_root() {
-  $ou_root = $_ENV('GIR_EXTERNAL_OU_ROOT') ?? gir_config()->get('external_ou_root');
+  $ou_root = $_ENV['GIR_EXTERNAL_OU_ROOT'] ?? gir_config()->get('external_ou_root');
 
   return $ou_root;
 }
@@ -36,7 +36,7 @@ function external_ou_root() {
  * Get external ou type UUID from environment or config.
  */
 function ou_type_id() {
-  $ou_type = $_ENV('GIR_EXTERNAL_OU_TYPE') ?? gir_config()->get('external_ou_type');
+  $ou_type = $_ENV['GIR_EXTERNAL_OU_TYPE'] ?? gir_config()->get('external_ou_type');
 
   return $ou_type;
 }
@@ -45,7 +45,7 @@ function ou_type_id() {
  * Get external ou level UUID from environment or config.
  */
 function ou_level_id() {
-  $ou_level = $_ENV('GIR_EXTERNAL_OU_LEVEL') ?? gir_config()->get('external_ou_level');
+  $ou_level = $_ENV['GIR_EXTERNAL_OU_LEVEL'] ?? gir_config()->get('external_ou_level');
 
   return $ou_level;
 }
@@ -54,7 +54,7 @@ function ou_level_id() {
  * Get job function UUID from environment or config.
  */
 function external_job_function() {
-  $job_function = $_ENV('GIR_EXTERNAL_JOB_FUNCTION') ?? gir_config()->get('external');
+  $job_function = $_ENV['GIR_EXTERNAL_JOB_FUNCTION'] ?? gir_config()->get('external');
 
   return $job_function;
 }
