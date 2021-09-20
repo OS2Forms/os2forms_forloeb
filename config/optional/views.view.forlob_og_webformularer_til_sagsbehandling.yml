@@ -2,7 +2,6 @@ langcode: da
 status: true
 dependencies:
   config:
-  - node.type.forloebsside
   - node.type.webform
   - system.menu.admin
   - user.role.administrator
@@ -596,7 +595,6 @@ display:
           admin_label: ''
           operator: in
           value:
-            forloebsside: forloebsside
             webform: webform
           group: 1
           exposed: true
