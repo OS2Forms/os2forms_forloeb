@@ -12,35 +12,35 @@ class EGIRConfig {
   /**
    * GIR base url.
    *
-   * @var string
+   * @var string|null
    */
   public $girUrl;
 
   /**
    * External organisation unit parent UUID.
    *
-   * @var string
+   * @var string|null
    */
   public $extOUParent;
 
   /**
    * External organisation unit type facet UUID.
    *
-   * @var string
+   * @var string|null
    */
   public $extOUType;
 
   /**
    * External organisation unit level facet UUID.
    *
-   * @var string
+   * @var string|null
    */
   public $extOULevel;
 
   /**
    * External job function facet UUID.
    *
-   * @var string
+   * @var string|null
    */
   public $extJobFunction;
 
@@ -62,7 +62,7 @@ class EGIRConfig {
   /**
    * Get configured variable from either environment or config.
    */
-  private function getConfVar(string $env_key, string $config_key) {
+  private function getConfVar(string $env_key, string $config_key): ?string {
     $gir_config = \Drupal::config('os2forms_forloeb.settings');
     return $_ENV[$env_key] ?? $gir_config->get($config_key);
   }
