@@ -9,7 +9,8 @@ use Drupal\maestro\Engine\MaestroEngine;
 use Drupal\webform\Entity\WebformSubmission;
 use Drupal\user\Entity\User;
 
-require 'src/gir_utils.php';
+require 'EGIRConfig.php';
+require 'gir_utils.php';
 
 /**
  * Handler that returns an Array of function names and help text.
@@ -290,6 +291,9 @@ function os2forms_forloeb_gir_create_org_unit($processID, $queueID) {
     return FALSE;
   }
 
+  // Get config.
+  $config = new EGIRConfig();
+
   // Validity.
   $validity = ['from' => $start_date, 'to' => $end_date];
 
@@ -306,13 +310,14 @@ function os2forms_forloeb_gir_create_org_unit($processID, $queueID) {
     'name' => $name,
     'user_key' => $name,
     'validity' => $validity,
-    'parent' => ['uuid' => external_ou_root()],
-    'org_unit_type' => ['uuid' => ou_type_id()],
-    'org_unit_level' => ['uuid' => ou_level_id()],
+    'parent' => ['uuid' => $config->extOUParent],
+    'org_unit_type' => ['uuid' => $config->extOUType],
+    'org_unit_level' => ['uuid' => $config->extOULevel],
     'details' => [$owner_details],
   ];
 
   $json_data = json_encode($ou_data);
+  forms_log()->notice('Org unit sent: <' . $json_data . '>');
 
   $resp = post_json_to_api('/service/ou/create', $json_data);
 
