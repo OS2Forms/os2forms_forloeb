@@ -1,2 +1,5 @@
-gir_url: 'http://192.168.64.1:5001'
-externals_root: '1e78e3a6-b999-2bff-981e-d46f5c37cce6'
+gir_url: "http://192.168.64.1:5001"
+external_ou_root: "1e78e3a6-b999-2bff-981e-d46f5c37cce6"
+external_ou_type: "f14c0624-15dd-132f-cbd7-37e898a8e426"
+external_ou_level: "ff12bec7-e8c5-1590-547e-6587caa32182"
+external_job_function: "d0c45c46-9c47-9cd5-6247-e82e232720bc"

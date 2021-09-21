@@ -1,0 +1,30 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions.
+ *
+ * Used for the os2forms_forloeb_profile installation profile.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function os2forms_forloeb_install() {
+  $theme_list = [
+    'claro',
+    'gin',
+    'bootstrap',
+    'custom_theme',
+  ];
+  // Install themes.
+  \Drupal::service('theme_installer')->install($theme_list);
+
+  // Get theme manager.
+  $system_theme = \Drupal::configFactory()->getEditable('system.theme');
+  // Set default and admin themes.
+  $system_theme
+    ->set('default', 'custom_theme')
+    ->set('admin', 'gin')
+    ->save();
+}
