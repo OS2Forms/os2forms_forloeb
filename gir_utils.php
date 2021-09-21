@@ -6,57 +6,16 @@
  */
 
 use GuzzleHttp\Exception\BadResponseException;
+use Dotenv\Dotenv;
+
+$dotenv = Dotenv::createImmutable(__DIR__);
+$dotenv->safeLoad();
 
 /**
- * Get config.
+ * Get logger.
  */
-function gir_config() {
-  return \Drupal::config('os2forms_forloeb.settings');
-}
-
-/**
- * Get GIR base url from environment or config.
- */
-function gir_url() {
-  $gir_url = $_ENV['GIR_URL'] ?? gir_config()->get('gir_url');
-
-  return $gir_url;
-}
-
-/**
- * Get external ou root UUID from environment or config.
- */
-function external_ou_root() {
-  $ou_root = $_ENV['GIR_EXTERNAL_OU_ROOT'] ?? gir_config()->get('external_ou_root');
-
-  return $ou_root;
-}
-
-/**
- * Get external ou type UUID from environment or config.
- */
-function ou_type_id() {
-  $ou_type = $_ENV['GIR_EXTERNAL_OU_TYPE'] ?? gir_config()->get('external_ou_type');
-
-  return $ou_type;
-}
-
-/**
- * Get external ou level UUID from environment or config.
- */
-function ou_level_id() {
-  $ou_level = $_ENV['GIR_EXTERNAL_OU_LEVEL'] ?? gir_config()->get('external_ou_level');
-
-  return $ou_level;
-}
-
-/**
- * Get job function UUID from environment or config.
- */
-function external_job_function() {
-  $job_function = $_ENV['GIR_EXTERNAL_JOB_FUNCTION'] ?? gir_config()->get('external');
-
-  return $job_function;
+function forms_log() {
+  return \Drupal::logger('os2forms_forloeb');
 }
 
 /**
@@ -85,8 +44,8 @@ function get_term_id_by_name($name) {
  * Get JSON from specified GIR API path.
  */
 function get_json_from_api($path) {
-
-  $mo_url = gir_url();
+  $config = new EGIRConfig();
+  $mo_url = $config->girUrl;
   $url = $mo_url . $path;
   $auth_token = get_openid_auth_token();
 
@@ -111,10 +70,7 @@ function get_json_from_api($path) {
     return json_decode($response->getBody(), TRUE);
   }
   else {
-
-    \Drupal::logger(
-      'os2forms_forloeb'
-    )->notice('Call to URL' . $url . 'failed:' . $response->getBody());
+    forms_log()->notice('Call to URL' . $url . 'failed:' . $response->getBody());
     return "";
   }
 }
@@ -124,7 +80,8 @@ function get_json_from_api($path) {
  */
 function post_json_to_api($path, $data) {
   // Full API path.
-  $url = gir_url() . $path;
+  $config = new EGIRConfig();
+  $url = $config->girUrl . $path;
   // Authentication headers.
   $access_token = get_openid_auth_token();
   $headers = [
