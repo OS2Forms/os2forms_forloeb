@@ -281,9 +281,7 @@ function os2forms_forloeb_gir_create_org_unit($processID, $queueID) {
 
     // Validity data.
     $start_date = $values['start_date'];
-    $_end = $values['end_date'];
-    // Sending empty strings will fail.
-    $end_date = $_end !== '' ? $_end : NULL;
+    $end_date = $values['end_date'] !== '' ? $values['end_date'] : NULL;
 
     $owner_id = $values['owner'];
   }
