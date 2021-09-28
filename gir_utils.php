@@ -22,7 +22,15 @@ function forms_log() {
  * Get user data by Drupal ID and field name.
  */
 function get_user_data($user_id, $field_name) {
-  $term = \Drupal::entityTypeManager()->getStorage('user')->load($user_id);
+  $user = \Drupal::entityTypeManager()->getStorage('user')->load($user_id);
+  return $user->getTypedData()->get($field_name)->value;
+}
+
+/**
+ * Get taxonomy term data by Drupal ID and field name.
+ */
+function get_term_data($term_id, $field_name) {
+  $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($term_id);
   return $term->getTypedData()->get($field_name)->value;
 }
 

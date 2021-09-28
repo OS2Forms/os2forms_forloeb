@@ -45,6 +45,48 @@ class EGIRConfig {
   public $extJobFunction;
 
   /**
+   * External engagement association facet UUID.
+   *
+   * @var string|null
+   */
+  public $externalEA;
+
+  /**
+   * Cost center engagement association facet UUID.
+   *
+   * @var string|null
+   */
+  public $costcenterEA;
+
+  /**
+   * Primary type facet UUID.
+   *
+   * @var string|null
+   */
+  public $primaryType;
+
+  /**
+   * External phone type facet UUID.
+   *
+   * @var string|null
+   */
+  public $extPhoneType;
+
+  /**
+   * External email type facet UUID.
+   *
+   * @var string|null
+   */
+  public $extEmailType;
+
+  /**
+   * External location type facet UUID.
+   *
+   * @var string|null
+   */
+  public $extLocationType;
+
+  /**
    * Constructor.
    */
   public function __construct() {
@@ -56,7 +98,18 @@ class EGIRConfig {
     $this->extJobFunction = $this->getConfVar(
       'GIR_EXTERNAL_JOB_FUNCTION', 'external_job_function'
     );
-
+    $this->externalEA = $this->getConfVar('GIR_EA_EXTERNAL', 'ea_external');
+    $this->costcenterEA = $this->getConfVar('GIR_EA_COST_CENTER', 'ea_cost_center');
+    $this->primaryType = $this->getConfVar('GIR_PRIMARY_TYPE', 'primary_type');
+    $this->extPhoneType = $this->getConfVar(
+      'GIR_EXTERNAL_PHONE_TYPE', 'external_phone_type'
+    );
+    $this->extEmailType = $this->getConfVar(
+      'GIR_EXTERNAL_EMAIL_TYPE', 'external_email_type'
+    );
+    $this->extLocationType = $this->getConfVar(
+      'GIR_EXTERNAL_LOCATION_TYPE', 'external_location_type'
+    );
   }
 
   /**

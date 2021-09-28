@@ -8,6 +8,7 @@
 use Drupal\maestro\Engine\MaestroEngine;
 use Drupal\webform\Entity\WebformSubmission;
 use Drupal\user\Entity\User;
+use Ramsey\Uuid\Uuid;
 
 require 'EGIRConfig.php';
 require 'gir_utils.php';
@@ -339,12 +340,6 @@ function os2forms_forloeb_gir_create_org_unit($processID, $queueID) {
  * Create externals.
  */
 function os2forms_forloeb_gir_create_external($processID, $queueID) {
-
-  // Get GIR URL from process variable.
-  $url = gir_url();
-
-  $create_url = $url . '/service/e/create';
-
   // Get ID for webform which spawned this process.
   $sid = MaestroEngine::getEntityIdentiferByUniqueID($processID, 'submission');
   if ($sid) {
@@ -353,67 +348,99 @@ function os2forms_forloeb_gir_create_external($processID, $queueID) {
     // cf.
     // https://www.drupal.org/project/webform/issues/2911356#comment-12271553
     $values = $webform_submission->getData();
+    var_dump($values);
 
     // Employee data.
     $first_name = $values['first_name'];
     $last_name = $values['last_name'];
-    // @todo Format data with MO UUIDs for consultancy, consultant
-    // type, cost center and org units.
-    $start_date = $values['start_date'];
-    $end_date = $values['end_date'];
+    $email = $values['email_address'];
+    $phone = $values['telephone_number'];
 
-    // Approval information.
-    // $time_limit = $values['time_limit'];
-    // $justification = $values['justification'];
-    // Extract MO UUIDs for these entities.
-    // $approver = $values['approver'];
-    // $owner = $values['owner'];.
+    // Consultancy data.
+    $consultancy_id = $values['consultancy'];
+    $consultant_type_id = $values['consultant_type'];
+    $cost_center_id = $values['cost_center'];
+    $location = $values['location'];
+    $org_units = $values['organisational_unit'];
+    $start_date = $values['start_date'];
+    $end_date = $values['end_date'] !== '' ? $values['end_date'] : NULL;
   }
   else {
     return FALSE;
   }
-  $gir_json = new \stdClass();
-  $gir_json->givenname = $first_name;
-  $gir_json->surname = $last_name;
+  // Get config.
+  $config = new EGIRConfig();
 
-  $gir_json->validity = new \stdClass();
-  $gir_json->validity->from = $start_date;
-  if ($end_date) {
-    $gir_json->validity->to = $end_date;
-  }
+  // Validity.
+  $validity = ['from' => $start_date, 'to' => $end_date];
 
-  $post_data = json_encode($gir_json);
-  \Drupal::logger('os2forms_forloeb')->notice('Employee JSON sent: ' . '<' . $post_data . '>');
+  // Get consultancy data MO UUIDs.
+  $consultancy_uuid = get_term_data($consultancy_id, 'field_uuid');
+  $consultant_type_uuid = get_term_data($consultant_type_id, 'field_uuid');
+  $cost_center_uuid = get_term_data($cost_center_id, 'field_uuid');
 
-  // Get access token for authentication.
-  $access_token = get_openid_auth_token();
-  $headers = [
-    'Authorization' => 'Bearer ' . $access_token,
-    'Accept' => 'application/json',
-    'content-type' => 'application/json',
+  // Array for details.
+  $details = [];
+
+  // Employment data.
+  $employment_uuid = Uuid::uuid4()->toString();
+  $employment = [
+    'type' => 'engagement',
+    'uuid' => $employment_uuid,
+    'org_unit' => ['uuid' => $consultancy_uuid],
+    'job_function' => ['uuid' => $config->extJobFunction],
+    'engagement_type' => ['uuid' => $consultant_type_uuid],
+    'validity' => $validity,
+    'primary' => ['uuid' => $config->primaryType],
   ];
+  array_push($details, $employment);
 
-  try {
-    $response = \Drupal::httpClient()->request(
-      'POST',
-      $create_url,
-      ['body' => $post_data, 'headers' => $headers]
+  // Employment associations.
+  $cost_center_ea = [
+    'type' => 'engagement_association',
+    'org_unit' => ['uuid' => $cost_center_uuid],
+    'engagement' => ['uuid' => $employment_uuid],
+    'engagement_association_type' => $config->costcenterEA,
+    'validity' => $validity,
+  ];
+  array_push($details, $cost_center_ea);
+
+  foreach ($org_units as $ou) {
+    $ou_uuid = get_term_data($ou, 'field_uuid');
+    array_push($details,
+      [
+        'type' => 'engagement_association',
+        'org_unit' => ['uuid' => $ou_uuid],
+        'engagement' => ['uuid' => $employment_uuid],
+        'engagement_association_type' => $config->externalEA,
+        'validity' => $validity,
+      ]
     );
   }
-  catch (GuzzleHttp\Exception\BadResponseException $e) {
-    $response = $e->getResponse();
-  }
 
-  $status_code = $response->getStatusCode();
-  if ($status_code == 201) {
-    $url_status = "Success";
-    $url_body = "Employee " . $first_name . " " . $last_name . " was created.";
+  $external_data = [
+    'givenname' => $first_name,
+    'surname' => $last_name,
+    'seniority' => $start_date,
+    'details' => $details,
+  ];
+
+  $json_data = json_encode($external_data);
+  forms_log()->notice('External sent: <' . $json_data . '>');
+
+  $resp = post_json_to_api('/service/e/create', $json_data);
+
+  if ($resp->getStatusCode() === 201) {
+    $url_status = 'Success';
+    $url_body = 'Employee ' . $first_name . ' '
+      . $last_name . ' was successfully created.';
   }
   else {
-    $body = $response->getBody();
-    $url_status = "Failed";
-    $url_body = "Unable to create external " . $first_name . ": " . $body;
-  }
+    $url_status = 'Failed';
+    $err_msg = json_decode($resp->getBody(), TRUE)['description'];
+    $url_body = 'Unable to create external '
+      . $first_name . ' ' . $last_name . ': ' . $err_msg;
+  };
 
   MaestroEngine::setProcessVariable('url_status', $url_status, $processID);
   MaestroEngine::setProcessVariable('url_body', $url_body, $processID);
