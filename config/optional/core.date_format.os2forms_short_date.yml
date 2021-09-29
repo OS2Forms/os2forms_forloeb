@@ -1,0 +1,6 @@
+langcode: da
+status: true
+id: os2forms_short_date
+label: 'OS2forms short date'
+locked: false
+pattern: 'd/m/Y - H:i'

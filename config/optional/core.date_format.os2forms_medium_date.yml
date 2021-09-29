@@ -1,0 +1,6 @@
+langcode: da
+status: true
+id: os2forms_medium_date
+label: 'OS2forms medium date'
+locked: false
+pattern: 'D, d/m/Y - H:i'

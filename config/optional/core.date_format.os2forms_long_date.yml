@@ -1,0 +1,6 @@
+langcode: da
+status: true
+id: os2forms_long_date
+label: 'OS2forms long date'
+locked: false
+pattern: 'l, j. F, Y - H:i'
