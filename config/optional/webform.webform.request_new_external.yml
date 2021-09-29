@@ -80,8 +80,12 @@ elements: |
     location:
       '#type': webform_address
       '#title': Location
+      '#required': true
+      '#address__required': true
       '#address_2__access': false
+      '#city__required': true
       '#state_province__access': false
+      '#country__required': true
       '#country__options': country_codes
     start_date:
       '#type': date
