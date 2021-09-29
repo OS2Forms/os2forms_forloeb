@@ -8,7 +8,7 @@ spt_table:
       authenticated: authenticated
       administrator: administrator
       flow_designer: flow_designer
-      forloeb_designer: forloeb_designer
+      selvbetjeningsdesigner: selvbetjeningsdesigner
       sagsbehandler: sagsbehandler
       medarbejder: medarbejder
       leder: leder
@@ -26,7 +26,7 @@ spt_table:
       authenticated: authenticated
       administrator: administrator
       flow_designer: flow_designer
-      forloeb_designer: forloeb_designer
+      selvbetjeningsdesigner: selvbetjeningsdesigner
       sagsbehandler: sagsbehandler
       medarbejder: medarbejder
       leder: leder
