@@ -10,8 +10,8 @@ uid: 1
 template: false
 archive: false
 id: request_new_external
-title: 'Request New External'
-description: 'Create an entity for a person joining GIR, along with the corresponding organizational&nbsp; identities.'
+title: "Request New External"
+description: "Create an entity for a person joining GIR, along with the corresponding organisational&nbsp; identities."
 category: GIR
 elements: |
   personal_data:
@@ -20,9 +20,11 @@ elements: |
     first_name:
       '#type': textfield
       '#title': 'First Name'
+      '#required': true
     last_name:
       '#type': textfield
       '#title': 'Last Name'
+      '#required': true
     telephone_number:
       '#type': tel
       '#title': 'Telephone Number'
@@ -60,9 +62,9 @@ elements: |
         auto_create: false
         auto_create_bundle: cost_center
       '#required': true
-    organizational_unit:
+    organisational_unit:
       '#type': entity_autocomplete
-      '#title': 'Organizational Unit'
+      '#title': 'Organisational Unit'
       '#multiple': true
       '#target_type': taxonomy_term
       '#selection_handler': 'default:taxonomy_term'
@@ -78,15 +80,18 @@ elements: |
     location:
       '#type': webform_address
       '#title': Location
-      '#address__title': Location
+      '#required': true
+      '#address__required': true
       '#address_2__access': false
-      '#city__access': false
+      '#city__required': true
       '#state_province__access': false
-      '#postal_code__access': false
+      '#country__required': true
+      '#country__options': country_codes
     start_date:
       '#type': date
       '#title': 'Start date'
       '#date_date_format': ''
+      '#required': true
     end_date:
       '#type': date
       '#title': 'End date'
@@ -110,32 +115,32 @@ elements: |
         include_anonymous: true
         filter:
           type: _none
-css: ''
-javascript: ''
+css: ""
+javascript: ""
 settings:
   ajax: false
   ajax_scroll_top: form
-  ajax_progress_type: ''
-  ajax_effect: ''
+  ajax_progress_type: ""
+  ajax_effect: ""
   ajax_speed: null
   page: true
-  page_submit_path: ''
-  page_confirm_path: ''
-  page_theme_name: ''
+  page_submit_path: ""
+  page_confirm_path: ""
+  page_theme_name: ""
   form_title: both
   form_submit_once: false
-  form_exception_message: ''
-  form_open_message: ''
-  form_close_message: ''
+  form_exception_message: ""
+  form_open_message: ""
+  form_close_message: ""
   form_previous_submissions: true
   form_confidential: false
-  form_confidential_message: ''
+  form_confidential_message: ""
   form_remote_addr: true
   form_convert_anonymous: false
   form_prepopulate: false
   form_prepopulate_source_entity: false
   form_prepopulate_source_entity_required: false
-  form_prepopulate_source_entity_type: ''
+  form_prepopulate_source_entity_type: ""
   form_reset: false
   form_disable_autocomplete: false
   form_novalidate: false
@@ -147,35 +152,35 @@ settings:
   form_autofocus: false
   form_details_toggle: false
   form_access_denied: default
-  form_access_denied_title: ''
-  form_access_denied_message: ''
-  form_access_denied_attributes: {  }
-  form_file_limit: ''
+  form_access_denied_title: ""
+  form_access_denied_message: ""
+  form_access_denied_attributes: {}
+  form_file_limit: ""
   share: false
   share_node: false
-  share_theme_name: ''
+  share_theme_name: ""
   share_title: true
-  share_page_body_attributes: {  }
-  submission_label: ''
+  share_page_body_attributes: {}
+  submission_label: ""
   submission_log: false
-  submission_views: {  }
-  submission_views_replace: {  }
-  submission_user_columns: {  }
+  submission_views: {}
+  submission_views_replace: {}
+  submission_user_columns: {}
   submission_user_duplicate: false
   submission_access_denied: default
-  submission_access_denied_title: ''
-  submission_access_denied_message: ''
-  submission_access_denied_attributes: {  }
-  submission_exception_message: ''
-  submission_locked_message: ''
-  submission_excluded_elements: {  }
+  submission_access_denied_title: ""
+  submission_access_denied_message: ""
+  submission_access_denied_attributes: {}
+  submission_exception_message: ""
+  submission_locked_message: ""
+  submission_excluded_elements: {}
   submission_exclude_empty: false
   submission_exclude_empty_checkbox: false
-  previous_submission_message: ''
-  previous_submissions_message: ''
+  previous_submission_message: ""
+  previous_submissions_message: ""
   autofill: false
-  autofill_message: ''
-  autofill_excluded_elements: {  }
+  autofill_message: ""
+  autofill_excluded_elements: {}
   wizard_progress_bar: true
   wizard_progress_pages: false
   wizard_progress_percentage: false
@@ -184,49 +189,49 @@ settings:
   wizard_auto_forward: true
   wizard_auto_forward_hide_next_button: false
   wizard_keyboard: true
-  wizard_start_label: ''
+  wizard_start_label: ""
   wizard_preview_link: false
   wizard_confirmation: true
-  wizard_confirmation_label: ''
-  wizard_track: ''
-  wizard_prev_button_label: ''
-  wizard_next_button_label: ''
+  wizard_confirmation_label: ""
+  wizard_track: ""
+  wizard_prev_button_label: ""
+  wizard_next_button_label: ""
   wizard_toggle: false
-  wizard_toggle_show_label: ''
-  wizard_toggle_hide_label: ''
+  wizard_toggle_show_label: ""
+  wizard_toggle_hide_label: ""
   preview: 0
-  preview_label: ''
-  preview_title: ''
-  preview_message: ''
-  preview_attributes: {  }
-  preview_excluded_elements: {  }
+  preview_label: ""
+  preview_title: ""
+  preview_message: ""
+  preview_attributes: {}
+  preview_excluded_elements: {}
   preview_exclude_empty: true
   preview_exclude_empty_checkbox: false
   draft: none
   draft_multiple: false
   draft_auto_save: false
-  draft_saved_message: ''
-  draft_loaded_message: ''
-  draft_pending_single_message: ''
-  draft_pending_multiple_message: ''
+  draft_saved_message: ""
+  draft_loaded_message: ""
+  draft_pending_single_message: ""
+  draft_pending_multiple_message: ""
   confirmation_type: page
-  confirmation_title: ''
-  confirmation_message: ''
-  confirmation_url: ''
-  confirmation_attributes: {  }
+  confirmation_title: ""
+  confirmation_message: ""
+  confirmation_url: ""
+  confirmation_attributes: {}
   confirmation_back: true
-  confirmation_back_label: ''
-  confirmation_back_attributes: {  }
+  confirmation_back_label: ""
+  confirmation_back_attributes: {}
   confirmation_exclude_query: false
   confirmation_exclude_token: false
   confirmation_update: false
   limit_total: null
   limit_total_interval: null
-  limit_total_message: ''
+  limit_total_message: ""
   limit_total_unique: false
   limit_user: null
   limit_user_interval: null
-  limit_user_message: ''
+  limit_user_message: ""
   limit_user_unique: false
   entity_limit_total: null
   entity_limit_total_interval: null
@@ -246,59 +251,59 @@ access:
     roles:
       - anonymous
       - authenticated
-    users: {  }
-    permissions: {  }
+    users: {}
+    permissions: {}
   view_any:
-    roles: {  }
-    users: {  }
-    permissions: {  }
+    roles: {}
+    users: {}
+    permissions: {}
   update_any:
-    roles: {  }
-    users: {  }
-    permissions: {  }
+    roles: {}
+    users: {}
+    permissions: {}
   delete_any:
-    roles: {  }
-    users: {  }
-    permissions: {  }
+    roles: {}
+    users: {}
+    permissions: {}
   purge_any:
-    roles: {  }
-    users: {  }
-    permissions: {  }
+    roles: {}
+    users: {}
+    permissions: {}
   view_own:
-    roles: {  }
-    users: {  }
-    permissions: {  }
+    roles: {}
+    users: {}
+    permissions: {}
   update_own:
-    roles: {  }
-    users: {  }
-    permissions: {  }
+    roles: {}
+    users: {}
+    permissions: {}
   delete_own:
-    roles: {  }
-    users: {  }
-    permissions: {  }
+    roles: {}
+    users: {}
+    permissions: {}
   administer:
-    roles: {  }
-    users: {  }
-    permissions: {  }
+    roles: {}
+    users: {}
+    permissions: {}
   test:
-    roles: {  }
-    users: {  }
-    permissions: {  }
+    roles: {}
+    users: {}
+    permissions: {}
   configuration:
-    roles: {  }
-    users: {  }
-    permissions: {  }
+    roles: {}
+    users: {}
+    permissions: {}
 handlers:
   spawn_maestro_workflow_1:
     id: maestro
-    label: 'Spawn Maestro Workflow'
-    notes: ''
+    label: "Spawn Maestro Workflow"
+    notes: ""
     handler_id: spawn_maestro_workflow_1
     status: true
-    conditions: {  }
+    conditions: {}
     weight: 0
     settings:
       maestro_template: request_external
-      maestro_message_success: ''
-      maestro_message_failure: ''
-variants: {  }
+      maestro_message_success: ""
+      maestro_message_failure: ""
+variants: {}

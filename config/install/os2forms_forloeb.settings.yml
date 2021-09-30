@@ -1,2 +1,11 @@
-gir_url: 'http://192.168.64.1:5001'
-externals_root: '1e78e3a6-b999-2bff-981e-d46f5c37cce6'
+gir_url: "http://192.168.64.1:5001"
+external_ou_root: "1e78e3a6-b999-2bff-981e-d46f5c37cce6"
+external_ou_type: "f14c0624-15dd-132f-cbd7-37e898a8e426"
+external_ou_level: "ff12bec7-e8c5-1590-547e-6587caa32182"
+external_job_function: "d0c45c46-9c47-9cd5-6247-e82e232720bc"
+ea_cost_center: "d0d8133e-ae46-e472-d46c-79de72ae7317"
+ea_external: "c3ad412f-5b92-4bae-7ddc-1e53753c5aad"
+primary_type: "04ca0b72-cb1c-b492-88e5-08a3a020ef58"
+external_phone_type: "7bb385da-a748-eeed-8733-902d10eb0a06"
+external_email_type: "a5fff830-de59-5fc5-b1f5-76c6761a4dcf"
+external_location_type: "79c52dbf-1092-efb6-e1bc-a64fc0d1d325"

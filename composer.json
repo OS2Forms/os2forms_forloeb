@@ -56,7 +56,8 @@
     "vlucas/phpdotenv": "^4.0",
     "webmozart/path-util": "2.3.0",
     "drupal/keycloak": "^1.5",
-    "zaporylie/composer-drupal-optimizations": "1.2.0"
+    "zaporylie/composer-drupal-optimizations": "1.2.0",
+    "ramsey/uuid": "^4.2"
   },
   "extra": {
     "composer-exit-on-patch-failure": true,
