@@ -4,10 +4,10 @@ dependencies:
   enforced:
     module:
     - os2forms_forloeb
-id: forloebs_designer_default_page
-label: 'Forløbs designer default page'
+id: selvbetjeningsdesigner_default_page
+label: 'Selvbetjeningsdesigner default page'
 user_roles:
-  forloeb_designer: forloeb_designer
+  selvbetjeningsdesigner: selvbetjeningsdesigner
 users: null
 weight: 2
 login_redirect: /admin/structure/webform
