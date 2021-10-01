@@ -2,7 +2,6 @@ langcode: da
 status: true
 dependencies:
   config:
-  - node.type.forloebsside
   - node.type.webform
   enforced:
     module:
@@ -17,8 +16,8 @@ third_party_settings:
       republish: republish
     reviewer_transitions:
       republish: republish
-id: udgivelse_af_forlob_og_webformularer
-label: 'Udgivelse af forløb og webformularer'
+id: udgivelse_af_selvbetjeningsside
+label: 'Udgivelse af Selvbetjeningsside'
 type: content_moderation
 type_settings:
   states:
@@ -66,6 +65,5 @@ type_settings:
       weight: 2
   entity_types:
     node:
-    - forloebsside
     - webform
   default_moderation_state: draft

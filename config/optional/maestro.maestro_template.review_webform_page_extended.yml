@@ -4,8 +4,8 @@ dependencies:
   enforced:
     module:
     - os2forms_forloeb
-id: review_forloeb_page_extended
-label: 'Review af Forløbsside udbygget'
+id: review_webform_page_extended
+label: 'Review af Selvbetjeningsside udbygget'
 app_group: 0
 canvas_height: 900
 canvas_width: 800
@@ -46,7 +46,7 @@ tasks:
     id: start
     tasktype: MaestroStart
     label: Start
-    nextstep: select_or_create_forloebsside
+    nextstep: select_or_create_webform
     nextfalsestep: ''
     top: '40'
     left: '40'
@@ -64,7 +64,7 @@ tasks:
     assignto: engine
   content_review:
     id: content_review
-    label: 'Review af Forløbsside'
+    label: 'Review af Selvbetjeningsside'
     tasktype: MaestroContentType
     nextstep: assign_sagsbehandler
     nextfalsestep: ''
@@ -78,8 +78,8 @@ tasks:
     falsebranch: ''
     lines: {  }
     data:
-      unique_id: forloebsside_udbygget
-      content_type: forloebsside
+      unique_id: webform_udbygget
+      content_type: webform
       save_edit_later: 0
       link_to_edit: 0
       show_maestro_buttons_on_view: 1
@@ -89,13 +89,13 @@ tasks:
       reject_redirect_to: /taskconsole
       supply_maestro_ids_in_url: 0
       redirect_to: taskconsole
-    handler: '/node/add/forloebsside?maestro=1'
+    handler: '/node/add/webform?maestro=1'
     assigned: 'user:variable:assigned_to'
     runonce: false
     showindetail: true
     participate_in_workflow_status_stage: true
     workflow_status_stage_number: 4
-    workflow_status_stage_message: 'Review af Forløbsside'
+    workflow_status_stage_message: 'Review af Selvbetjeningsside'
     notifications:
       notification_assignment_subject: ''
       notification_assignment: ''
@@ -148,7 +148,7 @@ tasks:
     id: assign_sagsbehandler
     label: 'Læg til review'
     tasktype: MaestroInteractive
-    nextstep: revise_forloebsside
+    nextstep: revise_webform
     nextfalsestep: ''
     top: '125'
     left: '235'
@@ -159,7 +159,7 @@ tasks:
     pointedfrom: ''
     falsebranch: ''
     lines: {  }
-    handler: os2forms_forloeb_workflow_maestro_reassign_form
+    handler: os2forms_webform_workflow_maestro_reassign_form
     data:
       modal: modal
       redirect_to: taskconsole
@@ -179,9 +179,9 @@ tasks:
       notification_escalation: ''
       reminder_after: 0
       escalation_after: 0
-  select_or_create_forloebsside:
-    id: select_or_create_forloebsside
-    label: 'Vælg eller opret forløbsside'
+  select_or_create_webform:
+    id: select_or_create_webform
+    label: 'Vælg eller opret selvbetjeningsside'
     tasktype: MaestroSelectContent
     nextstep: assign_sagsbehandler
     nextfalsestep: ''
@@ -197,8 +197,8 @@ tasks:
     data:
       modal: notmodal
       redirect_to: /taskconsole
-      content_type: forloebsside
-      unique_id: forloebsside
+      content_type: webform
+      unique_id: webform
     assigned: 'user:variable:initiator'
     runonce: false
     handler: ''
@@ -215,9 +215,9 @@ tasks:
       notification_escalation: ''
       reminder_after: 0
       escalation_after: 0
-  revise_forloebsside:
-    id: revise_forloebsside
-    label: 'Revidering af Forløbsside'
+  revise_webform:
+    id: revise_webform
+    label: 'Revidering af Selvbetjeningsside'
     tasktype: MaestroContentType
     nextstep: approve_status
     nextfalsestep: ''
@@ -231,8 +231,8 @@ tasks:
     falsebranch: ''
     lines: {  }
     data:
-      unique_id: forloebsside_udbygget
-      content_type: forloebsside
+      unique_id: webform_udbygget
+      content_type: webform
       save_edit_later: 1
       link_to_edit: 1
       show_maestro_buttons_on_view: 0
@@ -242,13 +242,13 @@ tasks:
       reject_redirect_to: ''
       supply_maestro_ids_in_url: 0
       redirect_to: taskconsole
-    handler: '/node/add/forloebsside?maestro=1'
+    handler: '/node/add/webform?maestro=1'
     assigned: 'user:variable:initiator'
     runonce: false
     showindetail: true
     participate_in_workflow_status_stage: true
     workflow_status_stage_number: 3
-    workflow_status_stage_message: 'Revidering af Forløbsside'
+    workflow_status_stage_message: 'Revidering af Selvbetjeningsside'
     notifications:
       notification_assignment_subject: ''
       notification_assignment: ''
