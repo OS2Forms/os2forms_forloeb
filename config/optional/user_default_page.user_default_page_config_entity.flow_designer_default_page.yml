@@ -10,7 +10,7 @@ user_roles:
   flow_designer: flow_designer
 users: null
 weight: 1
-login_redirect: /maestro/templates/list
+login_redirect: /admin/structure/webform
 login_redirect_message: 'Velkommen tilbage, her kan du arbejde med flow skabeloner.'
 logout_redirect: ''
 logout_redirect_message: ''
