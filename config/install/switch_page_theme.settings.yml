@@ -7,7 +7,7 @@ spt_table:
       anonymous: anonymous
       authenticated: authenticated
       administrator: administrator
-      flow_designer: flow_designer
+      flowdesigner: flowdesigner
       selvbetjeningsdesigner: selvbetjeningsdesigner
       sagsbehandler: sagsbehandler
       medarbejder: medarbejder
@@ -25,7 +25,7 @@ spt_table:
       anonymous: anonymous
       authenticated: authenticated
       administrator: administrator
-      flow_designer: flow_designer
+      flowdesigner: flowdesigner
       selvbetjeningsdesigner: selvbetjeningsdesigner
       sagsbehandler: sagsbehandler
       medarbejder: medarbejder
