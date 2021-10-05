@@ -4,13 +4,13 @@ dependencies:
   enforced:
     module:
     - os2forms_forloeb
-id: flow_designer_default_page
-label: 'Flow designer default page'
+id: flowdesigner_default_page
+label: 'Flowdesigner default page'
 user_roles:
-  flow_designer: flow_designer
+  flowdesigner: flowdesigner
 users: null
 weight: 1
 login_redirect: /maestro/templates/list
-login_redirect_message: 'Velkommen tilbage, her kan du arbejde med flow skabeloner.'
+login_redirect_message: 'Velkommen tilbage, her kan du arbejde med forløbsskabeloner.'
 logout_redirect: ''
 logout_redirect_message: ''

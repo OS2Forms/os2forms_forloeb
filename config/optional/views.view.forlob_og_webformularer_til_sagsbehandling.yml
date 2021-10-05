@@ -5,7 +5,7 @@ dependencies:
   - node.type.webform
   - system.menu.admin
   - user.role.administrator
-  - user.role.flow_designer
+  - user.role.flowdesigner
   - user.role.selvbetjeningsdesigner
   - user.role.leder
   - user.role.sagsbehandler
@@ -34,7 +34,7 @@ display:
         options:
           role:
             administrator: administrator
-            flow_designer: flow_designer
+            flowdesigner: flowdesigner
             selvbetjeningsdesigner: selvbetjeningsdesigner
             sagsbehandler: sagsbehandler
             leder: leder
@@ -549,7 +549,7 @@ display:
               authenticated: authenticated
               anonymous: '0'
               administrator: '0'
-              flow_designer: '0'
+              flowdesigner: '0'
               selvbetjeningsdesigner: '0'
               sagsbehandler: '0'
               medarbejder: '0'
@@ -614,7 +614,7 @@ display:
               authenticated: authenticated
               anonymous: '0'
               administrator: '0'
-              flow_designer: '0'
+              flowdesigner: '0'
               selvbetjeningsdesigner: '0'
               sagsbehandler: '0'
               medarbejder: '0'
