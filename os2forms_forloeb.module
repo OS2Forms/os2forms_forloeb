@@ -158,3 +158,50 @@ function os2forms_forloeb_webform_create(\Drupal\webform\WebformInterface $webfo
   $webform->setSetting('purge_days', '30');
 }
 
+/**
+ * Set Process Variable (SPV) function.
+ *
+ * Uses the webform's unique identifier referenced in the Maestro "webforms"
+ * process variable to read a value from the webform submission and return it
+ * to the SPV task to set the process variable in the task.
+ * The function assumes that the value to be extracted is the SID of a user
+ * and returns the username instead.
+ * This seems to be the easiest way to accomplish this.
+ *
+ * The "webforms" process variable is set by the Maestro Webforms
+ * submission handler which sets a "submission:xxx" value
+ * in the "webforms" process variable, where "xxx" is the unique ID
+ * of the submission, or is set by the Maestro Webform Task Type's
+ * "Unique Identifier" setting when editing a Maestro Webform Task.
+ *
+ * @param string $uniqueWebformIdentifier
+ *   The webform's "Unique Identifier" as stored
+ *    in the "webforms" process variable.
+ * @param string $webformFieldMachineName
+ *   The webform field's machine name
+ *    (listed as "KEY" in the webform builder) you wish to pull the value from.
+ * @param int $queueID
+ *   Provided by the executing SPV task -- the QueueID of the SPV task.
+ * @param int $processID
+ *   Provided by the executing SPV task -- the ProcessID of the workflow
+ *    running the SPV task.
+ */
+function os2forms_forloeb_spv_fetch_entity_username($uniqueWebformIdentifier, $webformFieldMachineName, $queueID, $processID) {
+  $returnValue = 'unset';
+  // This is the submission we're eventually after.
+  $sid = FALSE;
+  $sid = MaestroEngine::getEntityIdentiferByUniqueID($processID, $uniqueWebformIdentifier);
+  if ($sid) {
+    $webform_submission = WebformSubmission::load($sid);
+  }
+  if ($webform_submission && array_key_exists($webformFieldMachineName, $webform_submission->getData())) {
+    $returnValue = $webform_submission->getData()[$webformFieldMachineName];
+  }
+  // At this point, the submission's value OR 'unset' is in the $returnValue.
+  if ($returnValue == 'unset' or !$returnValue) {
+    return $returnValue;
+  }
+  $account = User::load($returnValue);
+  $username = $account->getUsername();
+  return $username;
+}
