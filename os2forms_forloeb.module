@@ -1,5 +1,9 @@
 <?php
 
+use Drupal\maestro\Engine\MaestroEngine;
+use Drupal\webform\Entity\WebformSubmission;
+use Drupal\user\Entity\User;
+
 /**
  * @file
  * Install, update and uninstall functions for the os2forms_forloeb_profile installation profile.
@@ -28,8 +32,6 @@ function os2forms_forloeb_install() {
     ->set('admin', 'gin')
     ->save();
 }
-
-use Drupal\maestro\Engine\MaestroEngine;
 
 /**
  * Implements hook_maestro_interactive_handlers() for the return of an Array

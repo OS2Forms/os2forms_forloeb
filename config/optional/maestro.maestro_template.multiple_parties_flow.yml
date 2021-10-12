@@ -1,8 +1,9 @@
+langcode: en
 status: true
 dependencies:
   enforced:
     module:
-    - os2forms_forloeb
+      - os2forms_forloeb
 id: multiple_parties_flow
 label: 'Flow med to parter'
 app_group: 0
@@ -10,7 +11,7 @@ canvas_height: 900
 canvas_width: 1000
 default_workflow_timeline_stage_count: 4
 show_details: true
-validated: false
+validated: true
 views_attached:
   maestro_entity_identifiers:
     view_machine_name: maestro_entity_identifiers
@@ -48,10 +49,10 @@ tasks:
     id: start
     tasktype: MaestroStart
     label: Start
-    nextstep: 'form2,form_parent'
+    nextstep: 'set_part_1,set_part_2'
     nextfalsestep: ''
-    top: '20'
-    left: '260'
+    top: '15'
+    left: '285'
     assignby: fixed
     assignto: engine
   end:
@@ -70,8 +71,8 @@ tasks:
     tasktype: MaestroWebform
     nextstep: all
     nextfalsestep: ''
-    top: '190'
-    left: '470'
+    top: '235'
+    left: '465'
     assignby: fixed
     assignto: ''
     raphael: ''
@@ -80,8 +81,8 @@ tasks:
     falsebranch: ''
     lines: {  }
     data:
-      unique_id: submission
-      webform_machine_name: start_forloeb_med_to_parter
+      unique_id: part2
+      webform_machine_name: part_2_formular
       modal: notmodal
       skip_webform_handlers: 1
       webform_nodes_attached_to: none
@@ -95,7 +96,7 @@ tasks:
     showindetail: true
     participate_in_workflow_status_stage: true
     workflow_status_stage_number: 1
-    workflow_status_stage_message: 'Afventer accept fra part 2'
+    workflow_status_stage_message: 'Afventer svar fra part 2'
     notifications:
       notification_assignment_subject: ''
       notification_assignment: ''
@@ -112,8 +113,8 @@ tasks:
     tasktype: MaestroBatchFunction
     nextstep: end
     nextfalsestep: ''
-    top: '620'
-    left: '270'
+    top: '612'
+    left: '262'
     assignby: fixed
     assignto: ''
     raphael: ''
@@ -139,12 +140,12 @@ tasks:
       escalation_after: null
   form2:
     id: form2
-    label: 'Formular forælder 1'
+    label: 'Formular part 1'
     tasktype: MaestroWebform
     nextstep: all
     nextfalsestep: ''
-    top: '180'
-    left: '40'
+    top: '260'
+    left: '90'
     assignby: fixed
     assignto: ''
     raphael: ''
@@ -153,8 +154,8 @@ tasks:
     falsebranch: ''
     lines: {  }
     data:
-      unique_id: submission
-      webform_machine_name: start_forloeb_med_to_parter
+      unique_id: part1
+      webform_machine_name: part_1_formular
       modal: notmodal
       skip_webform_handlers: 1
       webform_nodes_attached_to: none
@@ -162,7 +163,7 @@ tasks:
       webform_nodes_attached_variable: none
       redirect_to: taskconsole
       show_edit_form: 1
-    assigned: 'user:variable:part_one_id'
+    assigned: 'user:variable:part_one_id,user:variable:part_one_id'
     runonce: false
     handler: ''
     showindetail: true
@@ -184,8 +185,8 @@ tasks:
     tasktype: MaestroAnd
     nextstep: submission_review
     nextfalsestep: ''
-    top: '420'
-    left: '260'
+    top: '415'
+    left: '255'
     assignby: fixed
     assignto: ''
     raphael: ''
@@ -198,7 +199,7 @@ tasks:
     handler: ''
     showindetail: true
     participate_in_workflow_status_stage: true
-    workflow_status_stage_number: 3
+    workflow_status_stage_number: 2
     workflow_status_stage_message: 'Alle parter har svaret'
     notifications:
       notification_assignment_subject: null
@@ -215,8 +216,8 @@ tasks:
     tasktype: MaestroWebform
     nextstep: send
     nextfalsestep: ''
-    top: '522'
-    left: '262'
+    top: '506'
+    left: '246'
     assignby: fixed
     assignto: ''
     raphael: ''
@@ -225,8 +226,8 @@ tasks:
     falsebranch: ''
     lines: {  }
     data:
-      unique_id: submission
-      webform_machine_name: start_forloeb_med_to_parter
+      unique_id: opsamling
+      webform_machine_name: opsamlingsformular_til_flere_par
       modal: notmodal
       skip_webform_handlers: 1
       webform_nodes_attached_to: none
@@ -239,7 +240,7 @@ tasks:
     handler: ''
     showindetail: true
     participate_in_workflow_status_stage: true
-    workflow_status_stage_number: 4
+    workflow_status_stage_number: 3
     workflow_status_stage_message: 'Review submission data'
     notifications:
       notification_assignment_subject: ''
@@ -251,3 +252,75 @@ tasks:
       reminder_after: 0
       escalation_after: 0
       notification_assignments: 'user:variable:initiator:assignment'
+  set_part_1:
+    id: set_part_1
+    label: 'Set Part 1 Responsible'
+    tasktype: MaestroSetProcessVariable
+    nextstep: form2
+    nextfalsestep: ''
+    top: '117'
+    left: '127'
+    assignby: fixed
+    assignto: ''
+    raphael: ''
+    to: ''
+    pointedfrom: ''
+    falsebranch: ''
+    lines: {  }
+    data:
+      spv:
+        variable: part_one_id
+        method: bycontentfunction
+        variable_value: 'os2forms_forloeb_spv_fetch_entity_username:submission,part1'
+    assigned: ''
+    runonce: false
+    handler: ''
+    showindetail: true
+    participate_in_workflow_status_stage: false
+    workflow_status_stage_number: 0
+    workflow_status_stage_message: ''
+    notifications:
+      notification_assignment_subject: null
+      notification_assignment: null
+      notification_reminder_subject: null
+      notification_reminder: null
+      notification_escalation_subject: null
+      notification_escalation: null
+      reminder_after: null
+      escalation_after: null
+  set_part_2:
+    id: set_part_2
+    label: 'Set Part 2 Responsible'
+    tasktype: MaestroSetProcessVariable
+    nextstep: form_parent
+    nextfalsestep: ''
+    top: '122'
+    left: '422'
+    assignby: fixed
+    assignto: ''
+    raphael: ''
+    to: ''
+    pointedfrom: ''
+    falsebranch: ''
+    lines: {  }
+    data:
+      spv:
+        variable: part_two_id
+        method: bycontentfunction
+        variable_value: 'os2forms_forloeb_spv_fetch_entity_username:submission,part2'
+    assigned: ''
+    runonce: false
+    handler: ''
+    showindetail: true
+    participate_in_workflow_status_stage: false
+    workflow_status_stage_number: 0
+    workflow_status_stage_message: ''
+    notifications:
+      notification_assignment_subject: null
+      notification_assignment: null
+      notification_reminder_subject: null
+      notification_reminder: null
+      notification_escalation_subject: null
+      notification_escalation: null
+      reminder_after: null
+      escalation_after: null
