@@ -1,8 +1,9 @@
+langcode: en
 status: true
 dependencies:
   enforced:
     module:
-    - os2forms_forloeb
+      - os2forms_forloeb
 id: multiple_parties_flow
 label: 'Flow med to parter'
 app_group: 0
