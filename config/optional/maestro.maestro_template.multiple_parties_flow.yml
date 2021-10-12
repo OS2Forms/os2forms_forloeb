@@ -62,7 +62,7 @@ tasks:
     nextstep: ''
     nextfalsestep: ''
     top: '710'
-    left: '270'
+    left: '290'
     assignby: fixed
     assignto: engine
   form_parent:
@@ -113,8 +113,8 @@ tasks:
     tasktype: MaestroBatchFunction
     nextstep: end
     nextfalsestep: ''
-    top: '612'
-    left: '262'
+    top: '610'
+    left: '290'
     assignby: fixed
     assignto: ''
     raphael: ''
@@ -144,8 +144,8 @@ tasks:
     tasktype: MaestroWebform
     nextstep: all
     nextfalsestep: ''
-    top: '260'
-    left: '90'
+    top: '250'
+    left: '100'
     assignby: fixed
     assignto: ''
     raphael: ''
@@ -183,10 +183,10 @@ tasks:
     id: all
     label: 'alle svaret'
     tasktype: MaestroAnd
-    nextstep: submission_review
+    nextstep: se_samlet
     nextfalsestep: ''
-    top: '415'
-    left: '255'
+    top: '400'
+    left: '290'
     assignby: fixed
     assignto: ''
     raphael: ''
@@ -210,48 +210,6 @@ tasks:
       notification_escalation: null
       reminder_after: null
       escalation_after: null
-  submission_review:
-    id: submission_review
-    label: 'Se samlet'
-    tasktype: MaestroWebform
-    nextstep: send
-    nextfalsestep: ''
-    top: '506'
-    left: '246'
-    assignby: fixed
-    assignto: ''
-    raphael: ''
-    to: ''
-    pointedfrom: ''
-    falsebranch: ''
-    lines: {  }
-    data:
-      unique_id: opsamling
-      webform_machine_name: opsamlingsformular_til_flere_par
-      modal: notmodal
-      skip_webform_handlers: 1
-      webform_nodes_attached_to: none
-      use_nodes_attached: 0
-      webform_nodes_attached_variable: none
-      redirect_to: taskconsole
-      show_edit_form: 0
-    assigned: 'user:variable:initiator'
-    runonce: false
-    handler: ''
-    showindetail: true
-    participate_in_workflow_status_stage: true
-    workflow_status_stage_number: 3
-    workflow_status_stage_message: 'Review submission data'
-    notifications:
-      notification_assignment_subject: ''
-      notification_assignment: ''
-      notification_reminder_subject: ''
-      notification_reminder: ''
-      notification_escalation_subject: ''
-      notification_escalation: ''
-      reminder_after: 0
-      escalation_after: 0
-      notification_assignments: 'user:variable:initiator:assignment'
   set_part_1:
     id: set_part_1
     label: 'Set Part 1 Responsible'
@@ -324,3 +282,44 @@ tasks:
       notification_escalation: null
       reminder_after: null
       escalation_after: null
+  se_samlet:
+    id: se_samlet
+    label: 'Se samlet'
+    tasktype: MaestroWebformMultiple
+    nextstep: send
+    nextfalsestep: ''
+    top: '497'
+    left: '277'
+    assignby: fixed
+    assignto: ''
+    raphael: ''
+    to: ''
+    pointedfrom: ''
+    falsebranch: ''
+    lines: {  }
+    data:
+      unique_id: se_samlet
+      webform_machine_name: opsamlingsformular_til_flere_par
+      modal: notmodal
+      skip_webform_handlers: 0
+      webform_nodes_attached_to: none
+      use_nodes_attached: 0
+      webform_nodes_attached_variable: none
+      redirect_to: taskconsole
+      show_edit_form: 0
+    assigned: 'user:variable:initiator'
+    runonce: false
+    handler: ''
+    showindetail: true
+    participate_in_workflow_status_stage: false
+    workflow_status_stage_number: 0
+    workflow_status_stage_message: ''
+    notifications:
+      notification_assignment_subject: ''
+      notification_assignment: ''
+      notification_reminder_subject: ''
+      notification_reminder: ''
+      notification_escalation_subject: ''
+      notification_escalation: ''
+      reminder_after: 0
+      escalation_after: 0
