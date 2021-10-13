@@ -65,8 +65,8 @@ tasks:
     left: '290'
     assignby: fixed
     assignto: engine
-  form_parent:
-    id: form_parent
+  form2:
+    id: form2
     label: 'Formular part 2'
     tasktype: MaestroWebform
     nextstep: all
@@ -138,8 +138,8 @@ tasks:
       notification_escalation: null
       reminder_after: null
       escalation_after: null
-  form2:
-    id: form2
+  form1:
+    id: form1
     label: 'Formular part 1'
     tasktype: MaestroWebform
     nextstep: all
@@ -214,7 +214,7 @@ tasks:
     id: set_part_1
     label: 'Set Part 1 Responsible'
     tasktype: MaestroSetProcessVariable
-    nextstep: form2
+    nextstep: form1
     nextfalsestep: ''
     top: '117'
     left: '127'
@@ -250,7 +250,7 @@ tasks:
     id: set_part_2
     label: 'Set Part 2 Responsible'
     tasktype: MaestroSetProcessVariable
-    nextstep: form_parent
+    nextstep: form2
     nextfalsestep: ''
     top: '122'
     left: '422'
@@ -288,8 +288,8 @@ tasks:
     tasktype: MaestroWebformMultiple
     nextstep: send
     nextfalsestep: ''
-    top: '497'
-    left: '277'
+    top: '489'
+    left: '269'
     assignby: fixed
     assignto: ''
     raphael: ''
@@ -306,7 +306,7 @@ tasks:
       use_nodes_attached: 0
       webform_nodes_attached_variable: none
       redirect_to: taskconsole
-      show_edit_form: 0
+      show_edit_form: 1
     assigned: 'user:variable:initiator'
     runonce: false
     handler: ''

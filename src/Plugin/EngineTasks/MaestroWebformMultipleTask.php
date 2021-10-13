@@ -64,19 +64,8 @@ class MaestroWebformMultipleTask extends MaestroWebformTask {
    */
   public function getExecutableForm($modal, MaestroExecuteInteractive $parent)
   {
-    $returnValue = parent::getExecutableForm($modal, $parent);
-
-    // Get task, submission ID and web form ID.
-    $templateTask = MaestroEngine::getTemplateTaskByQueueID($this->queueID);
-    $taskUniqueSubmissionId = $templateTask['data']['unique_id'];
-    $webformMachineName = $templateTask['data']['webform_machine_name'];
-
-    \Drupal::logger('os2forms_forloeb')->notice(
-      "Task: " . json_encode($templateTask)
-    );
-
-    // If this is done properly, there's no submission associated with
-    // taskUniqueSubmissionId. We need to create a submission as described here:
+    // If this is used properly, there's no submission associated with
+    // the current task. We need to create a submission as described here:
     // https://www.drupal.org/docs/8/modules/webform/webform-cookbook/how-to-programmatically-create-and-update-a-submission
     
     // First, get hold of the interesting previous tasks.
@@ -91,9 +80,6 @@ class MaestroWebformMultipleTask extends MaestroWebformTask {
     $pointers = MaestroEngine::getTaskPointersFromTemplate(
       $templateMachineName, $pointers[0]
     );
-    \Drupal::logger('os2forms_forloeb')->notice(
-      "Pointers: " . json_encode($pointers)
-    );
     // Now, we query the queue to find the actual tasks pointing to the AND
     // task.
     $query = \Drupal::entityQuery('maestro_queue');
@@ -105,18 +91,67 @@ class MaestroWebformMultipleTask extends MaestroWebformTask {
     }
     $andMainConditions->condition($orConditionGroup);
     $query->condition($andMainConditions);
-    $entityIDs = $query->execute();
+    $queueIDs = $query->execute();
 
+    
+    // This array will hold the key => value pairs for the fields
+    // to be copied to the final form.
+    $field_values = []; 
 
-    foreach ($entityIDs as $entityID) {
+    foreach ($queueIDs as $queueID) {
       // Load the Maestro task with ID $pid.
-      $queueRecord = \Drupal::entityTypeManager()->getStorage('maestro_queue')->load($entityID);
-      \Drupal::logger('os2forms_forloeb')->notice(
-        "Queue Record: " . json_encode($queueRecord)
-      );
+      $currentTask = MaestroEngine::getTemplateTaskByQueueID($queueID);
       // Load its corresponding webform submission.
+      $taskUniqueSubmissionId = $currentTask['data']['unique_id'];
+      $webformMachineName = $currentTask['data']['webform_machine_name'];
+      $sid = MaestroEngine::getEntityIdentiferByUniqueID($this->processID, $taskUniqueSubmissionId);
+      if ($sid) {
+        $webform_submission = WebformSubmission::load($sid);
+      }
+      if (!$webform_submission) {
+        \Drupal::logger('os2forms_forloeb')->error(
+          "Predecessors MUSt have submissions with this task type."
+        );
+        // @todo This is an error, throw an exception or something.
+      }
       // Copy the fields of the webform submission to the values array.
+      foreach ($webform_submission->getData() as $key => $value) {
+        if ($value) {
+          $field_values[$key] = $value;
+        }
+      }
     }
-    return $returnValue;
+
+    // Now create webform submission, submit and attach to current task.
+    
+    // Get task, submission ID and web form ID.
+    $templateTask = MaestroEngine::getTemplateTaskByQueueID($this->queueID);
+    $taskUniqueSubmissionId = $templateTask['data']['unique_id'];
+    $webformMachineName = $templateTask['data']['webform_machine_name'];
+
+    $webform = Webform::load($webformMachineName);
+    $values = [];
+    $values['webform_id'] = $webformMachineName;
+    $values['data'] = $field_values;
+
+    $new_submission = WebformSubmission::create($values);
+
+    $errors = WebformSubmissionForm::validateWebformSubmission($webform_submission);
+
+    if (!empty($errors)) {
+      \Drupal::logger('os2forms_forloeb')->error(
+        "Can't create new submission: " . json_encode($errors)
+      );
+    }
+    
+    $new_submission = WebformSubmissionForm::submitWebformSubmission($new_submission);
+
+    $sid = $new_submission->id();
+    MaestroEngine::createEntityIdentifier(
+      $this->processID, $new_submission->getEntityTypeId(),
+      $new_submission->bundle(), $taskUniqueSubmissionId, $sid
+    );
+
+    return parent::getExecutableForm($modal, $parent);
   }
 }
