@@ -1,5 +1,6 @@
 <?php
 
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\maestro\Engine\MaestroEngine;
 use Drupal\webform\Entity\WebformSubmission;
 use Drupal\user\Entity\User;
@@ -206,4 +207,54 @@ function os2forms_forloeb_spv_fetch_entity_username($uniqueWebformIdentifier, $w
   $account = User::load($returnValue);
   $username = $account->getUsername();
   return $username;
+}
+
+/**
+ * Implements hook_form_alter() for MaestroWebformMultiple task type.
+ */
+function os2forms_forloeb_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $queueID = intval(\Drupal::request()->query->get('queueid', 0));
+  $isMaestro = intval(\Drupal::request()->query->get('maestro', 0));
+  // Both these keys need to exist.
+  if ($isMaestro && $queueID) {
+    $templateTask = MaestroEngine::getTemplateTaskByQueueID($queueID);
+    // We only care about Maestro Webform Multiple tasks.
+    if ($templateTask && $templateTask['tasktype'] == 'MaestroWebformMultiple') {
+      $storage = $form_state->getStorage();
+      if ($storage && array_key_exists('form_display', $storage)) {
+        $webformTypes = \Drupal::entityTypeManager()->getStorage('node_type')->loadMultiple();
+        $thisForm = $storage['form_display']->get('bundle');
+        $targetEntityType = $storage['form_display']->get('targetEntityType');
+        if ($isMaestro == 1 &&
+            $targetEntityType == 'webform_submission' &&
+            $templateTask['data']['webform_machine_name'] == $thisForm) {
+          // We now know this is a webform submission.  We are going to add in our own form fields here.
+          $form['maestro'] = [
+            '#tree' => TRUE,
+          ];
+
+          $form['maestro']['type'] = [
+            '#type' => 'hidden',
+            '#default_value' => $thisForm,
+            '#required' => TRUE,
+          ];
+
+          $form['maestro']['queue_id'] = [
+            '#type' => 'hidden',
+            '#default_value' => $queueID,
+            '#required' => TRUE,
+          ];
+
+          $form['maestro']['process_id'] = [
+            '#type' => 'hidden',
+            '#default_value' => MaestroEngine::getProcessIdFromQueueId($queueID),
+            '#required' => TRUE,
+          ];
+
+          $form['actions']['submit']['#submit'][] = 'maestro_webform_webform_type_task_submit';
+
+        }
+      }
+    }
+  }
 }
