@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Drupal\os2forms_forloeb\Plugin\EngineTasks;
 
@@ -35,7 +35,6 @@ class MaestroWebformMultipleTask extends MaestroWebformTask {
     }
   }
 
-
   /**
    * {@inheritDoc}
    */
@@ -62,12 +61,10 @@ class MaestroWebformMultipleTask extends MaestroWebformTask {
   /**
    * {@inheritDoc}
    */
-  public function getExecutableForm($modal, MaestroExecuteInteractive $parent)
-  {
+  public function getExecutableForm($modal, MaestroExecuteInteractive $parent) {
     // If this is used properly, there's no submission associated with
     // the current task. We need to create a submission as described here:
     // https://www.drupal.org/docs/8/modules/webform/webform-cookbook/how-to-programmatically-create-and-update-a-submission
-    
     // First, get hold of the interesting previous tasks.
     $templateMachineName = MaestroEngine::getTemplateIdFromProcessId($this->processID);
     $taskMachineName = MaestroEngine::getTaskIdFromQueueId($this->queueID);
@@ -75,7 +72,7 @@ class MaestroWebformMultipleTask extends MaestroWebformTask {
     $pointers = MaestroEngine::getTaskPointersFromTemplate(
       $templateMachineName, $taskMachineName
     );
-    // Now, there can only be one task preceding this, the AND 
+    // Now, there can only be one task preceding this, the AND
     // task collecting the submissions.
     $pointers = MaestroEngine::getTaskPointersFromTemplate(
       $templateMachineName, $pointers[0]
@@ -84,7 +81,7 @@ class MaestroWebformMultipleTask extends MaestroWebformTask {
     // task.
     $query = \Drupal::entityQuery('maestro_queue');
     $andMainConditions = $query->andConditionGroup()
-                               ->condition('process_id', $this->processID);
+      ->condition('process_id', $this->processID);
     $orConditionGroup = $query->orConditionGroup();
     foreach ($pointers as $taskID) {
       $orConditionGroup->condition('task_id', $taskID);
@@ -93,10 +90,9 @@ class MaestroWebformMultipleTask extends MaestroWebformTask {
     $query->condition($andMainConditions);
     $queueIDs = $query->execute();
 
-    
     // This array will hold the key => value pairs for the fields
     // to be copied to the final form.
-    $field_values = []; 
+    $field_values = [];
 
     foreach ($queueIDs as $queueID) {
       // Load the Maestro task with ID $pid.
@@ -123,13 +119,10 @@ class MaestroWebformMultipleTask extends MaestroWebformTask {
     }
 
     // Now create webform submission, submit and attach to current task.
-    
-    // Get task, submission ID and web form ID.
     $templateTask = MaestroEngine::getTemplateTaskByQueueID($this->queueID);
     $taskUniqueSubmissionId = $templateTask['data']['unique_id'];
     $webformMachineName = $templateTask['data']['webform_machine_name'];
 
-    $webform = Webform::load($webformMachineName);
     $values = [];
     $values['webform_id'] = $webformMachineName;
     $values['data'] = $field_values;
@@ -143,7 +136,7 @@ class MaestroWebformMultipleTask extends MaestroWebformTask {
         "Can't create new submission: " . json_encode($errors)
       );
     }
-    
+
     $new_submission = WebformSubmissionForm::submitWebformSubmission($new_submission);
 
     $sid = $new_submission->id();
@@ -154,4 +147,5 @@ class MaestroWebformMultipleTask extends MaestroWebformTask {
 
     return parent::getExecutableForm($modal, $parent);
   }
+
 }
