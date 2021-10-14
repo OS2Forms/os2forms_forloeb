@@ -1,9 +1,8 @@
-langcode: en
 status: true
 dependencies:
   enforced:
     module:
-      - os2forms_forloeb
+    - os2forms_forloeb
 id: multiple_parties_flow
 label: 'Flow med to parter'
 app_group: 0
@@ -51,8 +50,8 @@ tasks:
     label: Start
     nextstep: 'set_part_1,set_part_2'
     nextfalsestep: ''
-    top: '15'
-    left: '285'
+    top: '50'
+    left: '280'
     assignby: fixed
     assignto: engine
   end:
@@ -71,8 +70,8 @@ tasks:
     tasktype: MaestroWebform
     nextstep: all
     nextfalsestep: ''
-    top: '235'
-    left: '465'
+    top: '227'
+    left: '457'
     assignby: fixed
     assignto: ''
     raphael: ''
@@ -144,8 +143,8 @@ tasks:
     tasktype: MaestroWebform
     nextstep: all
     nextfalsestep: ''
-    top: '250'
-    left: '100'
+    top: '245'
+    left: '95'
     assignby: fixed
     assignto: ''
     raphael: ''
@@ -179,6 +178,7 @@ tasks:
       notification_escalation: ''
       reminder_after: 0
       escalation_after: 0
+      notification_assignments: 'user:variable:part_one_id:assignment'
   all:
     id: all
     label: 'alle svaret'
@@ -288,8 +288,8 @@ tasks:
     tasktype: MaestroWebformMultiple
     nextstep: send
     nextfalsestep: ''
-    top: '489'
-    left: '269'
+    top: '500'
+    left: '290'
     assignby: fixed
     assignto: ''
     raphael: ''
