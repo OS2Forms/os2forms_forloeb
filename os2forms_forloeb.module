@@ -211,6 +211,11 @@ function os2forms_forloeb_spv_fetch_entity_username($uniqueWebformIdentifier, $w
 
 /**
  * Implements hook_form_alter() for MaestroWebformMultiple task type.
+ *
+ * This has been copied from
+ * maestro/maestro_webform/maestro_webform.module with a minimal but
+ * necessary change. See https://www.drupal.org/project/maestro/issues/3243510
+ *
  */
 function os2forms_forloeb_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   $queueID = intval(\Drupal::request()->query->get('queueid', 0));
