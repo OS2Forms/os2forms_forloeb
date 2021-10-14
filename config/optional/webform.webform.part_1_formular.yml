@@ -16,7 +16,7 @@ id: part_1_formular
 title: 'Part 1 formular'
 description: 'Et eksempel p&aring; en formular til f&oslash;rste part i et selvebetjeningsforl&oslash;b.'
 category: Maestro
-elements: "part1_navn:\n  '#type': textfield\n  '#title': Navn\npart1_adresse:\n  '#type': os2forms_dawa_address\n  '#title': Adresse\npart1_cpr_nummer:\n  '#type': textfield\n  '#title': CPR-nummer\npart1_e_mail:\n  '#type': email\n  '#title': E-mail\npart1_telefon:\n  '#type': tel\n  '#title': Telefon\npart1_beskrivelse:\n  '#type': textarea\n  '#title': Beskrivelse"
+elements: "navn:\n  '#type': textfield\n  '#title': Navn\nadresse:\n  '#type': os2forms_dawa_address\n  '#title': Adresse\ncpr_nummer:\n  '#type': textfield\n  '#title': CPR-nummer\ne_mail:\n  '#type': email\n  '#title': E-mail\ntelefon:\n  '#type': tel\n  '#title': Telefon\nbeskrivelse:\n  '#type': textarea\n  '#title': Beskrivelse"
 css: ''
 javascript: ''
 settings:

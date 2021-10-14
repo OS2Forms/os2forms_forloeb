@@ -113,7 +113,7 @@ class MaestroWebformMultipleTask extends MaestroWebformTask {
       // Copy the fields of the webform submission to the values array.
       foreach ($webform_submission->getData() as $key => $value) {
         if ($value) {
-          $field_values[$key] = $value;
+          $field_values[$taskUniqueSubmissionId . '_' . $key] = $value;
         }
       }
     }
