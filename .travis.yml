@@ -25,7 +25,7 @@ install:
 - export REQUIRE_REPLACE='"require":{"os2forms\/os2forms_forloeb":"\*",'
 - sed -i "s/$REPOSITORIES/$REPOSITORIES_REPLACE/g" composer.json
 - sed -i "s/$REQUIRE/$REQUIRE_REPLACE/g" composer.json
-- composer update os2forms/os2forms_forloeb:^1.5.1
+- composer update os2forms/os2forms_forloeb
 - PROJECT_PATH=$DRUPAL_ROOT/modules/contrib/os2forms_forloeb
 - cd $DRUPAL_ROOT/core
 - yarn install
