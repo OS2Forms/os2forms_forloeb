@@ -16,7 +16,7 @@ template: false
 archive: false
 id: start_forloeb_med_to_parter
 title: 'Start forløb med to parter'
-description: 'Flow til a starte sagsbehandlingsforl&oslash;b med to parter.'
+description: 'Et eksempel på en formular til at starte sagsbehandlingsforløb med to parter.'
 category: MBU
 elements: "side_1:\n  '#type': webform_wizard_page\n  '#title': 'Angiv parter'\n  part1:\n    '#type': entity_autocomplete\n    '#title': part1\n    '#target_type': user\n    '#selection_handler': 'default:user'\n    '#selection_settings':\n      include_anonymous: false\n      filter:\n        type: _none\n  part2:\n    '#type': entity_autocomplete\n    '#title': part2\n    '#target_type': user\n    '#selection_handler': 'default:user'\n    '#selection_settings':\n      include_anonymous: false\n      filter:\n        type: _none\nactions:\n  '#type': webform_actions\n  '#title': 'Send knap(per)'\n  '#draft_hide': true\n  '#draft__label': insend\n  '#update__label': Opdater\n  '#wizard_prev__label': tilbage\n  '#wizard_next__label': frem"
 css: ''
