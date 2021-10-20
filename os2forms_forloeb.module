@@ -11,30 +11,6 @@ use Drupal\user\Entity\User;
  */
 
 /**
- * Implements hook_install().
- */
-function os2forms_forloeb_install() {
-  $theme_list = [
-    'claro',
-    'gin',
-    'bootstrap',
-    'custom_theme'
-  ];
-
-  // Install themes
-  \Drupal::service('theme_installer')->install($theme_list);
-
-  // Get theme manager
-  $system_theme = \Drupal::configFactory()->getEditable('system.theme');
-
-  // Set default and admin themes
-  $system_theme
-    ->set('default', 'custom_theme')
-    ->set('admin', 'gin')
-    ->save();
-}
-
-/**
  * Implements hook_maestro_interactive_handlers() for the return of an Array
  * of function names and help text that will be displayed in the edit task
  * form under the handler field.
