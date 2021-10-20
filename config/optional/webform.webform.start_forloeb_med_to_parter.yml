@@ -1,43 +1,24 @@
-langcode: da
+uuid: cbddd0e0-b410-4d6b-a5ae-cefdc418f08e
+langcode: en
 status: open
 dependencies:
   module:
   - maestro_webform
-  - os2forms
-  - webform_entity_print
   - webform_revisions
 third_party_settings:
   webform_revisions:
-    contentEntity_id: '2'
-  os2forms:
-    os2forms_nemid:
-      webform_type: ''
-      nemlogin_auto_redirect: 0
-  webform_entity_print:
-    template:
-      header: ''
-      footer: ''
-      css: ''
-    export_types:
-      pdf:
-        enabled: true
-        link_text: ''
-        link_attributes: {  }
-      word_docx:
-        enabled: false
-        link_text: ''
-        link_attributes: {  }
+    contentEntity_id: '3'
 open: null
 close: null
 weight: 0
-uid: 4
+uid: 1
 template: false
 archive: false
-id: barsel_erklaering_ved_graviditet
-title: 'Barsel: Erklæring ved graviditet'
-description: ''
-category: ''
-elements: "send_til:\n  '#type': hidden\n  '#title': 'Send til'\n  '#default_value': mn@magenta-aps.dk\n  '#prepopulate': true\nflow_type:\n  '#type': hidden\n  '#title': 'Flow type'\n  '#default_value': barsel\nside:\n  '#type': webform_wizard_page\n  '#title': Side\n  fulde_navn:\n    '#type': textfield\n    '#title': 'Fulde navn'\n    '#required': true\n  az_ident:\n    '#type': textfield\n    '#title': Az-ident\n    '#required': true\n  privat_e_mail:\n    '#type': email\n    '#title': 'Privat e-mail'\n    '#required': true\n  privat_telefonnummer:\n    '#type': tel\n    '#title': 'Privat telefonnummer'\n    '#required': true\n  forventet_foedsel_termin_:\n    '#type': date\n    '#title': 'Forventet fødsel (termin)'\n    '#required': true\n    '#default_value': '2021-08-16'\n    '#datepicker': true\n    '#date_date_format': d-m-Y\n  orlov_foer_foedsel:\n    '#type': date\n    '#title': 'Orlov før fødsel'\n    '#required': true\n    '#datepicker': true\n    '#date_date_format': d-m-Y"
+id: start_forloeb_med_to_parter
+title: 'Start forløb med to parter'
+description: 'Et eksempel på en formular til at starte sagsbehandlingsforløb med to parter.'
+category: Maestro
+elements: "side_1:\n  '#type': webform_wizard_page\n  '#title': 'Angiv parter'\n  part1:\n    '#type': entity_autocomplete\n    '#title': part1\n    '#target_type': user\n    '#selection_handler': 'default:user'\n    '#selection_settings':\n      include_anonymous: false\n      filter:\n        type: _none\n  part2:\n    '#type': entity_autocomplete\n    '#title': part2\n    '#target_type': user\n    '#selection_handler': 'default:user'\n    '#selection_settings':\n      include_anonymous: false\n      filter:\n        type: _none\nactions:\n  '#type': webform_actions\n  '#title': 'Send knap(per)'\n  '#draft_hide': true\n  '#draft__label': insend\n  '#update__label': Opdater\n  '#wizard_prev__label': tilbage\n  '#wizard_next__label': frem"
 css: ''
 javascript: ''
 settings:
@@ -85,12 +66,12 @@ settings:
   share_title: true
   share_page_body_attributes: {  }
   submission_label: ''
-  submission_log: false
+  submission_log: true
   submission_views: {  }
   submission_views_replace: {  }
   submission_user_columns: {  }
   submission_user_duplicate: false
-  submission_access_denied: default
+  submission_access_denied: page
   submission_access_denied_title: ''
   submission_access_denied_message: ''
   submission_access_denied_attributes: {  }
@@ -130,7 +111,7 @@ settings:
   preview_excluded_elements: {  }
   preview_exclude_empty: true
   preview_exclude_empty_checkbox: false
-  draft: none
+  draft: all
   draft_multiple: false
   draft_auto_save: false
   draft_saved_message: ''
@@ -160,13 +141,13 @@ settings:
   entity_limit_total_interval: null
   entity_limit_user: null
   entity_limit_user_interval: null
-  purge: none
-  purge_days: null
+  purge: all
+  purge_days: 30
   results_disabled: false
   results_disabled_ignore: false
   results_customize: false
   token_view: false
-  token_update: false
+  token_update: true
   token_delete: false
   serial_disabled: false
 access:
@@ -219,14 +200,14 @@ access:
 handlers:
   opret_forloeb_fra_flow:
     id: maestro
-    label: 'Opret forløb fra Flow'
+    label: 'Opret forløb med to parter'
     notes: ''
     handler_id: opret_forloeb_fra_flow
     status: true
     conditions: {  }
-    weight: 0
+    weight: -48
     settings:
-      maestro_template: review_webform_submission
-      maestro_message_success: 'Din indsendelse vedrørende barsel er modtaget.'
-      maestro_message_failure: 'Der er sket en fejl med din indsendelse.'
+      maestro_template: multiple_parties_flow
+      maestro_message_success: ''
+      maestro_message_failure: ''
 variants: {  }

@@ -24,6 +24,7 @@ dependencies:
   - os2forms_sbsys
   - os2web_simplesaml
   - pathauto
+  - r4032login
   - redirect
   - rules
   - rules_token

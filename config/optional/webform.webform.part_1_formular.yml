@@ -1,17 +1,22 @@
 langcode: da
 status: open
-dependencies: {  }
+dependencies:
+  module:
+  - webform_revisions
+third_party_settings:
+  webform_revisions:
+    contentEntity_id: '8'
 open: null
 close: null
 weight: 0
-uid: 10
+uid: 1
 template: false
 archive: false
-id: ppr_test
-title: 'PPR Test'
-description: 'test af flow'
-category: MBU
-elements: "side_1:\n  '#type': webform_wizard_page\n  '#title': 'Side 1'\n  foraelder_1_id:\n    '#type': textfield\n    '#title': 'Forælder 1 id'\n  foraelder_2_id:\n    '#type': textfield\n    '#title': 'Forælder 2 id'"
+id: part_1_formular
+title: 'Part 1 formular'
+description: 'Et eksempel p&aring; en formular til f&oslash;rste part i et selvebetjeningsforl&oslash;b.'
+category: Maestro
+elements: "navn:\n  '#type': textfield\n  '#title': Navn\nadresse:\n  '#type': os2forms_dawa_address\n  '#title': Adresse\ncpr_nummer:\n  '#type': textfield\n  '#title': CPR-nummer\ne_mail:\n  '#type': email\n  '#title': E-mail\ntelefon:\n  '#type': tel\n  '#title': Telefon\nbeskrivelse:\n  '#type': textarea\n  '#title': Beskrivelse"
 css: ''
 javascript: ''
 settings:
@@ -134,8 +139,8 @@ settings:
   entity_limit_total_interval: null
   entity_limit_user: null
   entity_limit_user_interval: null
-  purge: none
-  purge_days: null
+  purge: all
+  purge_days: 30
   results_disabled: false
   results_disabled_ignore: false
   results_customize: false

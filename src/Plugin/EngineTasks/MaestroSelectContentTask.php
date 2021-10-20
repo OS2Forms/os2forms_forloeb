@@ -323,7 +323,8 @@ class MaestroSelectContentTask extends PluginBase implements MaestroEngineTaskIn
     $processID = MaestroEngine::getProcessIdFromQueueId($queueID);
 
     if (strstr($triggeringElement['#id'], 'edit-submit') !== FALSE && $queueID > 0) {
-      // If existing self-service page is chosen assign it to this process
+      // If existing self-service page is chosen simply assign it to this
+      // process.
       // If a new self-service is chosen create that self-service page
       // and assign it to this process.
       if ($form_state->getValue('new_webform')) {
