@@ -1,4 +1,4 @@
-# OS2forms 2.1 med Forløb [![Build Status](https://travis-ci.com/OS2Forms/os2forms_forloeb.svg?branch=develop)](https://travis-ci.org/OS2Forms/os2forms_forloeb)
+# OS2forms 2.1 med Forløb [![Build Status](https://app.travis-ci.com/OS2Forms/os2forms_forloeb.svg?branch=develop)](https://app.travis-ci.com/OS2Forms/os2forms_forloeb)
 Adds a Maestro workflow engine and advanced workflow functionality to OS2forms.
 
 ## Installing OS2forms 2.1 med Forløb

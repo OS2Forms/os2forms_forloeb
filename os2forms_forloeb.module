@@ -1,35 +1,14 @@
 <?php
 
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\maestro\Engine\MaestroEngine;
+use Drupal\webform\Entity\WebformSubmission;
+use Drupal\user\Entity\User;
+
 /**
  * @file
  * Install, update and uninstall functions for the os2forms_forloeb_profile installation profile.
  */
-
-/**
- * Implements hook_install().
- */
-function os2forms_forloeb_install() {
-  $theme_list = [
-    'claro',
-    'gin',
-    'bootstrap',
-    'custom_theme'
-  ];
-
-  // Install themes
-  \Drupal::service('theme_installer')->install($theme_list);
-
-  // Get theme manager
-  $system_theme = \Drupal::configFactory()->getEditable('system.theme');
-
-  // Set default and admin themes
-  $system_theme
-    ->set('default', 'custom_theme')
-    ->set('admin', 'gin')
-    ->save();
-}
-
-use Drupal\maestro\Engine\MaestroEngine;
 
 /**
  * Implements hook_maestro_interactive_handlers() for the return of an Array
@@ -158,3 +137,105 @@ function os2forms_forloeb_webform_create(\Drupal\webform\WebformInterface $webfo
   $webform->setSetting('purge_days', '30');
 }
 
+/**
+ * Set Process Variable (SPV) function.
+ *
+ * Uses the webform's unique identifier referenced in the Maestro "webforms"
+ * process variable to read a value from the webform submission and return it
+ * to the SPV task to set the process variable in the task.
+ * The function assumes that the value to be extracted is the SID of a user
+ * and returns the username instead.
+ * This seems to be the easiest way to accomplish this.
+ *
+ * The "webforms" process variable is set by the Maestro Webforms
+ * submission handler which sets a "submission:xxx" value
+ * in the "webforms" process variable, where "xxx" is the unique ID
+ * of the submission, or is set by the Maestro Webform Task Type's
+ * "Unique Identifier" setting when editing a Maestro Webform Task.
+ *
+ * @param string $uniqueWebformIdentifier
+ *   The webform's "Unique Identifier" as stored
+ *    in the "webforms" process variable.
+ * @param string $webformFieldMachineName
+ *   The webform field's machine name
+ *    (listed as "KEY" in the webform builder) you wish to pull the value from.
+ * @param int $queueID
+ *   Provided by the executing SPV task -- the QueueID of the SPV task.
+ * @param int $processID
+ *   Provided by the executing SPV task -- the ProcessID of the workflow
+ *    running the SPV task.
+ */
+function os2forms_forloeb_spv_fetch_entity_username($uniqueWebformIdentifier, $webformFieldMachineName, $queueID, $processID) {
+  $returnValue = 'unset';
+  // This is the submission we're eventually after.
+  $sid = FALSE;
+  $sid = MaestroEngine::getEntityIdentiferByUniqueID($processID, $uniqueWebformIdentifier);
+  if ($sid) {
+    $webform_submission = WebformSubmission::load($sid);
+  }
+  if ($webform_submission && array_key_exists($webformFieldMachineName, $webform_submission->getData())) {
+    $returnValue = $webform_submission->getData()[$webformFieldMachineName];
+  }
+  // At this point, the submission's value OR 'unset' is in the $returnValue.
+  if ($returnValue == 'unset' or !$returnValue) {
+    return $returnValue;
+  }
+  $account = User::load($returnValue);
+  $username = $account->getUsername();
+  return $username;
+}
+
+/**
+ * Implements hook_form_alter() for MaestroWebformMultiple task type.
+ *
+ * This has been copied from
+ * maestro/maestro_webform/maestro_webform.module with a minimal but
+ * necessary change. See https://www.drupal.org/project/maestro/issues/3243510
+ *
+ */
+function os2forms_forloeb_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $queueID = intval(\Drupal::request()->query->get('queueid', 0));
+  $isMaestro = intval(\Drupal::request()->query->get('maestro', 0));
+  // Both these keys need to exist.
+  if ($isMaestro && $queueID) {
+    $templateTask = MaestroEngine::getTemplateTaskByQueueID($queueID);
+    // We only care about Maestro Webform Multiple tasks.
+    if ($templateTask && $templateTask['tasktype'] == 'MaestroWebformMultiple') {
+      $storage = $form_state->getStorage();
+      if ($storage && array_key_exists('form_display', $storage)) {
+        $webformTypes = \Drupal::entityTypeManager()->getStorage('node_type')->loadMultiple();
+        $thisForm = $storage['form_display']->get('bundle');
+        $targetEntityType = $storage['form_display']->get('targetEntityType');
+        if ($isMaestro == 1 &&
+            $targetEntityType == 'webform_submission' &&
+            $templateTask['data']['webform_machine_name'] == $thisForm) {
+          // We now know this is a webform submission.  We are going to add in our own form fields here.
+          $form['maestro'] = [
+            '#tree' => TRUE,
+          ];
+
+          $form['maestro']['type'] = [
+            '#type' => 'hidden',
+            '#default_value' => $thisForm,
+            '#required' => TRUE,
+          ];
+
+          $form['maestro']['queue_id'] = [
+            '#type' => 'hidden',
+            '#default_value' => $queueID,
+            '#required' => TRUE,
+          ];
+
+          $form['maestro']['process_id'] = [
+            '#type' => 'hidden',
+            '#default_value' => MaestroEngine::getProcessIdFromQueueId($queueID),
+            '#required' => TRUE,
+          ];
+
+          $form['actions']['submit']['#submit'][] = 'maestro_webform_webform_type_task_submit';
+
+        }
+      }
+    }
+  }
+}

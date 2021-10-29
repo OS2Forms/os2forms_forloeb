@@ -1,17 +1,22 @@
 langcode: da
 status: open
-dependencies: {  }
+dependencies:
+  module:
+  - webform_revisions
+third_party_settings:
+  webform_revisions:
+    contentEntity_id: '10'
 open: null
 close: null
 weight: 0
-uid: 10
+uid: 1
 template: false
 archive: false
-id: indstilling_til_paedagogisk_psyk
-title: 'Indstilling til Pædagogisk Psykoligisk Rådgivning (PPR) - forælder accept'
-description: 'For&aelig;lder godkendelse.'
-category: MBU
-elements: "godkendelse_af_indstilling:\n  '#type': webform_wizard_page\n  '#title': 'Godkendelse af indstilling'\n  navn:\n    '#type': os2forms_nemid_name\n    '#title': Navn\n    '#multiple': false\n    '#readonly': true\n  terms_of_service:\n    '#type': webform_terms_of_service\n    '#title': Accepter\n    '#terms_title': 'Accepter at dine og dit barns oplysninger sendes videre til PPR og at der igangsættes et PPR forløb.'\n    '#terms_content': 'Bla bla'"
+id: part_2_formular
+title: 'Part 2 formular'
+description: 'Et eksempel p&aring; en formular til anden part i et selvebetjeningsforl&oslash;b.'
+category: Maestro
+elements: "navn:\n  '#type': textfield\n  '#title': Navn\nadresse:\n  '#type': os2forms_dawa_address\n  '#title': Adresse\ncpr_nummer:\n  '#type': textfield\n  '#title': CPR-nummer\ne_mail:\n  '#type': email\n  '#title': E-mail\ntelefon:\n  '#type': tel\n  '#title': Telefon\nbeskrivelse:\n  '#type': textarea\n  '#title': Beskrivelse"
 css: ''
 javascript: ''
 settings:
@@ -134,8 +139,8 @@ settings:
   entity_limit_total_interval: null
   entity_limit_user: null
   entity_limit_user_interval: null
-  purge: none
-  purge_days: null
+  purge: all
+  purge_days: 30
   results_disabled: false
   results_disabled_ignore: false
   results_customize: false
