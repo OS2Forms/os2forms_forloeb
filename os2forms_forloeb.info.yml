@@ -26,9 +26,6 @@ dependencies:
   - pathauto
   - r4032login
   - redirect
-  - rules
-  - rules_token
-  - rules_webform
   - smtp
   - system
   - switch_page_theme
