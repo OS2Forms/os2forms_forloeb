@@ -109,6 +109,7 @@ class MaestroWebformInheritTask extends MaestroWebformTask {
       \Drupal::logger('os2forms_forloeb')->error(
         "Predecessors must have submissions with webforms attached."
       );
+      return FALSE;
     }
     // Copy the fields of the webform submission to the values array.
     foreach ($webform_submission->getData() as $key => $value) {
@@ -134,6 +135,7 @@ class MaestroWebformInheritTask extends MaestroWebformTask {
       \Drupal::logger('os2forms_forloeb')->error(
         "Can't create new submission: " . json_encode($errors)
       );
+      return FALSE;
     }
     // Submit it.
     $new_submission = WebformSubmissionForm::submitWebformSubmission($new_submission);
