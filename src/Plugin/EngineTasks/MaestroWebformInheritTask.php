@@ -88,17 +88,6 @@ class MaestroWebformInheritTask extends MaestroWebformTask {
     parent::prepareTaskForSave($form, $form_state, $task);
     // Add custom field(s) to the inherited prepareTaskForSave method.
     $task['data']['inherit_webform_unique_id'] = $form_state->getValue('inherit_webform_unique_id');
-    // If we don't add all the fields from the Inherited Class 'MaestroWebformTask', they won't be saved.
-    $task['data']['unique_id'] = $form_state->getValue('unique_id');
-    $task['data']['webform_machine_name'] = $form_state->getValue('webform_machine_name');
-    // Forcing this task to not be modal.
-    $task['data']['modal'] = 'notmodal';
-    $task['data']['skip_webform_handlers'] = $form_state->getValue('skip_webform_handlers');
-    $task['data']['webform_nodes_attached_to'] = $form_state->getValue('webform_nodes_attached_to');
-    $task['data']['use_nodes_attached'] = $form_state->getValue('use_nodes_attached');
-    $task['data']['webform_nodes_attached_variable'] = $form_state->getValue('webform_nodes_attached_variable');
-    $task['data']['redirect_to'] = $form_state->getValue('redirect_to');
-    $task['data']['show_edit_form'] = $form_state->getValue('show_edit_form');
   }
 
   /**
