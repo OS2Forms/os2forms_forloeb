@@ -200,7 +200,7 @@ function os2forms_forloeb_form_alter(&$form, FormStateInterface $form_state, $fo
   if ($isMaestro && $queueID) {
     $templateTask = MaestroEngine::getTemplateTaskByQueueID($queueID);
     // We only care about Maestro Webform Multiple tasks.
-    if ($templateTask && $templateTask['tasktype'] == 'MaestroWebformMultiple') {
+    if ($templateTask && ($templateTask['tasktype'] == 'MaestroWebformMultiple' || $templateTask['tasktype'] == 'MaestroWebformInherit')) {
       $storage = $form_state->getStorage();
       if ($storage && array_key_exists('form_display', $storage)) {
         $webformTypes = \Drupal::entityTypeManager()->getStorage('node_type')->loadMultiple();
