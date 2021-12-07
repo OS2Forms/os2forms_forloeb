@@ -16,7 +16,7 @@ dependencies:
     module:
       - os2forms_forloeb
 id: forlob_og_webformularer_til_sagsbehandling
-label: 'Forløb og webformularer til sagsbehandling'
+label: 'Selvbetjeningsløsninger'
 module: views
 description: ''
 tag: ''
@@ -651,7 +651,7 @@ display:
           expose:
             label: ''
           granularity: second
-      title: 'Forløb og webformularer til sagsbehandling'
+      title: 'Selvbetjeningsløsninger'
       header: {  }
       footer: {  }
       empty: {  }
@@ -692,8 +692,8 @@ display:
       display_extenders: {  }
       path: sagsbehandler-overblik
       menu:
-        type: normal
-        title: 'Forløb og webformularer til sagsbehandling'
+        type: none
+        title: 'Selvbetjeningsløsninger'
         description: ''
         expanded: false
         parent: system.admin
