@@ -143,35 +143,7 @@ function os2forms_forloeb_webform_create(\Drupal\webform\WebformInterface $webfo
  * Implements hook_ENTITY_TYPE_update()
  * Update webform specific submissions purge settings.
  */
-function os2forms_forloeb_webform_presave(WebformInterface $webform) {
-    // Setup purge setting.
-    $purge_setting = $webform->getSetting('purge');
-    // Set an appropriate default purge setting.
-    if (!empty($purge_setting)) {
-        switch ($purge_setting) {
-            // We need to make sure drafts are purged as well.
-            case WebformSubmissionStorageInterface::PURGE_COMPLETED:
-                $purge = WebformSubmissionStorageInterface::PURGE_ALL;
-                break;
-            default:
-                $purge = WebformSubmissionStorageInterface::PURGE_DRAFT;
-                break;
-        }
-    }
-    else {
-        $purge = WebformSubmissionStorageInterface::PURGE_DRAFT;
-    }
-    // Enable the draft save if not already set.
-    $draft_setting = $webform->getSetting('draft');
-    if ($draft_setting !== WebformInterface::DRAFT_ALL) {
-        $webform->setSetting('draft', WebformInterface::DRAFT_ALL);
-        $save_webform = TRUE;
-    }
-    // Set purge status to prevent clutter in the db.
-    if ($purge_setting !== WebformSubmissionStorageInterface::PURGE_ALL || $purge_setting !== WebformSubmissionStorageInterface::PURGE_DRAFT) {
-        $webform->setSetting('purge', $purge);
-        $save_webform = TRUE;
-    }
+function os2forms_forloeb_webform_presave(\Drupal\webform\WebformInterface $webform) {
     // Add a purge time frame if not set.
     if (empty($webform->getSetting('purge_days'))) {
         $webform->setSetting('purge_days', 30);
