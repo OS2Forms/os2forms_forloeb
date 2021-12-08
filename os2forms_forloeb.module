@@ -147,12 +147,10 @@ function os2forms_forloeb_webform_presave(\Drupal\webform\WebformInterface $webf
     // Add a purge time frame if not set.
     if (empty($webform->getSetting('purge_days'))) {
         $webform->setSetting('purge_days', 30);
-        $save_webform = TRUE;
         // Save if anything changed.
-        if ($save_webform) {
-            $webform->save();
-        }
+        $webform->save();
     }
+
 }
 
 /**
