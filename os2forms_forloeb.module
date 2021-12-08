@@ -140,17 +140,14 @@ function os2forms_forloeb_webform_create(\Drupal\webform\WebformInterface $webfo
 }
 
 /**
- * Implements hook_ENTITY_TYPE_update()
+ * Implements hook_ENTITY_TYPE_presave()
  * Update webform specific submissions purge settings.
  */
 function os2forms_forloeb_webform_presave(\Drupal\webform\WebformInterface $webform) {
     // Add a purge time frame if not set.
     if (empty($webform->getSetting('purge_days'))) {
         $webform->setSetting('purge_days', 30);
-        // Save if anything changed.
-        $webform->save();
     }
-
 }
 
 /**
