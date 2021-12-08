@@ -41,6 +41,7 @@ dependencies:
   - webform_entity_print
   - webform_entity_print_attachment
   - webform_migrate
+  - webform_node_element
   - webform_permissions_by_term
   - webform_remote_handlers
   - webform_rest
