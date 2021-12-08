@@ -128,13 +128,26 @@ function end_notification_batch_function($processID, $queueID) {
 
 /**
  * Implements hook_ENTITY_TYPE_create()
- * Sets a global purge setting for all webform submissions to 30 days
+ * Sets a global purge setting for all webform submissions to 30 days.
  */
 function os2forms_forloeb_webform_create(\Drupal\webform\WebformInterface $webform) {
-  // Set purge of all users submissions.
-  $webform->setSetting('purge', 'all');
-  // Set purge of submissions more than 30 days old.
-  $webform->setSetting('purge_days', '30');
+    // Set purge of all users submissions.
+    $webform->setSetting('purge', 'all');
+    // Set purge of submissions more than 30 days old.
+    if (empty($webform->getSetting('purge_days'))) {
+        $webform->setSetting('purge_days', '30');
+    }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_presave()
+ * Update webform specific submissions purge settings.
+ */
+function os2forms_forloeb_webform_presave(\Drupal\webform\WebformInterface $webform) {
+    // Add a purge time frame if not set.
+    if (empty($webform->getSetting('purge_days'))) {
+        $webform->setSetting('purge_days', 30);
+    }
 }
 
 /**
