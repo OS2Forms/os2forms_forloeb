@@ -21,7 +21,7 @@
     "drupal/chosen": "2.10.0",
     "drupal/ckeditor_a11ychecker": "1.0.0",
     "drupal/clientside_validation": "3.0.0-rc4",
-    "drupal/coc_forms_auto_export": "1.0.0-alpha1",
+    "drupal/coc_forms_auto_export": "2.0.0-alpha1",
     "drupal/config_entity_revisions": "1.7.0",
     "drupal/events_logging": "1.4.0",
     "drupal/embed": "1.4.0",
