@@ -1,4 +1,4 @@
-# Dansk translation of Selvbetjening Aarhus
+# Dansk translation of OS2forms med Forløb
 #
 msgid ""
 msgstr ""
@@ -272,8 +272,7 @@ msgstr ""
 
 msgid "Webform submission from: [webform_submission:source-title]"
 msgstr ""
-"Formular udfyldt fra selvbetjening.aarhuskommune.dk: "
-"[webform_submission:source-title]"
+"Formular udfyldt fra [site:name]: [webform_submission:source-title]"
 
 msgid ""
 "Submitted on [webform_submission:created]\n"

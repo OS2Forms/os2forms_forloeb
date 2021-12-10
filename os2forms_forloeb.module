@@ -128,13 +128,26 @@ function end_notification_batch_function($processID, $queueID) {
 
 /**
  * Implements hook_ENTITY_TYPE_create()
- * Sets a global purge setting for all webform submissions to 30 days
+ * Sets a global purge setting for all webform submissions to 30 days.
  */
 function os2forms_forloeb_webform_create(\Drupal\webform\WebformInterface $webform) {
-  // Set purge of all users submissions.
-  $webform->setSetting('purge', 'all');
-  // Set purge of submissions more than 30 days old.
-  $webform->setSetting('purge_days', '30');
+    // Set purge of all users submissions.
+    $webform->setSetting('purge', 'all');
+    // Set purge of submissions more than 30 days old.
+    if (empty($webform->getSetting('purge_days'))) {
+        $webform->setSetting('purge_days', '30');
+    }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_presave()
+ * Update webform specific submissions purge settings.
+ */
+function os2forms_forloeb_webform_presave(\Drupal\webform\WebformInterface $webform) {
+    // Add a purge time frame if not set.
+    if (empty($webform->getSetting('purge_days'))) {
+        $webform->setSetting('purge_days', 30);
+    }
 }
 
 /**
@@ -186,11 +199,20 @@ function os2forms_forloeb_spv_fetch_entity_username($uniqueWebformIdentifier, $w
 }
 
 /**
+ * Returns array of custom task-types for OS2forms
+ * 
+ */
+function os2forms_forloeb_get_custom_task_types() {
+  return ['MaestroWebformMultiple', 'MaestroWebformInherit'];
+}
+
+/**
  * Implements hook_form_alter() for MaestroWebformMultiple task type.
  *
  * This has been copied from
  * maestro/maestro_webform/maestro_webform.module with a minimal but
  * necessary change. See https://www.drupal.org/project/maestro/issues/3243510
+ * When that issue has been fixed, this hook implementation can be safely deleted.
  *
  */
 function os2forms_forloeb_form_alter(&$form, FormStateInterface $form_state, $form_id) {
@@ -199,8 +221,10 @@ function os2forms_forloeb_form_alter(&$form, FormStateInterface $form_state, $fo
   // Both these keys need to exist.
   if ($isMaestro && $queueID) {
     $templateTask = MaestroEngine::getTemplateTaskByQueueID($queueID);
-    // We only care about Maestro Webform Multiple tasks.
-    if ($templateTask && $templateTask['tasktype'] == 'MaestroWebformMultiple') {
+    // Get array of custom task-types
+    $os2forms_forloeb_custom_task_types = os2forms_forloeb_get_custom_task_types();
+    // We only care about custom Task-types defined in os2forms_forloeb_get_custom_task_types()
+    if ($templateTask && in_array($templateTask['tasktype'], $os2forms_forloeb_custom_task_types)) {
       $storage = $form_state->getStorage();
       if ($storage && array_key_exists('form_display', $storage)) {
         $webformTypes = \Drupal::entityTypeManager()->getStorage('node_type')->loadMultiple();
