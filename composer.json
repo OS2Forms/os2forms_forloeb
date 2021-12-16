@@ -19,7 +19,7 @@
     "cweagans/composer-patches": "^1.6.5",
     "drupal/admin_toolbar": "^3.0",
     "drupal/chosen": "2.10.0",
-    "drupal/ckeditor_a11ychecker": "1.x-dev#a2099d09f362d8b005a53e8f2845858424cac3da",
+    "drupal/ckeditor_a11ychecker": "2.0.0-alpha1",
     "drupal/clientside_validation": "3.0.0-rc4",
     "drupal/coc_forms_auto_export": "2.0.0-alpha1",
     "drupal/config_entity_revisions": "1.7.0",
