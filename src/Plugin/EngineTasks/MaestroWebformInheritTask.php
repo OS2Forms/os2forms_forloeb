@@ -11,6 +11,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\webform\Entity\Webform;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\ReplaceCommand;
+use Drupal\Core\Messenger;
 
 /**
  * Maestro Webform Task Plugin for Multiple Submissions.
@@ -131,16 +132,17 @@ class MaestroWebformInheritTask extends MaestroWebformTask {
     // Create submission.
     $new_submission = WebformSubmission::create($values);
 
-    $errors = WebformSubmissionForm::validateWebformSubmission($webform_submission);
-
-    if (!empty($errors)) {
+    // Submit the webform submission
+    $submission = WebformSubmissionForm::submitWebformSubmission($new_submission);
+    
+    // WebformSubmissionForm::submitWebformSubmission returns an array if the submission is not valid.
+    if (is_array($submission)) {
       \Drupal::logger('os2forms_forloeb')->error(
         "Can't create new submission: " . json_encode($errors)
       );
+      \Drupal::messenger()->addError('Webform data is invalid and could not be submitted.');
       return FALSE;
     }
-    // Submit it.
-    $new_submission = WebformSubmissionForm::submitWebformSubmission($new_submission);
 
     // Attach it to the Maestro process.
     $sid = $new_submission->id();
