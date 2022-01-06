@@ -144,13 +144,19 @@ class MaestroWebformInheritTask extends MaestroWebformTask {
       return FALSE;
     }
 
-    // Attach it to the Maestro process.
-    $sid = $new_submission->id();
-    MaestroEngine::createEntityIdentifier(
-      $this->processID, $new_submission->getEntityTypeId(),
-      $new_submission->bundle(), $taskUniqueSubmissionId, $sid
-    );
+    } else {
+      
+      // If no errors - Submit it.
+      $new_submission = WebformSubmissionForm::submitWebformSubmission($new_submission);
 
-    return parent::getExecutableForm($modal, $parent);
+      // Attach it to the Maestro process.
+      $sid = $new_submission->id();
+      MaestroEngine::createEntityIdentifier(
+        $this->processID, $new_submission->getEntityTypeId(),
+        $new_submission->bundle(), $taskUniqueSubmissionId, $sid
+      );
+
+      return parent::getExecutableForm($modal, $parent);
+    }
   }
 }
