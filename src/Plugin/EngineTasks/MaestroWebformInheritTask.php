@@ -132,28 +132,25 @@ class MaestroWebformInheritTask extends MaestroWebformTask {
     // Create submission.
     $new_submission = WebformSubmission::create($values);
 
-    $errors = WebformSubmissionForm::validateWebformSubmission($new_submission);
-
-    if (!empty($errors)) {
+    // Submit the webform submission
+    $submission = WebformSubmissionForm::submitWebformSubmission($new_submission);
+    
+    // WebformSubmissionForm::submitWebformSubmission returns an array if the submission is not valid.
+    if (is_array($submission)) {
       \Drupal::logger('os2forms_forloeb')->error(
         "Can't create new submission: " . json_encode($errors)
       );
       \Drupal::messenger()->addError('Webform data is invalid and could not be submitted.');
       return FALSE;
-
-    } else {
-      
-      // If no errors - Submit it.
-      $new_submission = WebformSubmissionForm::submitWebformSubmission($new_submission);
-
-      // Attach it to the Maestro process.
-      $sid = $new_submission->id();
-      MaestroEngine::createEntityIdentifier(
-        $this->processID, $new_submission->getEntityTypeId(),
-        $new_submission->bundle(), $taskUniqueSubmissionId, $sid
-      );
-
-      return parent::getExecutableForm($modal, $parent);
     }
+
+    // Attach it to the Maestro process.
+    $sid = $new_submission->id();
+    MaestroEngine::createEntityIdentifier(
+      $this->processID, $new_submission->getEntityTypeId(),
+      $new_submission->bundle(), $taskUniqueSubmissionId, $sid
+    );
+
+    return parent::getExecutableForm($modal, $parent);
   }
 }
