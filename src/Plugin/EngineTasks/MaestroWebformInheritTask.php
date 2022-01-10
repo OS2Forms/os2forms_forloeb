@@ -134,7 +134,7 @@ class MaestroWebformInheritTask extends MaestroWebformTask {
 
     // Submit the webform submission
     $submission = WebformSubmissionForm::submitWebformSubmission($new_submission);
-    
+
     // WebformSubmissionForm::submitWebformSubmission returns an array if the submission is not valid.
     if (is_array($submission)) {
       \Drupal::logger('os2forms_forloeb')->error(
