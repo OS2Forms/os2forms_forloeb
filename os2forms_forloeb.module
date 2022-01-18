@@ -27,10 +27,10 @@ function os2forms_forloeb_maestro_interactive_handlers() {
  *
  * @param array $form
  *   The array that contains the form.
- * @param int $queueID
- *   The queueID from Maestro.
  * @param object $obj
  *   References the calling object.
+ * @param int $queueID
+ *   The queueID from Maestro.
  */
 function os2forms_forloeb_workflow_maestro_reassign_form(&$form, $obj, $queueID = 0) {
 
