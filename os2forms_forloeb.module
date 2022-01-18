@@ -1,5 +1,6 @@
 <?php
 
+use Drupal\webform\WebformInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\maestro\Engine\MaestroEngine;
 use Drupal\webform\Entity\WebformSubmission;
@@ -31,7 +32,7 @@ function os2forms_forloeb_maestro_interactive_handlers() {
  * @param object $obj
  *   References the calling object.
  */
-function os2forms_forloeb_workflow_maestro_reassign_form(&$form, $queueID = 0, $obj) {
+function os2forms_forloeb_workflow_maestro_reassign_form(&$form, $obj, $queueID = 0) {
 
   $form['reviewer'] = array(
     '#id' => 'select_assigned_user',
@@ -66,7 +67,7 @@ function os2forms_forloeb_workflow_maestro_reassign_form_submit(&$form, &$form_s
 
   //Who was selected? Load their username, which is the user attribute that Maestro assigns tasks by.
   $reviewer_uid = $form_state->getValue('reviewer');
-  $reviewer = \Drupal\user\Entity\User::load($reviewer_uid); // pass your uid
+  $reviewer = User::load($reviewer_uid); // pass your uid
   $reviewer_username = $reviewer->getAccountName();
 
   //add that user to our maestro process variable.
@@ -111,7 +112,7 @@ function end_notification_batch_function($processID, $queueID) {
   $sid = MaestroEngine::getEntityIdentiferByUniqueID($processID, 'submission');
 
   if ($sid) {
-    $webform_submission = \Drupal\webform\Entity\WebformSubmission::load($sid);
+    $webform_submission = WebformSubmission::load($sid);
     $webform =  $webform_submission->getWebform();
     $handlers = $webform->getHandlers();
 
@@ -130,7 +131,7 @@ function end_notification_batch_function($processID, $queueID) {
  * Implements hook_ENTITY_TYPE_create()
  * Sets a global purge setting for all webform submissions to 30 days.
  */
-function os2forms_forloeb_webform_create(\Drupal\webform\WebformInterface $webform) {
+function os2forms_forloeb_webform_create(WebformInterface $webform) {
     // Set purge of all users submissions.
     $webform->setSetting('purge', 'all');
     // Set purge of submissions more than 30 days old.
@@ -143,7 +144,7 @@ function os2forms_forloeb_webform_create(\Drupal\webform\WebformInterface $webfo
  * Implements hook_ENTITY_TYPE_presave()
  * Update webform specific submissions purge settings.
  */
-function os2forms_forloeb_webform_presave(\Drupal\webform\WebformInterface $webform) {
+function os2forms_forloeb_webform_presave(WebformInterface $webform) {
     // Add a purge time frame if not set.
     if (empty($webform->getSetting('purge_days'))) {
         $webform->setSetting('purge_days', 30);
