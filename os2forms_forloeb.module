@@ -264,3 +264,7 @@ function os2forms_forloeb_form_alter(&$form, FormStateInterface $form_state, $fo
     }
   }
 }
+
+function os2forms_forloeb_preprocess_page(&$variables) {
+    $variables['#attached']['library'][] = 'os2forms_forloeb/os2forms_forloeb';
+}
