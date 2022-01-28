@@ -9,6 +9,7 @@ dependencies:
   - admin_toolbar_tools
   - coc_forms_auto_export
   - config_entity_revisions
+  - diff
   - entity_print
   - eu_cookie_compliance
   - events_logging
