@@ -117,7 +117,7 @@ class MaestroWebformInheritTask extends MaestroWebformTask {
     // Copy the fields of the webform submission to the values array.
     foreach ($webform_submission->getData() as $key => $value) {
       if ($value) {
-        $field_values[$webformInheritID . '_' . $key] = $value;
+        $field_values[$key] = $value;
       }
     }
     // Now create webform submission, submit and attach to current process.
@@ -138,7 +138,7 @@ class MaestroWebformInheritTask extends MaestroWebformTask {
     // WebformSubmissionForm::submitWebformSubmission returns an array if the submission is not valid.
     if (is_array($submission)) {
       \Drupal::logger('os2forms_forloeb')->error(
-        "Can't create new submission: " . json_encode($errors)
+        "Can't create new submission: " . json_encode($submission)
       );
       \Drupal::messenger()->addError('Webform data is invalid and could not be submitted.');
       return FALSE;
