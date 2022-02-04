@@ -33,7 +33,7 @@
     "drupal/libraries": "3.0.0-beta1",
     "drupal/linkit": "^5.0",
     "drupal/logging_alerts": "^2.0",
-    "drupal/maestro": "3.0.1-rc2",
+    "drupal/maestro": "^3.0",
     "drupal/masquerade": "2.0.0-beta4",
     "drupal/queue_mail": "^1.4",
     "drupal/queue_ui": "^2.1",
