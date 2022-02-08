@@ -3,5 +3,3 @@ os2forms_forloeb:
   css:
     theme:
       css/gin-custom.css: {}
-  dependencies:
-    - drupal/gin
