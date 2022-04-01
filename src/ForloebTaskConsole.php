@@ -55,7 +55,8 @@ class ForloebTaskConsole {
       $sid = $engine->getEntityIdentiferByUniqueID($processID, $task['data']['inherit_webform_unique_id'] ?? '');
       $webform_submission = $sid ? WebformSubmission::load($sid) : NULL;
 
-      if ($webform_submission && $webform_submission->getToken() != $token) {
+      // Compare webform submission with token from request.
+      if ($webform_submission && $webform_submission->getToken() == $token) {
         return $queueRecord;
       }
     }
