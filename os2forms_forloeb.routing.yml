@@ -1,5 +1,5 @@
 os2forms_forloeb.forloeb_task_console_controller_execute:
-  path: 'execute-foloeb-task'
+  path: 'os2forms-forloeb/execute-task'
   defaults:
     _controller: '\Drupal\os2forms_forloeb\Controller\ForloebTaskConsoleController::execute'
     _title: 'Execute task'
