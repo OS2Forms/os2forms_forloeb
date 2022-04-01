@@ -86,48 +86,48 @@ class ForloebTaskConsoleController extends ControllerBase {
       }
     }
 
+    if (empty($queueRecord)) {
+      $this->messenger()->addWarning($this->t('No tasks found to execute.'));
+      return new RedirectResponse($redirect_to->toString());
+    }
+
     // Processing QueueRecord to get execution URL to redirect to.
-    if ($queueRecord) {
-      $handler = $queueRecord->handler->getString();
-      $query_options = [
-        'queueid' => $queueRecord->id(),
-        'modal' => 'notmodal'
-      ];
+    $handler = $queueRecord->handler->getString();
+    $query_options = [
+      'queueid' => $queueRecord->id(),
+      'modal' => 'notmodal'
+    ];
 
-      // As inspiration MaestroTaskConsoleController::getTasks() method was used.
-      if ($handler && !empty($handler) && $queueRecord->is_interactive->getString() == '1') {
-        global $base_url;
-        $handler = str_replace($base_url, '', $handler);
-        $handler_type = TaskHandler::getType($handler);
+    // As inspiration MaestroTaskConsoleController::getTasks() method was used.
+    if ($handler && !empty($handler) && $queueRecord->is_interactive->getString() == '1') {
+      global $base_url;
+      $handler = str_replace($base_url, '', $handler);
+      $handler_type = TaskHandler::getType($handler);
 
-        $handler_url_parts = UrlHelper::parse($handler);
-        $query_options += $handler_url_parts['query'];
+      $handler_url_parts = UrlHelper::parse($handler);
+      $query_options += $handler_url_parts['query'];
 
-      }
-      elseif ($queueRecord->is_interactive->getString() == '1' && empty($handler)) {
-        // Handler is empty. If this is an interactive task and has no handler, we're still OK.  This is an interactive function that uses a default handler then.
-        $handler_type = 'function';
-      }
-      else {
-        $this->messenger()->addWarning($this->t('Undefined handler'));
-      }
-
-      switch ($handler_type) {
-        case 'external':
-          $redirect_to =  Url::fromUri($handler, ['query' => $query_options]);
-          break;
-
-        case 'internal':
-          $redirect_to = Url::fromUserInput($handler, ['query' => $query_options]);
-          break;
-
-        case 'function':
-          $redirect_to = Url::fromRoute('maestro.execute', $query_options);
-          break;
-      }
+    }
+    elseif ($queueRecord->is_interactive->getString() == '1' && empty($handler)) {
+      // Handler is empty. If this is an interactive task and has no handler, we're still OK.  This is an interactive function that uses a default handler then.
+      $handler_type = 'function';
     }
     else {
-      $this->messenger()->addWarning($this->t('No tasks found to execute.'));
+      $this->messenger()->addWarning($this->t('Undefined handler'));
+    }
+
+    switch ($handler_type) {
+      case 'external':
+        $redirect_to =  Url::fromUri($handler, ['query' => $query_options]);
+        break;
+
+      case 'internal':
+        $redirect_to = Url::fromUserInput($handler, ['query' => $query_options]);
+        break;
+
+      case 'function':
+        $redirect_to = Url::fromRoute('maestro.execute', $query_options);
+        break;
     }
 
     return new RedirectResponse($redirect_to->toString());
