@@ -3,6 +3,8 @@
 namespace Drupal\os2forms_forloeb;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\maestro\Engine\MaestroEngine;
+use Drupal\maestro\Entity\MaestroEntityIdentifiers;
+use Drupal\maestro\Entity\MaestroProcess;
 use Drupal\webform\Entity\WebformSubmission;
 
 /**
@@ -36,6 +38,24 @@ class ForloebTaskConsole {
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
   public function getQueueIdByWebformSubmissionToken($token = '') {
+    /** @var WebformSubmission $webform_submission */
+    $webform_submissions = $this->entityTypeManager->getStorage('webform_submission')->loadByProperties(['token' => $token]);
+    $webform_submission = reset($webform_submissions);
+    /** @var MaestroEntityIdentifiers $maestro_entity_identifier */
+    $maestro_entity_identifiers = $this->entityTypeManager->getStorage('maestro_entity_identifiers')->loadByProperties([
+      'entity_type' => 'webform_submission',
+      'entity_id' => $webform_submission->id(),
+    ]);
+    $maestro_entity_identifier = reset($maestro_entity_identifiers);
+    $processIDs = $maestro_entity_identifier->process_id->referencedEntities();
+    $processID = reset($processIDs);
+    $maestro_queues = $this->entityTypeManager->getStorage('maestro_queue')->loadByProperties([
+      'process_id' => $processID->id(),
+      'task_class_name' => 'MaestroWebformInherit',
+    ]);
+    $maestro_queue = reset($maestro_queues);
+    return $maestro_queue;
+
     $engine = new MaestroEngine();
     // Fetch the user's queue items.
     $queueIDs = $engine->getAssignedTaskQueueIds(\Drupal::currentUser()->id());
