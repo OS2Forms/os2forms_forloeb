@@ -293,10 +293,36 @@ function os2forms_forloeb_tokens($type, array $tokens, array $data, array $optio
   if ($type === 'webform_submission' && !empty($data['webform_submission']) && isset($tokens['os2forms_forloeb_execute_task'])) {
     $replacements[$tokens['os2forms_forloeb_execute_task']] = Url::fromRoute(
       'os2forms_forloeb.forloeb_task_console_controller_execute',
-      ['token' => $data['webform_submission']->getToken()],
+      ['os2forms-forloeb-ws-token' => $data['webform_submission']->getToken()],
       ['absolute' => TRUE]
     )->toString(TRUE)->getGeneratedUrl();
   }
 
   return $replacements;
+}
+
+/**
+ * Implements hook_entity_access().
+ * Allows requests with tokens to view the entity.
+ */
+function os2forms_forloeb_entity_access(\Drupal\Core\Entity\EntityInterface $entity, $operation, \Drupal\Core\Session\AccountInterface $account) {
+  if ($operation == 'update' && $entity instanceof WebformSubmission) {
+    $token = \Drupal::request()->query->get('os2forms-forloeb-ws-token');
+    if ($token && $token == $entity->getToken()) {
+      return \Drupal\Core\Access\AccessResult::allowed();
+    }
+  }
+}
+
+/**
+ * Implements hook_maestro_post_fetch_assigned_queue_tasks().
+ */
+function os2forms_forloeb_maestro_post_fetch_assigned_queue_tasks($userID, &$queueIDs) {
+  $token = \Drupal::request()->query->get('os2forms-forloeb-ws-token', '');
+  if ($token) {
+    $forloebTaskConsole = Drupal::service('os2forms_forloeb.task_console');
+    $queueRecord = $forloebTaskConsole->getQueueIdByWebformSubmissionToken($token);
+    $queueIDs[] = $queueRecord->id();
+    $queueIDs = array_unique($queueIDs);
+  }
 }

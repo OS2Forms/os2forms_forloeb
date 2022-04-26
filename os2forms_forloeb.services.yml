@@ -4,4 +4,4 @@ services:
     arguments: ['os2forms_forloeb']
   os2forms_forloeb.task_console:
     class: Drupal\os2forms_forloeb\ForloebTaskConsole
-    arguments: ['@entity_type.manager']
+    arguments: ['@entity_type.manager', '@logger.channel.os2forms_forloeb']

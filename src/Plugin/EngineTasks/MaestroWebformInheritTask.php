@@ -2,6 +2,7 @@
 
 namespace Drupal\os2forms_forloeb\Plugin\EngineTasks;
 
+use Drupal\Core\Url;
 use Drupal\webform\Entity\WebformSubmission;
 use Drupal\webform\WebformSubmissionForm;
 use Drupal\maestro_webform\Plugin\EngineTasks\MaestroWebformTask;
@@ -12,6 +13,7 @@ use Drupal\webform\Entity\Webform;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\ReplaceCommand;
 use Drupal\Core\Messenger;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * Maestro Webform Task Plugin for Multiple Submissions.
@@ -83,7 +85,7 @@ class MaestroWebformInheritTask extends MaestroWebformTask {
    * {@inheritDoc}
    */
   public function prepareTaskForSave(array &$form, FormStateInterface $form_state, array &$task) {
-    
+
     // Inherit from parent
     parent::prepareTaskForSave($form, $form_state, $task);
     // Add custom field(s) to the inherited prepareTaskForSave method.
@@ -102,7 +104,7 @@ class MaestroWebformInheritTask extends MaestroWebformTask {
 
     // Get user input from 'inherit_webform_unique_id'
     $webformInheritID = $task['data']['inherit_webform_unique_id'];
-    
+
     // Load its corresponding webform submission.
     $sid = MaestroEngine::getEntityIdentiferByUniqueID($this->processID, $webformInheritID);
     if ($sid) {
@@ -151,6 +153,17 @@ class MaestroWebformInheritTask extends MaestroWebformTask {
       $new_submission->bundle(), $taskUniqueSubmissionId, $sid
     );
 
-    return parent::getExecutableForm($modal, $parent);
+    $form = parent::getExecutableForm($modal, $parent);
+    // Catch os2forms-forloeb access token and pass it further.
+    if ($form instanceof RedirectResponse && $token = \Drupal::request()->query->get('os2forms-forloeb-ws-token')) {
+      // Check token to previous submission and update it to new one.
+      if ($token == $webform_submission->getToken()) {
+        $token = $new_submission->getToken();
+        $url = Url::fromUserInput($form->getTargetUrl(), ['query' => ['os2forms-forloeb-ws-token' => $token]]);
+        $form = new RedirectResponse($url->toString());
+      }
+    }
+
+    return $form;
   }
 }
