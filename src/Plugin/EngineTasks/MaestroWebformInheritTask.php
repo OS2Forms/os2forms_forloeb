@@ -157,7 +157,7 @@ class MaestroWebformInheritTask extends MaestroWebformTask {
     // Catch os2forms-forloeb access token and pass it further.
     if ($form instanceof RedirectResponse && $token = \Drupal::request()->query->get('os2forms-forloeb-ws-token')) {
       // Check token to previous submission and update it to new one.
-      if ($token == $webform_submission->getToken()) {
+      if ($token === $webform_submission->getToken()) {
         $token = $new_submission->getToken();
         $url = Url::fromUserInput($form->getTargetUrl(), ['query' => ['os2forms-forloeb-ws-token' => $token]]);
         $form = new RedirectResponse($url->toString());
