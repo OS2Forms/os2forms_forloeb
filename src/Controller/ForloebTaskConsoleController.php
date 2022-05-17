@@ -67,7 +67,7 @@ class ForloebTaskConsoleController extends ControllerBase {
     $redirect_to = Url::fromRoute('maestro_taskconsole.taskconsole');
 
     // Check webform submission token.
-    $token = \Drupal::request()->query->get('token', '');
+    $token = \Drupal::request()->query->get('os2forms-forloeb-ws-token', '');
     if ($token) {
       $queueRecord = $this->forloebTaskConsole->getQueueIdByWebformSubmissionToken($token);
     }
@@ -126,6 +126,9 @@ class ForloebTaskConsoleController extends ControllerBase {
         break;
 
       case 'function':
+        if ($token) {
+          $query_options['os2forms-forloeb-ws-token'] = $token;
+        }
         $redirect_to = Url::fromRoute('maestro.execute', $query_options);
         break;
     }
