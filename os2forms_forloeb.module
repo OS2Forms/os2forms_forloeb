@@ -1,6 +1,7 @@
 <?php
 
 use Drupal\webform\WebformInterface;
+use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\BubbleableMetadata;
 use Drupal\Core\Url;
@@ -309,9 +310,10 @@ function os2forms_forloeb_entity_access(\Drupal\Core\Entity\EntityInterface $ent
   if ($operation == 'update' && $entity instanceof WebformSubmission) {
     $token = \Drupal::request()->query->get('os2forms-forloeb-ws-token');
     if ($token && $token === $entity->getToken()) {
-      return \Drupal\Core\Access\AccessResult::allowed();
+      return AccessResult::allowed();
     }
   }
+  return AccessResult::neutral();
 }
 
 /**
