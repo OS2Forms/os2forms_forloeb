@@ -12,9 +12,10 @@ use Drupal\os2forms_forloeb\ForloebTaskConsole;
 use Drupal\Core\StringTranslation\PluralTranslatableMarkup;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
- * Class ForloebTaskConsoleController.
+ * Controller for Forloeb task console.
  */
 class ForloebTaskConsoleController extends ControllerBase {
 
@@ -33,16 +34,26 @@ class ForloebTaskConsoleController extends ControllerBase {
   protected $entityTypeManager;
 
   /**
+   * The request stack.
+   *
+   * @var \Symfony\Component\HttpFoundation\RequestStack
+   */
+  protected $requestStack;
+
+  /**
    * Constructs update status data.
    *
-   * @param \Drupal\os2forms_forloeb\ForloebTaskConsole $forloebTaskConsole
+   * @param \Drupal\os2forms_forloeb\ForloebTaskConsole $forloeb_task_console
    *   Forloeb task console Service.
-   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The Entity type manager.
+   * @param \Symfony\Component\HttpFoundation\RequestStack $request_stack
+   *   The request stack used to retrieve the current request.
    */
-  public function __construct(ForloebTaskConsole $forloeb_task_console, EntityTypeManagerInterface $entity_type_manager) {
+  public function __construct(ForloebTaskConsole $forloeb_task_console, EntityTypeManagerInterface $entity_type_manager, RequestStack $request_stack) {
     $this->forloebTaskConsole = $forloeb_task_console;
     $this->entityTypeManager = $entity_type_manager;
+    $this->requestStack = $request_stack;
   }
 
   /**
@@ -51,7 +62,8 @@ class ForloebTaskConsoleController extends ControllerBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('os2forms_forloeb.task_console'),
-      $container->get('entity_type.manager')
+      $container->get('entity_type.manager'),
+      $container->get('request_stack')
     );
   }
 
@@ -60,20 +72,20 @@ class ForloebTaskConsoleController extends ControllerBase {
    *
    * In case it's not possible to define task, redirects to task console.
    *
-   * @return RedirectResponse
+   * @return \Symfony\Component\HttpFoundation\RedirectResponse
    *   Redirect object.
    */
   public function execute() {
     $redirect_to = Url::fromRoute('maestro_taskconsole.taskconsole');
 
     // Check webform submission token.
-    $token = \Drupal::request()->query->get('os2forms-forloeb-ws-token', '');
+    $token = $this->requestStack->getCurrentRequest()->query->get('os2forms-forloeb-ws-token', '');
     if ($token) {
       $queueRecord = $this->forloebTaskConsole->getQueueIdByWebformSubmissionToken($token);
     }
     else {
       // For empty token there is user last task from taskconsole queue.
-      $queueIDs = MaestroEngine::getAssignedTaskQueueIds(\Drupal::currentUser()->id());
+      $queueIDs = MaestroEngine::getAssignedTaskQueueIds($this->currentUser()->id());
       $queueRecord = count($queueIDs) ? $this->entityTypeManager->getStorage('maestro_queue')->load(end($queueIDs)) : NULL;
 
       // In case there are more than 1 task warning message will be shown.
@@ -81,7 +93,7 @@ class ForloebTaskConsoleController extends ControllerBase {
         $this->messenger()->addWarning($this->t('You have @amount @tasks available for you. See list of the all tasks on <a href=":tasksonsole">taskconsole</a>', [
           ':tasksonsole' => Url::fromRoute('maestro_taskconsole.taskconsole')->toString(),
           '@amount' => count($queueIDs),
-          '@tasks' => new PluralTranslatableMarkup(count($queueIDs), 'task','tasks'),
+          '@tasks' => new PluralTranslatableMarkup(count($queueIDs), 'task', 'tasks'),
         ]));
       }
     }
@@ -95,7 +107,7 @@ class ForloebTaskConsoleController extends ControllerBase {
     $handler = $queueRecord->handler->getString();
     $query_options = [
       'queueid' => $queueRecord->id(),
-      'modal' => 'notmodal'
+      'modal' => 'notmodal',
     ];
 
     // As inspiration MaestroTaskConsoleController::getTasks() method was used.
@@ -109,7 +121,9 @@ class ForloebTaskConsoleController extends ControllerBase {
 
     }
     elseif ($queueRecord->is_interactive->getString() == '1' && empty($handler)) {
-      // Handler is empty. If this is an interactive task and has no handler, we're still OK.  This is an interactive function that uses a default handler then.
+      // Handler is empty.
+      // If this is an interactive task and has no handler, we're still OK.
+      // This is an interactive function that uses a default handler then.
       $handler_type = 'function';
     }
     else {
@@ -118,7 +132,7 @@ class ForloebTaskConsoleController extends ControllerBase {
 
     switch ($handler_type) {
       case 'external':
-        $redirect_to =  Url::fromUri($handler, ['query' => $query_options]);
+        $redirect_to = Url::fromUri($handler, ['query' => $query_options]);
         break;
 
       case 'internal':

@@ -11,6 +11,7 @@ before starting to add changes.
 
 ### Added
 - Github CI action for checking Drupal Coding standards with PHP Code Sniffer
+- Fixed coding standards issues
 
 
 ## Example of change log record
