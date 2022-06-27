@@ -2,16 +2,14 @@
 
 namespace Drupal\os2forms_forloeb\Plugin\EngineTasks;
 
+use Drupal\Core\Url;
 use Drupal\webform\Entity\WebformSubmission;
 use Drupal\webform\WebformSubmissionForm;
 use Drupal\maestro_webform\Plugin\EngineTasks\MaestroWebformTask;
 use Drupal\maestro\Form\MaestroExecuteInteractive;
 use Drupal\maestro\Engine\MaestroEngine;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\webform\Entity\Webform;
-use Drupal\Core\Ajax\AjaxResponse;
-use Drupal\Core\Ajax\ReplaceCommand;
-use Drupal\Core\Messenger;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * Maestro Webform Task Plugin for Multiple Submissions.
@@ -43,7 +41,7 @@ class MaestroWebformInheritTask extends MaestroWebformTask {
    * {@inheritDoc}
    */
   public function shortDescription() {
-    return t('Webform with Inherited submission');
+    return $this->t('Webform with Inherited submission');
   }
 
   /**
@@ -67,7 +65,7 @@ class MaestroWebformInheritTask extends MaestroWebformTask {
    */
   public function getTaskEditForm(array $task, $templateMachineName) {
 
-    // We call the parent, as we need to add a field to the inherited form
+    // We call the parent, as we need to add a field to the inherited form.
     $form = parent::getTaskEditForm($task, $templateMachineName);
     $form['inherit_webform_unique_id'] = [
       '#type' => 'textfield',
@@ -83,8 +81,8 @@ class MaestroWebformInheritTask extends MaestroWebformTask {
    * {@inheritDoc}
    */
   public function prepareTaskForSave(array &$form, FormStateInterface $form_state, array &$task) {
-    
-    // Inherit from parent
+
+    // Inherit from parent.
     parent::prepareTaskForSave($form, $form_state, $task);
     // Add custom field(s) to the inherited prepareTaskForSave method.
     $task['data']['inherit_webform_unique_id'] = $form_state->getValue('inherit_webform_unique_id');
@@ -100,9 +98,9 @@ class MaestroWebformInheritTask extends MaestroWebformTask {
     $taskMachineName = MaestroEngine::getTaskIdFromQueueId($this->queueID);
     $task = MaestroEngine::getTemplateTaskByID($templateMachineName, $taskMachineName);
 
-    // Get user input from 'inherit_webform_unique_id'
+    // Get user input from 'inherit_webform_unique_id'.
     $webformInheritID = $task['data']['inherit_webform_unique_id'];
-    
+
     // Load its corresponding webform submission.
     $sid = MaestroEngine::getEntityIdentiferByUniqueID($this->processID, $webformInheritID);
     if ($sid) {
@@ -132,10 +130,11 @@ class MaestroWebformInheritTask extends MaestroWebformTask {
     // Create submission.
     $new_submission = WebformSubmission::create($values);
 
-    // Submit the webform submission
+    // Submit the webform submission.
     $submission = WebformSubmissionForm::submitWebformSubmission($new_submission);
 
-    // WebformSubmissionForm::submitWebformSubmission returns an array if the submission is not valid.
+    // WebformSubmissionForm::submitWebformSubmission returns an array
+    // if the submission is not valid.
     if (is_array($submission)) {
       \Drupal::logger('os2forms_forloeb')->error(
         "Can't create new submission: " . json_encode($submission)
@@ -151,6 +150,18 @@ class MaestroWebformInheritTask extends MaestroWebformTask {
       $new_submission->bundle(), $taskUniqueSubmissionId, $sid
     );
 
-    return parent::getExecutableForm($modal, $parent);
+    $form = parent::getExecutableForm($modal, $parent);
+    // Catch os2forms-forloeb access token and pass it further.
+    if ($form instanceof RedirectResponse && $token = \Drupal::request()->query->get('os2forms-forloeb-ws-token')) {
+      // Check token to previous submission and update it to new one.
+      if ($token === $webform_submission->getToken()) {
+        $token = $new_submission->getToken();
+        $url = Url::fromUserInput($form->getTargetUrl(), ['query' => ['os2forms-forloeb-ws-token' => $token]]);
+        $form = new RedirectResponse($url->toString());
+      }
+    }
+
+    return $form;
   }
+
 }

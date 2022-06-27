@@ -1,18 +1,25 @@
 <?php
 
+/**
+ * @file
+ * Install, update and uninstall functions for the os2forms_forloeb.
+ */
+
+use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\webform\WebformInterface;
+use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Render\BubbleableMetadata;
+use Drupal\Core\Url;
 use Drupal\maestro\Engine\MaestroEngine;
 use Drupal\webform\Entity\WebformSubmission;
 use Drupal\user\Entity\User;
 
 /**
- * @file
- * Install, update and uninstall functions for the os2forms_forloeb_profile installation profile.
- */
-
-/**
- * Implements hook_maestro_interactive_handlers() for the return of an Array
+ * Implements hook_maestro_interactive_handlers().
+ *
+ * Handler for the return of an Array
  * of function names and help text that will be displayed in the edit task
  * form under the handler field.
  */
@@ -32,58 +39,61 @@ function os2forms_forloeb_maestro_interactive_handlers() {
  * @param int $queueID
  *   The queueID from Maestro.
  */
-function os2forms_forloeb_workflow_maestro_reassign_form(&$form, $obj, $queueID = 0) {
+function os2forms_forloeb_workflow_maestro_reassign_form(array &$form, $obj, $queueID = 0) {
 
-  $form['reviewer'] = array(
+  $form['reviewer'] = [
     '#id' => 'select_assigned_user',
     '#type' => 'entity_autocomplete',
     '#target_type' => 'user',
     '#default_value' => '',
     '#selection_settings' => ['include_anonymous' => FALSE],
-    '#title' =>  t('Assign for Review to'),
-  );
+    '#title' => t('Assign for Review to'),
+  ];
 
-  $form['queueID'] = array(
+  $form['queueID'] = [
     '#type' => 'hidden',
     '#title' => 'the queue ID in the event we need it in later processing',
     '#default_value' => $queueID,
     '#description' => ('queueID'),
-  );
+  ];
 
-  //overriding the default label "complete"
+  // Overriding the default label "complete".
   $form['actions']['submit']['#value'] = t('Assign');
 
   return $form;
 }
 
-
 /**
- * This is the submit handler for the Reassign for Approval form use in maestro workflows.
+ * Submit handler for The Reassign for Approval form.
+ *
+ * This is the submit handler for the Reassign for Approval form
+ * used in maestro workflows.
  */
 function os2forms_forloeb_workflow_maestro_reassign_form_submit(&$form, &$form_state) {
 
   $queueID = intval($form_state->getValue('queueID'));
   $processID = MaestroEngine::getProcessIdFromQueueId($queueID);
 
-  //Who was selected? Load their username, which is the user attribute that Maestro assigns tasks by.
+  // Who was selected? Load their username, which is the user attribute
+  // that Maestro assigns tasks by.
   $reviewer_uid = $form_state->getValue('reviewer');
-  $reviewer = User::load($reviewer_uid); // pass your uid
+  // Pass your uid.
+  $reviewer = User::load($reviewer_uid);
   $reviewer_username = $reviewer->getAccountName();
 
-  //add that user to our maestro process variable.
+  // Add that user to our maestro process variable.
   MaestroEngine::setProcessVariable("assigned_to", $reviewer_username, $processID);
 
-  //Provide some feedback
+  // Provide some feedback.
   \Drupal::messenger()->addStatus("Content Reassigned");
-
 }
 
 /**
- *  * Implements hook_maestro_batch_handlers().
- *   *
- *    * Array of function names and help text that will be displayed
- *     * in the edit task form under the handler field.
- *      */
+ * Implements hook_maestro_batch_handlers().
+ *
+ * Array of function names and help text that will be displayed
+ * in the edit task form under the handler field.
+ */
 function os2forms_forloeb_maestro_batch_handlers() {
   return [
     'end_notification_batch_function' => t('Batch function to send out flow completion notification to initiator.'),
@@ -91,11 +101,13 @@ function os2forms_forloeb_maestro_batch_handlers() {
 }
 
 /**
- *  * @param int $processID
- *   *   The Maestro process ID.
- *    * @param int $queueID
- *     *   The Maestro queue ID.
- *      */
+ * Finishing callback for batch handler.
+ *
+ * @param int $processID
+ *   The Maestro process ID.
+ * @param int $queueID
+ *   The Maestro queue ID.
+ */
 function end_notification_batch_function($processID, $queueID) {
 
   /*
@@ -113,7 +125,7 @@ function end_notification_batch_function($processID, $queueID) {
 
   if ($sid) {
     $webform_submission = WebformSubmission::load($sid);
-    $webform =  $webform_submission->getWebform();
+    $webform = $webform_submission->getWebform();
     $handlers = $webform->getHandlers();
 
     foreach ($handlers as $handler) {
@@ -128,27 +140,29 @@ function end_notification_batch_function($processID, $queueID) {
 }
 
 /**
- * Implements hook_ENTITY_TYPE_create()
+ * Implements hook_ENTITY_TYPE_create().
+ *
  * Sets a global purge setting for all webform submissions to 30 days.
  */
 function os2forms_forloeb_webform_create(WebformInterface $webform) {
-    // Set purge of all users submissions.
-    $webform->setSetting('purge', 'all');
-    // Set purge of submissions more than 30 days old.
-    if (empty($webform->getSetting('purge_days'))) {
-        $webform->setSetting('purge_days', '30');
-    }
+  // Set purge of all users submissions.
+  $webform->setSetting('purge', 'all');
+  // Set purge of submissions more than 30 days old.
+  if (empty($webform->getSetting('purge_days'))) {
+    $webform->setSetting('purge_days', '30');
+  }
 }
 
 /**
- * Implements hook_ENTITY_TYPE_presave()
+ * Implements hook_ENTITY_TYPE_presave().
+ *
  * Update webform specific submissions purge settings.
  */
 function os2forms_forloeb_webform_presave(WebformInterface $webform) {
-    // Add a purge time frame if not set.
-    if (empty($webform->getSetting('purge_days'))) {
-        $webform->setSetting('purge_days', 30);
-    }
+  // Add a purge time frame if not set.
+  if (empty($webform->getSetting('purge_days'))) {
+    $webform->setSetting('purge_days', 30);
+  }
 }
 
 /**
@@ -200,8 +214,7 @@ function os2forms_forloeb_spv_fetch_entity_username($uniqueWebformIdentifier, $w
 }
 
 /**
- * Returns array of custom task-types for OS2forms
- * 
+ * Returns array of custom task-types for OS2forms.
  */
 function os2forms_forloeb_get_custom_task_types() {
   return ['MaestroWebformMultiple', 'MaestroWebformInherit'];
@@ -213,8 +226,8 @@ function os2forms_forloeb_get_custom_task_types() {
  * This has been copied from
  * maestro/maestro_webform/maestro_webform.module with a minimal but
  * necessary change. See https://www.drupal.org/project/maestro/issues/3243510
- * When that issue has been fixed, this hook implementation can be safely deleted.
- *
+ * When that issue has been fixed, this hook implementation
+ * can be safely deleted.
  */
 function os2forms_forloeb_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   $queueID = intval(\Drupal::request()->query->get('queueid', 0));
@@ -222,19 +235,20 @@ function os2forms_forloeb_form_alter(&$form, FormStateInterface $form_state, $fo
   // Both these keys need to exist.
   if ($isMaestro && $queueID) {
     $templateTask = MaestroEngine::getTemplateTaskByQueueID($queueID);
-    // Get array of custom task-types
+    // Get array of custom task-types.
     $os2forms_forloeb_custom_task_types = os2forms_forloeb_get_custom_task_types();
-    // We only care about custom Task-types defined in os2forms_forloeb_get_custom_task_types()
+    // We only care about custom Task-types
+    // defined in os2forms_forloeb_get_custom_task_types()
     if ($templateTask && in_array($templateTask['tasktype'], $os2forms_forloeb_custom_task_types)) {
       $storage = $form_state->getStorage();
       if ($storage && array_key_exists('form_display', $storage)) {
-        $webformTypes = \Drupal::entityTypeManager()->getStorage('node_type')->loadMultiple();
         $thisForm = $storage['form_display']->get('bundle');
         $targetEntityType = $storage['form_display']->get('targetEntityType');
         if ($isMaestro == 1 &&
             $targetEntityType == 'webform_submission' &&
             $templateTask['data']['webform_machine_name'] == $thisForm) {
-          // We now know this is a webform submission.  We are going to add in our own form fields here.
+          // We now know this is a webform submission.
+          // We are going to add in our own form fields here.
           $form['maestro'] = [
             '#tree' => TRUE,
           ];
@@ -265,6 +279,67 @@ function os2forms_forloeb_form_alter(&$form, FormStateInterface $form_state, $fo
   }
 }
 
+/**
+ * Implements hook_preprocess_page().
+ */
 function os2forms_forloeb_preprocess_page(&$variables) {
-    $variables['#attached']['library'][] = 'os2forms_forloeb/os2forms_forloeb';
+  $variables['#attached']['library'][] = 'os2forms_forloeb/os2forms_forloeb';
+}
+
+/**
+ * Implements hook_token_info_alter().
+ */
+function os2forms_forloeb_token_info_alter(&$data) {
+  $data['tokens']['webform_submission']['os2forms_forloeb_execute_task'] = [
+    'name' => t('Execute task path for webform submission'),
+    'description' => t("The token that can be user to get path for webform submission redirect URL."),
+    'type' => 'webform_submission',
+  ];
+}
+
+/**
+ * Implements hook_tokens().
+ *
+ * Provides token value for webform_submission:os2forms_forloeb_execute_task.
+ */
+function os2forms_forloeb_tokens($type, array $tokens, array $data, array $options, BubbleableMetadata $bubbleable_metadata) {
+  $replacements = [];
+
+  if ($type === 'webform_submission' && !empty($data['webform_submission']) && isset($tokens['os2forms_forloeb_execute_task'])) {
+    $replacements[$tokens['os2forms_forloeb_execute_task']] = Url::fromRoute(
+      'os2forms_forloeb.forloeb_task_console_controller_execute',
+      ['os2forms-forloeb-ws-token' => $data['webform_submission']->getToken()],
+      ['absolute' => TRUE]
+    )->toString(TRUE)->getGeneratedUrl();
+  }
+
+  return $replacements;
+}
+
+/**
+ * Implements hook_entity_access().
+ *
+ * Allows requests with tokens to view the entity.
+ */
+function os2forms_forloeb_entity_access(EntityInterface $entity, $operation, AccountInterface $account) {
+  if ($operation == 'update' && $entity instanceof WebformSubmission) {
+    $token = \Drupal::request()->query->get('os2forms-forloeb-ws-token');
+    if ($token && $token === $entity->getToken()) {
+      return AccessResult::allowed();
+    }
+  }
+  return AccessResult::neutral();
+}
+
+/**
+ * Implements hook_maestro_post_fetch_assigned_queue_tasks().
+ */
+function os2forms_forloeb_maestro_post_fetch_assigned_queue_tasks($userID, &$queueIDs) {
+  $token = \Drupal::request()->query->get('os2forms-forloeb-ws-token', '');
+  if ($token) {
+    $forloebTaskConsole = Drupal::service('os2forms_forloeb.task_console');
+    $queueRecord = $forloebTaskConsole->getQueueIdByWebformSubmissionToken($token);
+    $queueIDs[] = $queueRecord->id();
+    $queueIDs = array_unique($queueIDs);
+  }
 }
