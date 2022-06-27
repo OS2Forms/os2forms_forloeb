@@ -53,7 +53,7 @@ class MaestroSelectContentTask extends PluginBase implements MaestroEngineTaskIn
    * {@inheritDoc}
    */
   public function shortDescription() {
-    return t('Create or Select a Content Item');
+    return $this->t('Create or Select a Content Item');
   }
 
   /**
@@ -84,11 +84,11 @@ class MaestroSelectContentTask extends PluginBase implements MaestroEngineTaskIn
    */
   public function getTaskEditForm(array $task, $templateMachineName) {
     $form = [
-      '#markup' => t('Select a Content Item.'),
+      '#markup' => $this->t('Select a Content Item.'),
     ];
 
     $content_type_options = [
-      'all' => t('All Content Types'),
+      'all' => $this->t('All Content Types'),
     ];
     $content_types_objs = $types = \Drupal::entityTypeManager()
       ->getStorage('node_type')
@@ -112,7 +112,7 @@ class MaestroSelectContentTask extends PluginBase implements MaestroEngineTaskIn
       '#type' => 'textfield',
       '#title' => $this->t('Give this piece of content a unique identifier'),
       '#description' => $this->t('This identifier is stored along with its ID to allow you to recall it when filled in.'),
-      '#default_value' => isset($task['data']['unique_id']) ? $task['data']['unique_id'] : '',
+      '#default_value' => $task['data']['unique_id'] ?? '',
       '#required' => TRUE,
     ];
 
@@ -120,7 +120,7 @@ class MaestroSelectContentTask extends PluginBase implements MaestroEngineTaskIn
       '#type' => 'textfield',
       '#title' => $this->t('Return Path'),
       '#description' => $this->t('You can specify where your return path should go upon task completion.'),
-      '#default_value' => isset($task['data']['redirect_to']) ? $task['data']['redirect_to'] : '/taskconsole',
+      '#default_value' => $task['data']['redirect_to'] ?? '/taskconsole',
       '#required' => TRUE,
     ];
 
@@ -128,7 +128,7 @@ class MaestroSelectContentTask extends PluginBase implements MaestroEngineTaskIn
       '#type' => 'select',
       '#title' => $this->t('Task presentation'),
       '#description' => $this->t('Should this task be shown as a modal or full screen task.'),
-      '#default_value' => isset($task['data']['modal']) ? $task['data']['modal'] : 'notmodal',
+      '#default_value' => $task['data']['modal'] ?? 'notmodal',
       '#options' => [
         'modal' => $this->t('Modal'),
         'notmodal' => $this->t('Full Page'),
@@ -196,11 +196,11 @@ class MaestroSelectContentTask extends PluginBase implements MaestroEngineTaskIn
       '#id' => 'webform',
       '#type' => 'radios',
       '#options' => [
-        0 => t('Choose an Existing self-service page'),
-        1 => t('Create a New self-service page'),
+        0 => $this->t('Choose an Existing self-service page'),
+        1 => $this->t('Create a New self-service page'),
       ],
       '#default_value' => 0,
-      '#title' => t('Create or Select a self-service page'),
+      '#title' => $this->t('Create or Select a self-service page'),
       '#required' => TRUE,
     ];
 
@@ -218,7 +218,7 @@ class MaestroSelectContentTask extends PluginBase implements MaestroEngineTaskIn
       '#id' => 'existing_webform',
       '#type' => 'select',
       '#options' => $webforms,
-      '#title' => t('Choose an Existing self-service page'),
+      '#title' => $this->t('Choose an Existing self-service page'),
       '#validated' => TRUE,
       '#prefix' => '<div id="existing-webform-wrapper">',
       '#suffix' => '</div>',
@@ -380,7 +380,7 @@ class MaestroSelectContentTask extends PluginBase implements MaestroEngineTaskIn
       $validation_failure_tasks[] = [
         'taskID' => $task['id'],
         'taskLabel' => $task['label'],
-        'reason' => t('The Interactive Task has not been set up properly.  The "Task Presentation" option is missing and thus the engine will be unable to execute this task.'),
+        'reason' => $this->t('The Interactive Task has not been set up properly.  The "Task Presentation" option is missing and thus the engine will be unable to execute this task.'),
       ];
     }
 
@@ -390,7 +390,7 @@ class MaestroSelectContentTask extends PluginBase implements MaestroEngineTaskIn
       $validation_failure_tasks[] = [
         'taskID' => $task['id'],
         'taskLabel' => $task['label'],
-        'reason' => t('The Interactive Task has not been set up properly.  The Interactive Task requires assignments to actors, roles or other assignment options.'),
+        'reason' => $this->t('The Interactive Task has not been set up properly.  The Interactive Task requires assignments to actors, roles or other assignment options.'),
       ];
     }
 
@@ -398,7 +398,7 @@ class MaestroSelectContentTask extends PluginBase implements MaestroEngineTaskIn
       $validation_failure_tasks[] = [
         'taskID' => $task['id'],
         'taskLabel' => $task['label'],
-        'reason' => t('The Content Type Task has not been set up properly.  The "unique identifier" option is missing and thus the engine will be unable to execute this task.'),
+        'reason' => $this->t('The Content Type Task has not been set up properly.  The "unique identifier" option is missing and thus the engine will be unable to execute this task.'),
       ];
     }
   }

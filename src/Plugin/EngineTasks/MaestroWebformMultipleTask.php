@@ -38,7 +38,7 @@ class MaestroWebformMultipleTask extends MaestroWebformTask {
    * {@inheritDoc}
    */
   public function shortDescription() {
-    return t('Webform task with Multiple Submissions');
+    return $this->t('Webform task with Multiple Submissions');
   }
 
   /**
