@@ -13,6 +13,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\BubbleableMetadata;
 use Drupal\Core\Url;
 use Drupal\maestro\Engine\MaestroEngine;
+use Drupal\os2forms_forloeb\Plugin\EngineTasks\MaestroWebformInheritTask;
 use Drupal\webform\Entity\WebformSubmission;
 use Drupal\user\Entity\User;
 
@@ -342,4 +343,13 @@ function os2forms_forloeb_maestro_post_fetch_assigned_queue_tasks($userID, &$que
     $queueIDs[] = $queueRecord->id();
     $queueIDs = array_unique($queueIDs);
   }
+}
+
+/**
+ * Implements hook_webform_element_alter().
+ *
+ * @see MaestroWebformInheritTask::webformElementAlter()
+ */
+function os2forms_forloeb_webform_element_alter(array &$element, FormStateInterface $form_state, array $context) {
+  MaestroWebformInheritTask::webformElementAlter($element, $form_state, $context);
 }

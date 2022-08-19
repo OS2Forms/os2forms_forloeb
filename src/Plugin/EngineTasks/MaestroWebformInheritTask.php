@@ -74,6 +74,12 @@ class MaestroWebformInheritTask extends MaestroWebformTask {
       '#default_value' => $task['data']['inherit_webform_unique_id'] ?? '',
       '#required' => TRUE,
     ];
+    $form['inherit_webform_create_submission'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Create submission'),
+      '#description' => $this->t('Create submission'),
+      '#default_value' => $task['data']['inherit_webform_create_submission'] ?? FALSE,
+    ];
     return $form;
   }
 
@@ -86,6 +92,7 @@ class MaestroWebformInheritTask extends MaestroWebformTask {
     parent::prepareTaskForSave($form, $form_state, $task);
     // Add custom field(s) to the inherited prepareTaskForSave method.
     $task['data']['inherit_webform_unique_id'] = $form_state->getValue('inherit_webform_unique_id');
+    $task['data']['inherit_webform_create_submission'] = $form_state->getValue('inherit_webform_create_submission');
   }
 
   /**
@@ -120,35 +127,47 @@ class MaestroWebformInheritTask extends MaestroWebformTask {
     }
     // Now create webform submission, submit and attach to current process.
     $templateTask = MaestroEngine::getTemplateTaskByQueueID($this->queueID);
-    $taskUniqueSubmissionId = $templateTask['data']['unique_id'];
     $webformMachineName = $templateTask['data']['webform_machine_name'];
 
     $values = [];
     $values['webform_id'] = $webformMachineName;
     $values['data'] = $field_values;
 
-    // Create submission.
-    $new_submission = WebformSubmission::create($values);
+    $createSubmission = $task['data']['inherit_webform_create_submission'] ?? FALSE;
+    if ($createSubmission) {
+      // Create submission.
+      $new_submission = WebformSubmission::create($values);
 
-    // Submit the webform submission.
-    $submission = WebformSubmissionForm::submitWebformSubmission($new_submission);
+      // Submit the webform submission.
+      $submission = WebformSubmissionForm::submitWebformSubmission($new_submission);
 
-    // WebformSubmissionForm::submitWebformSubmission returns an array
-    // if the submission is not valid.
-    if (is_array($submission)) {
-      \Drupal::logger('os2forms_forloeb')->error(
-        "Can't create new submission: " . json_encode($submission)
+      // WebformSubmissionForm::submitWebformSubmission returns an array
+      // if the submission is not valid.
+      if (is_array($submission)) {
+        \Drupal::logger('os2forms_forloeb')->error(
+          "Can't create new submission: " . json_encode($submission)
+        );
+        \Drupal::messenger()->addError('Webform data is invalid and could not be submitted.');
+        return FALSE;
+      }
+
+      $taskUniqueSubmissionId = $templateTask['data']['unique_id'];
+
+      // Attach it to the Maestro process.
+      $sid = $new_submission->id();
+      MaestroEngine::createEntityIdentifier(
+        $this->processID, $new_submission->getEntityTypeId(),
+        $new_submission->bundle(), $taskUniqueSubmissionId, $sid
       );
-      \Drupal::messenger()->addError('Webform data is invalid and could not be submitted.');
-      return FALSE;
     }
+    else {
+      // Store values in session.
+      $values['processID'] = $this->processID;
+      $values['queueID'] = $this->queueID;
+      $values['webformInheritID'] = $webformInheritID;
 
-    // Attach it to the Maestro process.
-    $sid = $new_submission->id();
-    MaestroEngine::createEntityIdentifier(
-      $this->processID, $new_submission->getEntityTypeId(),
-      $new_submission->bundle(), $taskUniqueSubmissionId, $sid
-    );
+      self::setTaskValues($this->queueID, $values);
+    }
 
     $form = parent::getExecutableForm($modal, $parent);
     // Catch os2forms-forloeb access token and pass it further.
@@ -162,6 +181,45 @@ class MaestroWebformInheritTask extends MaestroWebformTask {
     }
 
     return $form;
+  }
+
+  /**
+   * Implements hook_webform_element_alter().
+   */
+  public static function webformElementAlter(array &$element, FormStateInterface $form_state, array $context) {
+    $request = \Drupal::request();
+    $isMaestro = (bool) $request->query->get('maestro', 0);
+    $queueID = (int) $request->query->get('queueid', 0);
+    if ($isMaestro && $queueID > 0) {
+      $values = self::getTaskValues($queueID);
+      $elementId = $element['#webform_key'];
+      if (isset($values['data'][$elementId])) {
+        $element['#default_value'] = $values['data'][$elementId];
+      }
+    }
+  }
+
+  /**
+   * Get task values from session.
+   */
+  private static function getTaskValues($queueID) {
+    $sessionKey = self::getTaskValuesSessionKey($queueID);
+    return \Drupal::request()->getSession()->get($sessionKey);
+  }
+
+  /**
+   * Set task values in session.
+   */
+  private static function setTaskValues($queueID, $values) {
+    $sessionKey = self::getTaskValuesSessionKey($queueID);
+    \Drupal::request()->getSession()->set($sessionKey, $values);
+  }
+
+  /**
+   * Get task values session key.
+   */
+  private static function getTaskValuesSessionKey(int $queueID) {
+    return sprintf('os2forms_forloeb_inherited_values_%s', $queueID);
   }
 
 }
