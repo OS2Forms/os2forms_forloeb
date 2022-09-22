@@ -204,7 +204,7 @@ class MaestroWebformInheritTask extends MaestroWebformTask {
    * Get task values from session.
    */
   private static function getTaskValues($queueID) {
-    $sessionKey = self::getTaskValuesSessionKey($queueID);
+    $sessionKey = self::formatTaskValuesSessionKey($queueID);
     return \Drupal::request()->getSession()->get($sessionKey);
   }
 
@@ -212,14 +212,14 @@ class MaestroWebformInheritTask extends MaestroWebformTask {
    * Set task values in session.
    */
   private static function setTaskValues($queueID, $values) {
-    $sessionKey = self::getTaskValuesSessionKey($queueID);
+    $sessionKey = self::formatTaskValuesSessionKey($queueID);
     \Drupal::request()->getSession()->set($sessionKey, $values);
   }
 
   /**
-   * Get task values session key.
+   * Format task values session key.
    */
-  private static function getTaskValuesSessionKey(int $queueID) {
+  private static function formatTaskValuesSessionKey(int $queueID) {
     return sprintf('os2forms_forloeb_inherited_values_%s', $queueID);
   }
 
