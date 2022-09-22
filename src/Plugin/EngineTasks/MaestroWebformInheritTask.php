@@ -133,6 +133,8 @@ class MaestroWebformInheritTask extends MaestroWebformTask {
     $values['webform_id'] = $webformMachineName;
     $values['data'] = $field_values;
 
+    $form = parent::getExecutableForm($modal, $parent);
+
     $createSubmission = $task['data']['inherit_webform_create_submission'] ?? FALSE;
     if ($createSubmission) {
       // Create submission.
@@ -159,6 +161,16 @@ class MaestroWebformInheritTask extends MaestroWebformTask {
         $this->processID, $new_submission->getEntityTypeId(),
         $new_submission->bundle(), $taskUniqueSubmissionId, $sid
       );
+
+      // Catch os2forms-forloeb access token and pass it further.
+      if ($form instanceof RedirectResponse && $token = \Drupal::request()->query->get('os2forms-forloeb-ws-token')) {
+        // Check token to previous submission and update it to new one.
+        if ($token === $webform_submission->getToken()) {
+          $token = $new_submission->getToken();
+          $url = Url::fromUserInput($form->getTargetUrl(), ['query' => ['os2forms-forloeb-ws-token' => $token]]);
+          $form = new RedirectResponse($url->toString());
+        }
+      }
     }
     else {
       // Store values in session.
@@ -167,17 +179,6 @@ class MaestroWebformInheritTask extends MaestroWebformTask {
       $values['webformInheritID'] = $webformInheritID;
 
       self::setTaskValues($this->queueID, $values);
-    }
-
-    $form = parent::getExecutableForm($modal, $parent);
-    // Catch os2forms-forloeb access token and pass it further.
-    if ($form instanceof RedirectResponse && $token = \Drupal::request()->query->get('os2forms-forloeb-ws-token')) {
-      // Check token to previous submission and update it to new one.
-      if ($token === $webform_submission->getToken()) {
-        $token = $new_submission->getToken();
-        $url = Url::fromUserInput($form->getTargetUrl(), ['query' => ['os2forms-forloeb-ws-token' => $token]]);
-        $form = new RedirectResponse($url->toString());
-      }
     }
 
     return $form;
