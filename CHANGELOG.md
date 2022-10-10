@@ -2,12 +2,20 @@
 All notable changes to this project should be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
-and this project adheres to [Semantic Versioning](http://semver.org/).
+and this project adheres to [Semantic Versioning](5.0).
 
 See ["how do I make a good changelog record?"](https://keepachangelog.com/en/1.0.0/#how) 
 before starting to add changes.
 
 ## [Unreleased]
+
+## 2.5.0 - 11.10.2022
+
+### Added 
+- retry task controller action
+- Added support for inheriting values without creating a submission
+
+## 2.4.0 
 
 ### Added
 - Github CI action for checking Drupal Coding standards with PHP Code Sniffer
