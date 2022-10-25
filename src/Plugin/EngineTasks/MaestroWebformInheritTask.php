@@ -133,8 +133,7 @@ class MaestroWebformInheritTask extends MaestroWebformTask {
     $values['webform_id'] = $webformMachineName;
     $values['data'] = $field_values;
 
-
-    $createSubmission = $task['data']['inherit_webform_create_submission'] ?? FALSE;
+    $createSubmission = (bool) ($task['data']['inherit_webform_create_submission'] ?? FALSE);
     if ($createSubmission) {
       // Create submission.
       $new_submission = WebformSubmission::create($values);
@@ -225,9 +224,6 @@ class MaestroWebformInheritTask extends MaestroWebformTask {
    *   The queue ID.
    * @param array $values
    *   The values.
-   *
-   * @return array
-   *   The task values if any.
    */
   private static function setTaskValues($queueID, array $values) {
     $sessionKey = self::formatTaskValuesSessionKey($queueID);
