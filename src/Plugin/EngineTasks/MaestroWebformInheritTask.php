@@ -133,7 +133,6 @@ class MaestroWebformInheritTask extends MaestroWebformTask {
     $values['webform_id'] = $webformMachineName;
     $values['data'] = $field_values;
 
-    $form = parent::getExecutableForm($modal, $parent);
 
     $createSubmission = $task['data']['inherit_webform_create_submission'] ?? FALSE;
     if ($createSubmission) {
@@ -162,6 +161,9 @@ class MaestroWebformInheritTask extends MaestroWebformTask {
         $new_submission->bundle(), $taskUniqueSubmissionId, $sid
       );
 
+      // Important: Apparently the form must be generated after calling
+      // MaestroEngine::createEntityIdentifier for this to work.
+      $form = parent::getExecutableForm($modal, $parent);
       // Catch os2forms-forloeb access token and pass it further.
       if ($form instanceof RedirectResponse && $token = \Drupal::request()->query->get('os2forms-forloeb-ws-token')) {
         // Check token to previous submission and update it to new one.
@@ -179,6 +181,8 @@ class MaestroWebformInheritTask extends MaestroWebformTask {
       $values['webformInheritID'] = $webformInheritID;
 
       self::setTaskValues($this->queueID, $values);
+
+      $form = parent::getExecutableForm($modal, $parent);
     }
 
     return $form;
