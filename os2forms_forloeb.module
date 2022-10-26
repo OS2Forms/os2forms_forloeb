@@ -16,6 +16,7 @@ use Drupal\maestro\Engine\MaestroEngine;
 use Drupal\os2forms_forloeb\Plugin\EngineTasks\MaestroWebformInheritTask;
 use Drupal\webform\Entity\WebformSubmission;
 use Drupal\user\Entity\User;
+use Drupal\webform\WebformSubmissionInterface;
 
 /**
  * Implements hook_maestro_interactive_handlers().
@@ -346,10 +347,8 @@ function os2forms_forloeb_maestro_post_fetch_assigned_queue_tasks($userID, &$que
 }
 
 /**
- * Implements hook_webform_element_alter().
- *
- * @see MaestroWebformInheritTask::webformElementAlter()
+ * Implements hook_ENTITY_TYPE_prepare_form().
  */
-function os2forms_forloeb_webform_element_alter(array &$element, FormStateInterface $form_state, array $context) {
-  MaestroWebformInheritTask::webformElementAlter($element, $form_state, $context);
+function os2forms_forloeb_webform_submission_prepare_form(WebformSubmissionInterface $webform_submission, string $operation, FormStateInterface $form_state) {
+  MaestroWebformInheritTask::webformSubmissionPrepareForm($webform_submission, $operation, $form_state);
 }

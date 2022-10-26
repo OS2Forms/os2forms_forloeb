@@ -9,6 +9,7 @@ use Drupal\maestro_webform\Plugin\EngineTasks\MaestroWebformTask;
 use Drupal\maestro\Form\MaestroExecuteInteractive;
 use Drupal\maestro\Engine\MaestroEngine;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\webform\WebformSubmissionInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
@@ -188,17 +189,18 @@ class MaestroWebformInheritTask extends MaestroWebformTask {
   }
 
   /**
-   * Implements hook_webform_element_alter().
+   * Implements hook_ENTITY_TYPE_prepare_form().
    */
-  public static function webformElementAlter(array &$element, FormStateInterface $form_state, array $context) {
+  public static function webformSubmissionPrepareForm(WebformSubmissionInterface $webformSubmission, string $operation, FormStateInterface $formState): void {
     $request = \Drupal::request();
     $isMaestro = (bool) $request->query->get('maestro', 0);
     $queueID = (int) $request->query->get('queueid', 0);
     if ($isMaestro && $queueID > 0) {
       $values = self::getTaskValues($queueID);
-      $elementId = $element['#webform_key'];
-      if (isset($values['data'][$elementId])) {
-        $element['#default_value'] = $values['data'][$elementId];
+      if (isset($values['data'])) {
+        foreach ($values['data'] as $name => $value) {
+          $webformSubmission->setElementData($name, $value);
+        }
       }
     }
   }
