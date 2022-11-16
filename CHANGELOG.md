@@ -9,6 +9,14 @@ before starting to add changes.
 
 ## [Unreleased]
 
+## 2.5.0 - 11.10.2022
+
+### Added 
+- retry task controller action
+- Added support for inheriting values without creating a submission
+
+## 2.4.0 
+
 ### Added
 - Github CI action for checking Drupal Coding standards with PHP Code Sniffer
 - Fixed coding standards issues

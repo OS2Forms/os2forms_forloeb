@@ -98,7 +98,7 @@ function os2forms_forloeb_workflow_maestro_reassign_form_submit(&$form, &$form_s
  */
 function os2forms_forloeb_maestro_batch_handlers() {
   return [
-    'end_notification_batch_function' => t('Batch function to send out flow completion notification to initiator.'),
+    '_os2forms_forloeb_end_notification_batch_function' => t('Batch function to send out flow completion notification to initiator.'),
   ];
 }
 
@@ -110,7 +110,7 @@ function os2forms_forloeb_maestro_batch_handlers() {
  * @param int $queueID
  *   The Maestro queue ID.
  */
-function end_notification_batch_function($processID, $queueID) {
+function _os2forms_forloeb_end_notification_batch_function($processID, $queueID) {
 
   /*
    * Pseudocode for handling this:

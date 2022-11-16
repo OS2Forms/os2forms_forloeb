@@ -5,6 +5,7 @@ namespace Drupal\os2forms_forloeb\Controller;
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Url;
 use Drupal\maestro\Engine\MaestroEngine;
 use Drupal\maestro\Utility\TaskHandler;
@@ -18,6 +19,8 @@ use Symfony\Component\HttpFoundation\RequestStack;
  * Controller for Forloeb task console.
  */
 class ForloebTaskConsoleController extends ControllerBase {
+
+  use StringTranslationTrait;
 
   /**
    * Update manager service.
@@ -82,6 +85,12 @@ class ForloebTaskConsoleController extends ControllerBase {
     $token = $this->requestStack->getCurrentRequest()->query->get('os2forms-forloeb-ws-token', '');
     if ($token) {
       $queueRecord = $this->forloebTaskConsole->getQueueIdByWebformSubmissionToken($token);
+      if (empty($queueRecord)) {
+        return new RedirectResponse(
+          Url::fromRoute('os2forms_forloeb.forloeb_task_console_controller_execute_retry',
+          ['referrer' => \Drupal::request()->getRequestUri()])->toString()
+        );
+      }
     }
     else {
       // For empty token there is user last task from taskconsole queue.
@@ -148,6 +157,20 @@ class ForloebTaskConsoleController extends ControllerBase {
     }
 
     return new RedirectResponse($redirect_to->toString());
+  }
+
+  /**
+   * Show message about task not yet ready.
+   *
+   * @return array
+   *   The render array.
+   */
+  public function retry() {
+    $referrer = $this->requestStack->getCurrentRequest()->query->get('referrer', '#');
+
+    return [
+      '#markup' => $this->t('Your task is not yet ready. Please <a href=":referrer">try again</a> in 5 minutes.', [':referrer' => $referrer]),
+    ];
   }
 
 }
