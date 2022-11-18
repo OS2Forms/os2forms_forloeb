@@ -13,8 +13,10 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\BubbleableMetadata;
 use Drupal\Core\Url;
 use Drupal\maestro\Engine\MaestroEngine;
+use Drupal\os2forms_forloeb\Plugin\EngineTasks\MaestroWebformInheritTask;
 use Drupal\webform\Entity\WebformSubmission;
 use Drupal\user\Entity\User;
+use Drupal\webform\WebformSubmissionInterface;
 
 /**
  * Implements hook_maestro_interactive_handlers().
@@ -96,7 +98,7 @@ function os2forms_forloeb_workflow_maestro_reassign_form_submit(&$form, &$form_s
  */
 function os2forms_forloeb_maestro_batch_handlers() {
   return [
-    'end_notification_batch_function' => t('Batch function to send out flow completion notification to initiator.'),
+    '_os2forms_forloeb_end_notification_batch_function' => t('Batch function to send out flow completion notification to initiator.'),
   ];
 }
 
@@ -108,7 +110,7 @@ function os2forms_forloeb_maestro_batch_handlers() {
  * @param int $queueID
  *   The Maestro queue ID.
  */
-function end_notification_batch_function($processID, $queueID) {
+function _os2forms_forloeb_end_notification_batch_function($processID, $queueID) {
 
   /*
    * Pseudocode for handling this:
@@ -342,4 +344,11 @@ function os2forms_forloeb_maestro_post_fetch_assigned_queue_tasks($userID, &$que
     $queueIDs[] = $queueRecord->id();
     $queueIDs = array_unique($queueIDs);
   }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_prepare_form().
+ */
+function os2forms_forloeb_webform_submission_prepare_form(WebformSubmissionInterface $webform_submission, string $operation, FormStateInterface $form_state) {
+  MaestroWebformInheritTask::webformSubmissionPrepareForm($webform_submission, $operation, $form_state);
 }
