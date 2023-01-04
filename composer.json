@@ -83,7 +83,7 @@
       }
     },
     "branch-alias": {
-      "dev-composer_cleanup": "2.6.0"
+      "dev-composer_cleanup": "2.6.x-dev"
     }
   },
   "scripts": {
