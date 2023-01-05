@@ -81,9 +81,6 @@
       "drupal/coc_forms_auto_export": {
         "3240592 - Problem with phpseclib requirement in 2.x (https://www.drupal.org/project/coc_forms_auto_export/issues/3240592)": "https://www.drupal.org/files/issues/2021-10-04/requirement-namespace-3240592-1.patch"
       }
-    },
-    "branch-alias": {
-      "dev-composer_cleanup": "2.6.0"
     }
   },
   "scripts": {
