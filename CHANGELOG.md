@@ -8,6 +8,11 @@ See ["how do I make a good changelog record?"](https://keepachangelog.com/en/1.0
 before starting to add changes.
 
 ## [Unreleased]
+- Added github action for checking changelog changes when creating pull requests
+- Added os2forms/os2forms dependency
+- Changed composer patching configuration
+- Removed patches that don't belong in this project (Patched correctly in os2forms/os2forms project)
+- Added patch for drupal/dynamic_entity_reference
 
 ## 2.5.0 - 11.10.2022
 
