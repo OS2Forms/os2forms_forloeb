@@ -81,14 +81,15 @@ class ForloebTaskConsoleController extends ControllerBase {
   public function execute() {
     $redirect_to = Url::fromRoute('maestro_taskconsole.taskconsole');
 
+    $request = $this->requestStack->getCurrentRequest();
     // Check webform submission token.
-    $token = $this->requestStack->getCurrentRequest()->query->get('os2forms-forloeb-ws-token', '');
+    $token = $request->query->get('os2forms-forloeb-ws-token', '');
     if ($token) {
       $queueRecord = $this->forloebTaskConsole->getQueueIdByWebformSubmissionToken($token);
       if (empty($queueRecord)) {
         return new RedirectResponse(
           Url::fromRoute('os2forms_forloeb.forloeb_task_console_controller_execute_retry',
-          ['referrer' => \Drupal::request()->getRequestUri()])->toString()
+          ['referrer' => $request->getRequestUri()])->toString()
         );
       }
     }
