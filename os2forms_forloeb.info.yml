@@ -32,7 +32,6 @@ dependencies:
   - 'drupal:switch_page_theme'
   - 'drupal:token'
   - 'drupal:ultimate_cron'
-  - 'drupal:user_default_page'
   - 'drupal:webform'
   - 'drupal:webform_ui'
   - 'drupal:webform_access'

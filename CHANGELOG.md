@@ -14,6 +14,8 @@ before starting to add changes.
 - Removed patches that don't belong in this project (Patched correctly in os2forms/os2forms project)
 - Added patch for drupal/dynamic_entity_reference
 
+- Remove drupal dependency on user default page module
+
 ## 2.5.0 - 11.10.2022
 
 ### Added 
