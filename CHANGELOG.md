@@ -9,6 +9,8 @@ before starting to add changes.
 
 ## [Unreleased]
 
+- Remove drupal dependency on user default page module
+
 ## 2.5.0 - 11.10.2022
 
 ### Added 
