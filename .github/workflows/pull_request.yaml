@@ -1,5 +1,5 @@
-name: Check Code standards
-on: [push]
+name: Check coding standards
+on: pull_request
 jobs:
   coding-standards:
     name: PHP - Check Coding Standards
