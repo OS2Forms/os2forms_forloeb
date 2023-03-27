@@ -9,6 +9,9 @@ before starting to add changes.
 
 ## [Unreleased]
 
+### Updated
+- Bumped drupal/ultimate_cron version fixing [Deprecated function: Implicit conversion from float-string](https://www.drupal.org/project/ultimate_cron/issues/3256142). 
+
 ## 2.5.1 - 10.03.2023
 - Added github action for checking changelog changes when creating pull requests
 - Added os2forms/os2forms dependency
