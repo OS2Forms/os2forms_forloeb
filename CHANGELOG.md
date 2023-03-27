@@ -9,6 +9,8 @@ before starting to add changes.
 
 ## [Unreleased]
 
+## 2.5.2 - 27.03.2023
+
 ### Updated
 - Bumped drupal/ultimate_cron version fixing [Deprecated function: Implicit conversion from float-string](https://www.drupal.org/project/ultimate_cron/issues/3256142). 
 
