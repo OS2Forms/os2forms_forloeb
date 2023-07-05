@@ -9,6 +9,8 @@ before starting to add changes.
 
 ## [Unreleased]
 
+- Added a lot of Maestro stuff
+
 ## 2.5.2 - 27.03.2023
 
 ### Updated
