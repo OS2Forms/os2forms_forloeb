@@ -2,8 +2,9 @@ name: 'OS2forms med Forløb Module'
 description: 'Adds a Maestro workflow engine and advanced workflow functionality to OS2forms.'
 package: OS2Forms
 type: module
-core: 8.x
-core_version_requirement: ^8 || ^9
+core_version_requirement: ^9 || ^10
+
+configure: os2forms_forloeb.settings
 
 dependencies:
   - 'drupal:admin_toolbar_tools'
