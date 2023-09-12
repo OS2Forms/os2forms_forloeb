@@ -34,7 +34,7 @@
     "drupal/libraries": "3.0.0-beta1",
     "drupal/linkit": "^5.0",
     "drupal/logging_alerts": "^2.0",
-    "drupal/maestro": "^3.0",
+    "drupal/maestro": "^3.1",
     "drupal/masquerade": "2.0.0-beta4",
     "drupal/queue_mail": "^1.4",
     "drupal/queue_ui": "^2.1",
@@ -52,8 +52,8 @@
     "drupal/webform_scheduled_tasks": "^2.0",
     "drupal/webform_views": "^5.0@alpha",
     "drupal/workflow_participants": "^2.4",
-    "os2forms/os2forms_digital_post": "dev-feature/FORMS-821-data-lookup as 2.1",
     "os2forms/os2forms": "^3.7",
+    "os2forms/os2forms_digital_post": "^3.0",
     "webmozart/path-util": "^2.3",
     "zaporylie/composer-drupal-optimizations": "^1.2"
   },
