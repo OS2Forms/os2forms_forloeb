@@ -9,6 +9,8 @@ before starting to add changes.
 
 ## [Unreleased]
 
+- Remove dependency on webform migration module
+
 ## 2.5.2 - 27.03.2023
 
 ### Updated
